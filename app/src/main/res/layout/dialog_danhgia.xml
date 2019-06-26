@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_gravity="center"
+    android:background="@color/white"
+    android:layout_width="350dp"
+    android:layout_height="475dp">
+    <TextView
+        android:id="@+id/textview_cancel"
+        android:gravity="center"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:text="X"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        android:layout_gravity="end"
+        android:background="@drawable/background_circle_dialog"/>
+    <TextView
+        android:textSize="25sp"
+        android:textAllCaps="true"
+        android:textColor="@color/colorPrimaryDark"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:text="@string/danh_gia"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+    <RatingBar
+        android:id="@+id/raiting_chonsao"
+        style="@style/RatingBar_dialog"
+        android:stepSize="1"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:max="5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <TextView
+        android:layout_marginTop="10dp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginLeft="10dp"
+        android:text="@string/chia_se_cam_nhan"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    <EditText
+        android:id="@+id/edittext_nhapnoidung"
+        android:background="@drawable/background_edittex_dialog"
+        android:padding="30dp"
+        android:gravity="start"
+        android:hint="@string/noi_dung"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:layout_width="300dp"
+        android:layout_height="200dp" />
+    <Button
+        android:id="@+id/button_guidanhgia"
+        android:text="@string/gui_danh_gia"
+        android:textSize="25sp"
+        android:textColor="@color/white"
+        android:background="@drawable/background_button_themdanhgia"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+</LinearLayout>

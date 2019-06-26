@@ -1,0 +1,39 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+    </style>
+
+    <style name="BottomNavigationView" parent="@style/TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="BottomNavigationView.Active" parent="@style/TextAppearance.AppCompat.Caption">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="RatingBar" parent="Widget.AppCompat.RatingBar.Small">
+        <item name="android:progressTint" tools:targetApi="lollipop">@color/duskYellow</item>
+    </style>
+
+    <style name="RatingBar_dialog" parent="Theme.AppCompat">
+        <item name="android:progressTint" tools:targetApi="lollipop">@color/duskYellow</item>
+    </style>
+
+    <style name="popup_toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:popupBackground">@drawable/bacground_toolbar_chitietsach</item>
+    </style>
+
+    <declare-styleable name="PasswordEditText">
+        <attr name="useStrike" format="boolean" />
+        <attr name="useValidate" format="boolean" />
+    </declare-styleable>
+    <style name="MySeekBarTheme" parent="Widget.AppCompat.SeekBar" >
+        <item name="colorAccent">@color/white</item>
+    </style>
+</resources>

@@ -1,0 +1,2 @@
+include ':app', ':PDF'
+project(':PDF').projectDir = new File('PDFView')

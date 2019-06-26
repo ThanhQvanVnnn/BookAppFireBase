@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menu_trangchu"
+        android:title="@string/trang_chu"
+        android:icon="@drawable/trangchu_black_24"/>
+    <item android:id="@+id/menu_danhmuc"
+        android:title="@string/danh_muc"
+        android:icon="@drawable/danhmuc_black_24"/>
+    <item android:id="@+id/menu_tusach"
+        android:title="@string/tu_sach"
+        android:icon="@drawable/tusach_black_24"/>
+    <item android:id="@+id/menu_hoatdong"
+        android:title="@string/hoat_dong"
+        android:icon="@drawable/hoatdong_black_24"/>
+    <item android:id="@+id/menu_canhan"
+        android:title="@string/ca_nhan"
+        android:icon="@drawable/canhan_black_24"/>
+</menu>
