@@ -1,20 +1,20 @@
 package com.phungthanhquan.bookapp.View.Activity;
 
-import android.animation.Animator;
 import android.animation.ValueAnimator;
 import android.app.ActivityOptions;
 import android.content.Intent;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
-import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.phungthanhquan.bookapp.R;
 
 import java.io.File;
@@ -49,10 +49,11 @@ public class PlashScreen extends AppCompatActivity {
                         String packetName = getPackageName();
                         File f = new File(
                                 "/data/data/" + packetName + "/shared_prefs/User_Info.xml");
+                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                         @Override
                         public void run() {
                             if(MainActivity.isNetworkConnected(PlashScreen.this))/*có internet*/{
-                                if (f.exists()){
+                                if (f.exists() && user!=null){
                                     intent = new Intent(PlashScreen.this,MainActivity.class);
                                     startActivity(intent);
                                 }
@@ -66,7 +67,7 @@ public class PlashScreen extends AppCompatActivity {
                                     startActivity(intent, options.toBundle());
                                 }
                             }else /*không có internet*/ {
-                                if(f.exists()){
+                                if(f.exists() && user!=null){
                                     intent = new Intent(PlashScreen.this,MainActivity.class);
                                     startActivity(intent);
                                 }else {

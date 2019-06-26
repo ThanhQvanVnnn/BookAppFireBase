@@ -1,6 +1,6 @@
 package com.phungthanhquan.bookapp.Presenter.Fragment;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 

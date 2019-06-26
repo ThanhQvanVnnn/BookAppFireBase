@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "254061131580",
+    "firebase_url": "https://luanvan-1553098410907.firebaseio.com",
+    "project_id": "luanvan-1553098410907",
+    "storage_bucket": "luanvan-1553098410907.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:254061131580:android:ce64ff533f786ea4",
+        "android_client_info": {
+          "package_name": "com.phungthanhquan.bookapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "254061131580-n0bef0ur1nojsmqe35rg71af7kfo4d3d.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.phungthanhquan.bookapp",
+            "certificate_hash": "c1d20446741c8613eeaf62ee006439e1a501b813"
+          }
+        },
+        {
+          "client_id": "254061131580-j77rcssjq7faplqsmva8jrou3m2q8c3d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLFyMj7Hmz8UvdhEkHdstnWS0eub0VQ40"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "254061131580-j77rcssjq7faplqsmva8jrou3m2q8c3d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

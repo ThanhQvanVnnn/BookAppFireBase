@@ -91,4 +91,14 @@
     <string name="vuilongcho">Vui lòng chờ !</string>
     <string name="taisachthanhcong">Tải sách thành công</string>
     <string name="taisachthatbai">Tải Sách thất bại</string>
+    <string name="dangkithatbai">Đăng kí thất bại!</string>
+    <string name="dangkithanhcong">Đăng kí thành công</string>
+    <string name="matcheremailsdt">Địa chỉ email không đúng!</string>
+    <string name="matkhaulonhon5">Mật khẩu phải lớn hơn 5 kí tự</string>
+    <string name="matkhaunhaplai">Mật khẩu nhập lại không đúng !</string>
+    <string name="maxacnhan">Mã xác minh số điện thoại không đúng !</string>
+    <string name="nhapmaxacthuc">Nhập mã xác thực điện thoại tại đây</string>
+    <string name="dangnhapthanhcong">Đăng nhập thành công!</string>
+    <string name="dangnhapthatbai">Đăng nhập thất bại!</string>
+    <string name="resetpass">Vui lòng kiểm tra mail để đổi mật khẩu !</string>
 </resources>

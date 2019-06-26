@@ -3,22 +3,20 @@ package com.phungthanhquan.bookapp.CustomView;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
-import android.support.annotation.RequiresApi;
-import android.support.design.widget.TextInputLayout;
-import android.support.v4.content.ContextCompat;
+
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.core.content.ContextCompat;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.EditText;
 
 import com.phungthanhquan.bookapp.R;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class PassWordEditText extends android.support.v7.widget.AppCompatEditText {
+public class PassWordEditText extends androidx.appcompat.widget.AppCompatEditText {
     Drawable eye,eyeStrike;
     Boolean visible = false;
     Boolean useStrike = false;

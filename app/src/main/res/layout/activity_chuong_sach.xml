@@ -6,27 +6,27 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".View.Activity.ChuongSachRead">
-    <android.support.design.widget.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:background="@drawable/bacground_toolbar_chitietsach"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <android.support.v7.widget.Toolbar
+        <androidx.appcompat.widget.Toolbar
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"/>
-        <android.support.design.widget.TabLayout
+        <com.google.android.material.tabs.TabLayout
             app:tabTextColor="@color/white"
             android:id="@+id/tabbarlayout"
             android:layout_width="match_parent"
             android:layout_height="50dp">
-        </android.support.design.widget.TabLayout>
-    </android.support.design.widget.AppBarLayout>
+        </com.google.android.material.tabs.TabLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <android.support.v4.view.ViewPager
+    <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-    </android.support.v4.view.ViewPager>
+    </androidx.viewpager.widget.ViewPager>
 </LinearLayout>

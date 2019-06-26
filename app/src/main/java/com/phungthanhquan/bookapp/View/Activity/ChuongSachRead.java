@@ -2,15 +2,14 @@ package com.phungthanhquan.bookapp.View.Activity;
 
 import android.content.Intent;
 import android.os.Build;
-import android.support.design.widget.TabLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.tabs.TabLayout;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import androidx.appcompat.widget.Toolbar;
 
 import com.phungthanhquan.bookapp.Adapter.ViewPager_ChuongSach_Adapter;
-import com.phungthanhquan.bookapp.Object.ChuongSach;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.Fragment.FrgChuongSach;
 import com.phungthanhquan.bookapp.View.Fragment.FrgDauTrang;

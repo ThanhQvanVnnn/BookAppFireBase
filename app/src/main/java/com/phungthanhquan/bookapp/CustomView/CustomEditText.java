@@ -2,15 +2,14 @@ package com.phungthanhquan.bookapp.CustomView;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.support.v4.content.ContextCompat;
+import androidx.core.content.ContextCompat;
 import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
-import android.widget.EditText;
 
 import com.phungthanhquan.bookapp.R;
 
-public class CustomEditText extends android.support.v7.widget.AppCompatEditText {
+public class CustomEditText extends androidx.appcompat.widget.AppCompatEditText {
     Drawable crossx,nonecrossx,drawable;
     Boolean visible = false;
     public CustomEditText(Context context) {

@@ -1,6 +1,6 @@
 package com.phungthanhquan.bookapp.Presenter.Activity;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -8,7 +8,6 @@ import com.phungthanhquan.bookapp.Model.Activity.ModelActivityMarketing;
 import com.phungthanhquan.bookapp.Object.ItemBook;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityMarketing;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class PresenterLogicMarketing implements InPresenterMarketing {

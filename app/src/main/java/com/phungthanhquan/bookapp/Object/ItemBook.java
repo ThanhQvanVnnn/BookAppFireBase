@@ -1,6 +1,6 @@
 package com.phungthanhquan.bookapp.Object;
 
-import android.arch.persistence.room.Entity;
+import androidx.room.Entity;
 
 @Entity(tableName = "")
 public class ItemBook {

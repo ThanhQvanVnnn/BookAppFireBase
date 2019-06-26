@@ -4,20 +4,18 @@ import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
-import android.support.annotation.NonNull;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
-import android.text.Layout;
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.phungthanhquan.bookapp.Object.NXB;
 import com.phungthanhquan.bookapp.R;
-import com.phungthanhquan.bookapp.View.Activity.BookDetail;
 import com.phungthanhquan.bookapp.View.Activity.ListBookToChoice;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;

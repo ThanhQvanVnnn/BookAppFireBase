@@ -1,12 +1,11 @@
 package com.phungthanhquan.bookapp.Presenter.Activity;
 
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
 
 import com.phungthanhquan.bookapp.Model.Activity.ModelActivityListDanhMucTatCa;
 import com.phungthanhquan.bookapp.Object.ItemBook;
-import com.phungthanhquan.bookapp.Object.ItemBookCase;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityListBookDanhMucTatCa;
 
 import java.util.List;

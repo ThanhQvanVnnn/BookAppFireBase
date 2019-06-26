@@ -1,12 +1,12 @@
 package com.phungthanhquan.bookapp.View.Activity;
 
-import android.support.v4.view.MenuItemCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.view.MenuItemCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SearchView;
-import android.support.v7.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -18,7 +18,6 @@ import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLogicSearch;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivitySearch;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class SearchBook extends AppCompatActivity implements InterfaceViewActivitySearch, SearchView.OnQueryTextListener {
