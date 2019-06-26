@@ -34,8 +34,6 @@ import android.widget.Toast;
 
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.phungthanhquan.bookapp.Adapter.RecycleView_noidungbinhluan_Adapter;
-import com.phungthanhquan.bookapp.ConnectAPI.ChitietsachMethodAPI;
-import com.phungthanhquan.bookapp.Model.DatabaseAPI;
 import com.phungthanhquan.bookapp.Object.BinhLuan;
 import com.phungthanhquan.bookapp.Object.Book;
 import com.phungthanhquan.bookapp.Presenter.Activity.PresenterBookDetail;
@@ -59,9 +57,7 @@ import java.util.Locale;
 
 import dmax.dialog.SpotsDialog;
 import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
+
 
 public class BookDetail extends AppCompatActivity implements InterfaceViewActivityDetailBook, View.OnClickListener  {
     private ImageView detailbook_image;
@@ -86,14 +82,12 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     private RecycleView_noidungbinhluan_Adapter recycleView_noidungbinhluan_adapter;
     private SwipeRefreshLayout refreshLayout;
     private NestedScrollView nestedScrollView;
-    private ChitietsachMethodAPI chitietsachMethodAPI;
+
     private DownloadBookFileTask downloadBookFileTask;
     private ProgressDialog progressDialog;
     private ImageButton imageButtonInternet;
     private ConstraintLayout constraintLayoutInternet;
     private int lenghtFile;
-    private Call<ResponseBody> call;
-    private Callback<ResponseBody> callback;
     public  AlertDialog loadingDialog;
     Toast toast;
 
@@ -167,7 +161,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         presenterBookDetail.xuliHienThiSach();
         presenterBookDetail.xuliHienThiDsDanhGia();
         chensach(ChiTietSach);
-        chitietsachMethodAPI = DatabaseAPI.getApiServiceChitietsach();
+
     }
     @Override
     public boolean onSupportNavigateUp() {
@@ -232,42 +226,42 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                     final File file = new File(directory, ChiTietSach.getId_sach() + ".pdf");
                     final int file_size = (int) file.length();
 
-                    new AsyncTask<String, Void, Void>() {
-
-                        Intent intent;
-
-                        @Override
-                        protected void onPreExecute() {
-                            loadingDialog.show();
-                            super.onPreExecute();
-                        }
-
-                        @Override
-                        protected Void doInBackground(String... strings) {
-                            lenghtFile = checkBookSize(strings[0]);
-                            return null;
-                        }
-
-                        @Override
-                        protected void onPostExecute(Void aVoid) {
-                            super.onPostExecute(aVoid);
-                            loadingDialog.dismiss();
-                            if (file.exists() && (file_size == lenghtFile)) {
-                                intent = new Intent(BookDetail.this, Read.class);
-                                intent.putExtra("idSach", "id0");
-                                startActivity(intent);
-                            } else if (file.exists() && file_size != lenghtFile) {
-                                file.delete();
-                                downloadbookFile(ChiTietSach.getId_sach() + "", progressDialog);
-                            } else {
-                                if (call == null) {
-                                    downloadbookFile(ChiTietSach.getId_sach() + "", progressDialog);
-                                } else {
-                                    downloadbookFile(ChiTietSach.getId_sach() + "", progressDialog);
-                                }
-                            }
-                        }
-                    }.execute("https://sachvui.com/sachvui-686868666888/ebooks/2016/pdf/Sachvui.Com-quang-ganh-lo-di-va-vui-song.pdf");
+//                    new AsyncTask<String, Void, Void>() {
+//
+//                        Intent intent;
+//
+//                        @Override
+//                        protected void onPreExecute() {
+//                            loadingDialog.show();
+//                            super.onPreExecute();
+//                        }
+//
+//                        @Override
+//                        protected Void doInBackground(String... strings) {
+//                            lenghtFile = checkBookSize(strings[0]);
+//                            return null;
+//                        }
+//
+//                        @Override
+//                        protected void onPostExecute(Void aVoid) {
+//                            super.onPostExecute(aVoid);
+//                            loadingDialog.dismiss();
+//                            if (file.exists() && (file_size == lenghtFile)) {
+//                                intent = new Intent(BookDetail.this, Read.class);
+//                                intent.putExtra("idSach", "id0");
+//                                startActivity(intent);
+//                            } else if (file.exists() && file_size != lenghtFile) {
+//                                file.delete();
+//                                downloadbookFile(ChiTietSach.getId_sach() + "", progressDialog);
+//                            } else {
+//                                if (call == null) {
+//                                    downloadbookFile(ChiTietSach.getId_sach() + "", progressDialog);
+//                                } else {
+//                                    downloadbookFile(ChiTietSach.getId_sach() + "", progressDialog);
+//                                }
+//                            }
+//                        }
+//                    }.execute("https://sachvui.com/sachvui-686868666888/ebooks/2016/pdf/Sachvui.Com-quang-ganh-lo-di-va-vui-song.pdf");
                 }
                 else {
                     //nếu chưa mua sách:
@@ -358,7 +352,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         protected Boolean doInBackground(ResponseBody... urls) {
             //Copy you logic to calculate progress and call
             Boolean result = false;
-            saveToDisk(result,urls[0], bookID+".pdf");
+//            saveToDisk(result,urls[0], bookID+".pdf");
             return result;
         }
 
@@ -401,94 +395,73 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
             }
         }
     }
-    private void saveToDisk(Boolean result,ResponseBody body, String filename) {
-        File pdfFile = null;
-        try {
-
-            File directory= null;
-            ContextWrapper cw = new ContextWrapper(BookDetail.this);
-            directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
-            pdfFile=new File(directory,filename);
-//            try{
-//                pdfFile.createNewFile();
-//            }catch (IOException e){
+//    private void saveToDisk(Boolean result,ResponseBody body, String filename) {
+//        File pdfFile = null;
+//        try {
+//
+//            File directory= null;
+//            ContextWrapper cw = new ContextWrapper(BookDetail.this);
+//            directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
+//            pdfFile=new File(directory,filename);
+////            try{
+////                pdfFile.createNewFile();
+////            }catch (IOException e){
+////                e.printStackTrace();
+////            }
+//            InputStream inputStream = null;
+//            OutputStream outputStream = null;
+//
+//            try {
+//
+//                inputStream = body.byteStream();
+//                outputStream = new FileOutputStream(pdfFile);
+//                byte data[] = new byte[4096];
+//                int count;
+//                int progress = 0;
+//                long fileSize = body.contentLength();
+//                Log.d("kiemtra", "File Size=" + fileSize);
+//                while ((count = inputStream.read(data)) != -1) {
+//                    outputStream.write(data, 0, count);
+//                    progress += count;
+//                    Pair<Integer, Long> pairs = new Pair<>(progress, fileSize);
+//                    downloadBookFileTask.doProgress(pairs);
+//                    Log.d("kiemtra", "Progress: " + progress + "/" + fileSize + " >>>> " + (float) progress / fileSize);
+//                }
+//
+//                outputStream.flush();
+//
+//                Log.d("kiemtra", pdfFile.getParent());
+//                Pair<Integer, Long> pairs = new Pair<>(100, 100L);
+//                downloadBookFileTask.doProgress(pairs);
+//                result = true;
+//                return;
+//            } catch (IOException e) {
 //                e.printStackTrace();
+//                Pair<Integer, Long> pairs = new Pair<>(-1, Long.valueOf(-1));
+//                downloadBookFileTask.doProgress(pairs);
+//                pdfFile.delete();
+//                Log.d("kiemtra", "Failed to save the file!");
+//                call.cancel();
+//                call = null;
+//                result = false;
+//                return;
+//            } finally {
+//                if (inputStream != null) inputStream.close();
+//                if (outputStream != null) outputStream.close();
 //            }
-            InputStream inputStream = null;
-            OutputStream outputStream = null;
+//        } catch (IOException e) {
+//            result = false;
+//            pdfFile.delete();
+//            e.printStackTrace();
+//            Log.d("kiemtra", "Failed to save the file!");
+//            return;
+//        }
+//    }
 
-            try {
-
-                inputStream = body.byteStream();
-                outputStream = new FileOutputStream(pdfFile);
-                byte data[] = new byte[4096];
-                int count;
-                int progress = 0;
-                long fileSize = body.contentLength();
-                Log.d("kiemtra", "File Size=" + fileSize);
-                while ((count = inputStream.read(data)) != -1) {
-                    outputStream.write(data, 0, count);
-                    progress += count;
-                    Pair<Integer, Long> pairs = new Pair<>(progress, fileSize);
-                    downloadBookFileTask.doProgress(pairs);
-                    Log.d("kiemtra", "Progress: " + progress + "/" + fileSize + " >>>> " + (float) progress / fileSize);
-                }
-
-                outputStream.flush();
-
-                Log.d("kiemtra", pdfFile.getParent());
-                Pair<Integer, Long> pairs = new Pair<>(100, 100L);
-                downloadBookFileTask.doProgress(pairs);
-                result = true;
-                return;
-            } catch (IOException e) {
-                e.printStackTrace();
-                Pair<Integer, Long> pairs = new Pair<>(-1, Long.valueOf(-1));
-                downloadBookFileTask.doProgress(pairs);
-                pdfFile.delete();
-                Log.d("kiemtra", "Failed to save the file!");
-                call.cancel();
-                call = null;
-                result = false;
-                return;
-            } finally {
-                if (inputStream != null) inputStream.close();
-                if (outputStream != null) outputStream.close();
-            }
-        } catch (IOException e) {
-            result = false;
-            pdfFile.delete();
-            e.printStackTrace();
-            Log.d("kiemtra", "Failed to save the file!");
-            return;
-        }
-    }
-
-    private void downloadbookFile(final String bookID, final ProgressDialog progressDialog) {
-        call = null;
-        String urlBook = "/sachvui-686868666888/ebooks/2016/pdf/Sachvui.Com-quang-ganh-lo-di-va-vui-song.pdf";
-        call = chitietsachMethodAPI.downLoadBook(urlBook);
-        callback = new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                if (response.isSuccessful()) {
-                    Log.d("kiemtra", "Got the body for the file");
-                    downloadBookFileTask = new DownloadBookFileTask(bookID,progressDialog);
-                    downloadBookFileTask.execute(response.body());
-
-                } else {
-                    Log.d("kiemtra", "Connection failed " + response.errorBody());
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                t.printStackTrace();
-                Log.e("kiemtra", "Lỗi retro:"+ t.getMessage());
-            }
-        };
-       call.enqueue(callback);
-    }
+//    private void downloadbookFile(final String bookID, final ProgressDialog progressDialog) {
+//        call = null;
+//        String urlBook = "/sachvui-686868666888/ebooks/2016/pdf/Sachvui.Com-quang-ganh-lo-di-va-vui-song.pdf";
+//    }
 
     public int checkBookSize(String urls) {
          int file_size = 0 ;
