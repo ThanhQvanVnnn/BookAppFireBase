@@ -147,8 +147,12 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
                 File f = new File(
                         "/data/data/" + packetName + "/shared_prefs/User_Info.xml");
                 f.delete();
-                Login.mGoogleSignInClient.signOut();
-                LoginManager.getInstance().logOut();
+                if(Login.mGoogleSignInClient!=null) {
+                    Login.mGoogleSignInClient.signOut();
+                }  LoginManager.getInstance().logOut();
+                if(LoginManager.getInstance()!=null){
+                    LoginManager.getInstance().logOut();
+                }
                 mAuth.signOut();
 
                 getActivity().finish();
@@ -178,7 +182,7 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
         try{ toast.getView().isShown();     // true if visible
             toast.setText(st);
         } catch (Exception e) {         // invisible if exception
-            toast = Toast.makeText(getContext(), st,  Toast.LENGTH_SHORT);
+            toast = Toast.makeText(getContext(), st ,  Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
         }
         toast.show();  //finally display it
