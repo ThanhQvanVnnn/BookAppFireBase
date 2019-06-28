@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">STUBO</string>
-    <string name="facebook_app_id">421861378548252</string>
-    <string name="fb_login_protocol_scheme">fb421861378548252</string>
+    <string name="facebook_app_id">327409504877901</string>
+    <string name="fb_login_protocol_scheme">fb327409504877901</string>
     <string name="trang_chu">Trang Chủ</string>
     <string name="danh_muc">Danh Mục</string>
     <string name="tu_sach">Tủ Sách</string>

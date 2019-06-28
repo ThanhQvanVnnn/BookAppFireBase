@@ -39,6 +39,7 @@
         </activity>
 
 
+
         <activity android:name=".View.Activity.ForGotPass" />
         <activity android:name=".View.Activity.Register" />
         <activity android:name=".View.Activity.Login" />
