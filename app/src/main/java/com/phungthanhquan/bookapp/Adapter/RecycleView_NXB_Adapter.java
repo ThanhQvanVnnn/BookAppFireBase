@@ -25,6 +25,7 @@ import com.phungthanhquan.bookapp.View.Activity.ListBookToChoice;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class RecycleView_NXB_Adapter extends RecyclerView.Adapter<RecycleView_NXB_Adapter.ViewHolder> {
@@ -52,23 +53,37 @@ public class RecycleView_NXB_Adapter extends RecyclerView.Adapter<RecycleView_NX
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
-        storageReference.child("images").child("publishers").child(dsNXB.get(position).getId()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-            @Override
-            public void onSuccess(Uri uri) {
-                hinhanhNXB.set(position,uri.toString());
-                Picasso.get().load(uri).into(viewHolder.imageNXB, new Callback() {
-                    @Override
-                    public void onSuccess() {
-                        viewHolder.progressBar.setVisibility(View.GONE);
-                    }
+        if(hinhanhNXB.get(position).equals("a")) {
+            storageReference.child("images").child("publishers").child(dsNXB.get(position).getId() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    hinhanhNXB.set(position, uri.toString());
+                    Picasso.get().load(uri).into(viewHolder.imageNXB, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            viewHolder.progressBar.setVisibility(View.GONE);
+                        }
 
-                    @Override
-                    public void onError(Exception e) {
+                        @Override
+                        public void onError(Exception e) {
 
-                    }
-                });
-            }
-        });
+                        }
+                    });
+                }
+            });
+        }else {
+            Picasso.get().load(hinhanhNXB.get(position)).into(viewHolder.imageNXB, new Callback() {
+                @Override
+                public void onSuccess() {
+                    viewHolder.progressBar.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onError(Exception e) {
+
+                }
+            });
+        }
 
         viewHolder.layout.setOnClickListener(new View.OnClickListener() {
             @Override

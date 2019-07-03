@@ -76,7 +76,7 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
     private HorizontalInfiniteCycleViewPager pager_album;
     private ViewPager slider;
     private RecycleView_NXB_Adapter adapterNXB;
-    private RecycleView_ItemBook_Adapter adapterVanHocTrongNuoc;
+    private Album_NXB_Adapter adapterVanHocTrongNuoc;
     private RecycleView_ItemBook_Adapter adapterSachKhuyenDoc;
     private RecyclerView.LayoutManager layoutManagerSachKhuyenDoc;
     private Album_NXB_Adapter adapterSachMoi;
@@ -159,13 +159,10 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         for (int i = 0; i < dsSachMoi.size(); i++) {
             dsHinhAnh.add("a");
         }
-        adapterSachMoi = new Album_NXB_Adapter(getContext(),dsSachMoi,dsHinhAnh);
-        adapterSachMoi.setHasStableIds(true);
+        adapterSachMoi = new Album_NXB_Adapter(getActivity(),dsSachMoi,dsHinhAnh);
         hienthiDSSachMoi.setAdapter(adapterSachMoi);
         hienthiDSSachMoi.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-
         hienthiDSSachMoi.setHasFixedSize(true);
-
 
     }
 
@@ -191,27 +188,17 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
 //
 //    }
 //
-//    @Override
-//    public void hienthidsSachVanHocTrongNuoc(final List<ItemBook> dsSachVanHocTrongNuoc) {
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                danhSachVanHocTrongNuoc.addAll(dsSachVanHocTrongNuoc);
-//                try {
-//                    // code runs in a thread
-//                    getActivity().runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            adapterVanHocTrongNuoc.notifyDataSetChanged();
-//                        }
-//                    });
-//                } catch (final Exception ex) {
-//                }
-//            }
-//        }.start();
-//
-//
-//    }
+    @Override
+    public void hienthidsSachVanHocTrongNuoc( List<Marketing> dsSachVanHocTrongNuoc) {
+        List<String> hinhanhList = new ArrayList<>();
+        for (int i = 0; i <dsSachVanHocTrongNuoc.size() ; i++) {
+            hinhanhList.add("a");
+        }
+        adapterVanHocTrongNuoc = new Album_NXB_Adapter(getContext(), dsSachVanHocTrongNuoc, hinhanhList);
+        hienthiDSSachVanHocTrongNuoc.setAdapter(adapterVanHocTrongNuoc);
+        hienthiDSSachVanHocTrongNuoc.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+        hienthiDSSachVanHocTrongNuoc.setHasFixedSize(true);
+    }
 
     @Override
     public void hienthidsNhaXuatBan(final List<NXB> dsNXB) {
@@ -223,6 +210,7 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         hienthiDSNhaXuatBan.setAdapter(adapterNXB);
         hienthiDSNhaXuatBan.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         hienthiDSNhaXuatBan.setHasFixedSize(true);
+
     }
 
     @Override
@@ -271,27 +259,10 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
     }
 
     private void CreateAdapterAddView() {
-        //list book
-
-//        danhSachVanHocTrongNuoc = new ArrayList<>();
-//        danhSachKhuyenDoc = new ArrayList<>();
-//        danhSachSachMoi = new ArrayList<>();
-        //list adapter
 
 
-//        adapterVanHocTrongNuoc = new RecycleView_ItemBook_Adapter(getContext(), danhSachVanHocTrongNuoc, 0);
 //        adapterSachKhuyenDoc = new RecycleView_ItemBook_Adapter(getContext(), danhSachKhuyenDoc, 0);
 
-        //slider
-
-        //albumBookCase
-
-        //NXB
-
-        //văn học trong nước
-        hienthiDSSachVanHocTrongNuoc.setAdapter(adapterVanHocTrongNuoc);
-        hienthiDSSachVanHocTrongNuoc.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
-        hienthiDSSachVanHocTrongNuoc.setHasFixedSize(true);
         //khuyên đọc
         hienthiDSSachKhuyenDoc.setAdapter(adapterSachKhuyenDoc);
         layoutManagerSachKhuyenDoc = new GridLayoutManager(getContext(), 3);
@@ -306,7 +277,7 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         presenterFragmentTrangChu.xulislider();
         presenterFragmentTrangChu.xuliHienthiDsSachMoi();
         presenterFragmentTrangChu.xuliHienThiAlBumSach();
-//        presenterFragmentTrangChu.xuliHienthiDsSachVanHocTrongNuoc();
+        presenterFragmentTrangChu.xuliHienthiDsSachVanHocTrongNuoc();
         presenterFragmentTrangChu.xuliHienThiDsNhaXuatBan();
 //        presenterFragmentTrangChu.xuliHienthiDsSachKhuyenDoc();
     }
@@ -321,9 +292,6 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
             public void onRefresh() {
                 if (MainActivity.isNetworkConnected(getActivity())) {
                     swipeRefreshLayout.setRefreshing(true);
-                    pager_album.setAdapter(null);
-                    slider.setAdapter(null);
-                    ActivePresenter();
                     InternetConnected();
                 } else {
                     InternetConnected();

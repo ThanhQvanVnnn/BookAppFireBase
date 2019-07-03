@@ -78,7 +78,22 @@ public class TrangChuModel {
                     List<Marketing> attractionsList = new ArrayList<>();
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         Marketing attraction = document.toObject(Marketing.class);
-                        Log.d("kiemtraID", attraction.getBook_id()+"");
+                        attractionsList.add(attraction);
+                    }
+                    myCallback.onCallbackSlider(attractionsList);
+                }
+            }
+        });
+    }
+    // lấy Văn học trong nước:
+    public void getSachVHTN(final CallBackSlider myCallback) {
+        firebaseFirestore.collection("marketing_bookcase").whereEqualTo("marketing_id","nzqndZ3vpgLlJHz4mjy7").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<Marketing> attractionsList = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Marketing attraction = document.toObject(Marketing.class);
                         attractionsList.add(attraction);
                     }
                     myCallback.onCallbackSlider(attractionsList);

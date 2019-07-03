@@ -62,14 +62,18 @@ public class PresenterTrangChu implements PresenterInterfaceTrangChu {
 //        return dsSachKhuyenDocLoadMore;
 //    }
 //
-//    @Override
-//    public void xuliHienthiDsSachVanHocTrongNuoc() {
-//        List<ItemBook> dsSachVanHocTrongNuoc = trangChuModel.getDataDsSachVanHocTrongNuoc();
-//        if(dsSachVanHocTrongNuoc.size()>0){
-//            interfaceViewFragmentTrangChu.hienthidsSachVanHocTrongNuoc(dsSachVanHocTrongNuoc);
-//        }
-//    }
-//
+    @Override
+    public void xuliHienthiDsSachVanHocTrongNuoc() {
+        trangChuModel.getSachVHTN(new TrangChuModel.CallBackSlider() {
+            @Override
+            public void onCallbackSlider(List<Marketing> marketingList) {
+                if(marketingList.size()>0){
+                    interfaceViewFragmentTrangChu.hienthidsSachVanHocTrongNuoc(marketingList);
+                }
+            }
+        });
+    }
+
     @Override
     public void xuliHienThiDsNhaXuatBan() {
         trangChuModel.getNXB(new TrangChuModel.CallBackNXB() {

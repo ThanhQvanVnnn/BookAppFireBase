@@ -4,7 +4,7 @@ public interface PresenterInterfaceTrangChu {
     void xulislider();
     void xuliHienthiDsSachMoi();
 //    void xuliHienthiDsSachKhuyenDoc();
-//    void xuliHienthiDsSachVanHocTrongNuoc();
+    void xuliHienthiDsSachVanHocTrongNuoc();
     void xuliHienThiDsNhaXuatBan();
     void xuliHienThiAlBumSach();
 }
