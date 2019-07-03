@@ -63,7 +63,6 @@ import java.util.Arrays;
 import dmax.dialog.SpotsDialog;
 
 public class Login extends AppCompatActivity implements View.OnClickListener, FirebaseAuth.AuthStateListener {
-    private ImageView logoLogin;
     private EditText nhap_userName;
     private EditText nhap_passWord;
     private Button login;
@@ -99,12 +98,13 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
 
                     @Override
                     public void onCancel() {
+                        loadingDialog.dismiss();
                         // App code
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
-                        // App code
+                        Log.d("facebook",exception.toString());
                     }
                 });
         //google
@@ -130,7 +130,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
     }
 
     private void initControls() {
-        logoLogin = findViewById(R.id.logo_login);
         nhap_userName = findViewById(R.id.userName);
         nhap_passWord = findViewById(R.id.passWord);
         login = findViewById(R.id.button_Login);
@@ -226,8 +225,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
-
+                loadingDialog.dismiss();
             }
+        }else {
+            loadingDialog.dismiss();
         }
     }
 
@@ -308,7 +309,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                             Log.d("loisai",task.getException().toString());
                             showAToast(getString(R.string.dangnhapthatbai));
                         }
-                        loadingDialog.dismiss();
                     }
                 });
     }
@@ -373,6 +373,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                                 @Override
                                                 public void onFailure(@NonNull Exception e) {
                                                     Log.d("register", e.toString());
+                                                    loadingDialog.dismiss();
                                                 }
                                             });
 
@@ -380,16 +381,16 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                         }
                                     }else {
                                         Log.d("document", "Failed with: ", task.getException());
+                                        loadingDialog.dismiss();
                                     }
                                 }
                             });
 
                         } else {
                             // If sign in fails, display a message to the user.
-
+                            loadingDialog.dismiss();
                             showAToast(getString(R.string.dangnhapthatbai));
                         }
-                        loadingDialog.dismiss();
 
                         // ...
                     }
@@ -422,8 +423,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
             Intent intent = new Intent(Login.this, MainActivity.class);
             startActivity(intent);
             finish();
-            showAToast(getString(R.string.dangnhapthanhcong));
             loadingDialog.dismiss();
+            showAToast(getString(R.string.dangnhapthanhcong));
         }
     }
     public void showAToast (String st){ //"Toast toast" is declared in the class

@@ -8,12 +8,17 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.phungthanhquan.bookapp.Object.NXB;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.Activity.ListBookToChoice;
@@ -25,10 +30,16 @@ import java.util.List;
 public class RecycleView_NXB_Adapter extends RecyclerView.Adapter<RecycleView_NXB_Adapter.ViewHolder> {
     private Context context;
     private List<NXB> dsNXB;
+    List<String> hinhanhNXB;
+    FirebaseFirestore firebaseFirestore;
+    StorageReference storageReference;
 
-    public RecycleView_NXB_Adapter(Context context, List<NXB> dsNXB) {
+    public RecycleView_NXB_Adapter(Context context, List<NXB> dsNXB,List<String> hinhanhNXB) {
         this.context = context;
         this.dsNXB = dsNXB;
+        this.hinhanhNXB = hinhanhNXB;
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
     }
 
     @NonNull
@@ -41,26 +52,34 @@ public class RecycleView_NXB_Adapter extends RecyclerView.Adapter<RecycleView_NX
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
-        final NXB nhaxuatban = dsNXB.get(position);
-        Picasso.get().load(nhaxuatban.getImageNXB()).into(viewHolder.imageNXB, new Callback() {
+        storageReference.child("images").child("publishers").child(dsNXB.get(position).getId()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
-            public void onSuccess() {
-                viewHolder.progressBar.setVisibility(View.GONE);
-            }
+            public void onSuccess(Uri uri) {
+                hinhanhNXB.set(position,uri.toString());
+                Picasso.get().load(uri).into(viewHolder.imageNXB, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        viewHolder.progressBar.setVisibility(View.GONE);
+                    }
 
-            @Override
-            public void onError(Exception e) {
+                    @Override
+                    public void onError(Exception e) {
 
+                    }
+                });
             }
         });
+
         viewHolder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, ListBookToChoice.class);
                 ActivityOptions activityOptions = ActivityOptions.makeSceneTransitionAnimation((Activity) context,
                         viewHolder.imageNXB,"shareImage");
-                intent.putExtra("title",nhaxuatban.getTenNXB());
-                intent.putExtra("image",dsNXB.get(position).getImageNXB());
+                intent.putExtra("image",hinhanhNXB.get(position));
+                intent.putExtra("title", dsNXB.get(position).getName());
+                intent.putExtra("id", dsNXB.get(position).getId());
+                intent.putExtra("album",false);
                 context.startActivity(intent,activityOptions.toBundle());
             }
         });

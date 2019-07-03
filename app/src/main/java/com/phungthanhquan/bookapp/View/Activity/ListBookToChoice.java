@@ -1,6 +1,7 @@
 package com.phungthanhquan.bookapp.View.Activity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,14 +9,20 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.widget.ImageView;
 
+import com.google.api.LogDescriptor;
+import com.phungthanhquan.bookapp.Adapter.Album_NXB_Adapter;
 import com.phungthanhquan.bookapp.Adapter.RecycleView_ItemBook_Adapter;
+import com.phungthanhquan.bookapp.Object.Album_BookCase;
+import com.phungthanhquan.bookapp.Object.Marketing;
 import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLogicListBookToChoice;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityListBookToChoice;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListBookToChoice extends AppCompatActivity implements InterfaceViewActivityListBookToChoice {
@@ -39,7 +46,9 @@ public class ListBookToChoice extends AppCompatActivity implements InterfaceView
         image = findViewById(R.id.image_listbooktochoice);
         Intent intent =getIntent();
         String image_get =intent.getStringExtra("image");
+        String id = intent.getStringExtra("id");
         String title = intent.getStringExtra("title");
+        Boolean album = intent.getBooleanExtra("album",false);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
         if(getSupportActionBar()!=null) {
@@ -48,7 +57,7 @@ public class ListBookToChoice extends AppCompatActivity implements InterfaceView
 
         Picasso.get().load(image_get).into(image);
         presenterLogicListBookToChoice = new PresenterLogicListBookToChoice(this);
-        presenterLogicListBookToChoice.hienThiDanhSach();
+        presenterLogicListBookToChoice.hienThiDanhSach(album,id);
     }
 
     @Override
@@ -57,11 +66,15 @@ public class ListBookToChoice extends AppCompatActivity implements InterfaceView
         return super.onSupportNavigateUp();
     }
 
-//    @Override
-//    public void hienThiDanhSach(List<ItemBook> itemBookList) {
-//        RecycleView_ItemBook_Adapter adapter = new RecycleView_ItemBook_Adapter(this,itemBookList,0);
-//        listBookToChoice.setAdapter(adapter);
-//        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
-//        listBookToChoice.setLayoutManager(gridLayoutManager);
-//    }
+    @Override
+    public void hienThiDanhSach(List<Marketing> itemBookList) {
+        List<String> hinhAnh = new ArrayList<>();
+        for(int i =0;i<itemBookList.size();i++){
+            hinhAnh.add("a");
+        }
+        Album_NXB_Adapter adapter = new Album_NXB_Adapter(this,itemBookList,hinhAnh);
+        listBookToChoice.setAdapter(adapter);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
+        listBookToChoice.setLayoutManager(gridLayoutManager);
+    }
 }

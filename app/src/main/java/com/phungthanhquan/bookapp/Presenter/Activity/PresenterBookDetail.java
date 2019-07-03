@@ -18,14 +18,14 @@ public class PresenterBookDetail implements InPresenterBookDetail {
 
 
     @Override
-    public void xuliHienThiSach() {
+    public void xuliHienThiSach(String id) {
         Book book = detailBookModel.getBook();
         if(book!=null)
         interfaceViewActivityDetailBook.hienThiNoiDungSach(book);
     }
 
     @Override
-    public void xuliHienThiDsDanhGia() {
+    public void xuliHienThiDsDanhGia(String id) {
         List<BinhLuan> binhLuans = detailBookModel.getListBinhLuan();
         if(binhLuans.size()!=0){
             interfaceViewActivityDetailBook.hienThiDsDanhGia(binhLuans);

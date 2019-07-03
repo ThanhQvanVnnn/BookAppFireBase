@@ -1,6 +1,6 @@
 package com.phungthanhquan.bookapp.Presenter.Activity;
 
 public interface InPresenterBookDetail {
-    void xuliHienThiSach();
-    void xuliHienThiDsDanhGia();
+    void xuliHienThiSach(String id);
+    void xuliHienThiDsDanhGia(String id);
 }

@@ -75,6 +75,7 @@ public class ViewPager_Slider_Adapter extends PagerAdapter {
             public void onClick(View v) {
                 Intent intent = new Intent(context, BookDetail.class);
                 intent.putExtra("book_id",listslider.get(position).getBook_id());
+                intent.putExtra("image","");
                 context.startActivity(intent);
             }
         });

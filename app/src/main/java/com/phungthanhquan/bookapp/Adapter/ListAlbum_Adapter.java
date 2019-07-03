@@ -29,6 +29,7 @@ import com.phungthanhquan.bookapp.View.Activity.ListBookToChoice;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,13 +41,16 @@ public class ListAlbum_Adapter extends PagerAdapter {
     List<Album> albumBookCaseList;
     Context context;
     LayoutInflater layoutInflater;
+    List<String> hinhanhAlbum;
     private StorageReference firebaseStorage;
 
-    public ListAlbum_Adapter(List<Album> lstImages, Context context) {
+
+    public ListAlbum_Adapter(List<Album> lstImages, Context context,List<String> listAnh) {
         this.albumBookCaseList = lstImages;
         this.context = context;
         layoutInflater = LayoutInflater.from(context);
         firebaseStorage = FirebaseStorage.getInstance().getReference();
+        hinhanhAlbum = listAnh;
     }
 
     @Override
@@ -74,7 +78,8 @@ public class ListAlbum_Adapter extends PagerAdapter {
                 .addOnSuccessListener(new OnSuccessListener<Uri>() {
                     @Override
                     public void onSuccess(Uri uri) {
-                        Log.d("album", albumBookCaseList.size()+"");
+                        hinhanhAlbum.set(position,uri.toString());
+                        Log.d("hinhanhalbum", hinhanhAlbum.size()+"");
                         Picasso.get().load(uri).into(imageView, new Callback() {
                             @Override
                             public void onSuccess() {
@@ -103,8 +108,10 @@ public class ListAlbum_Adapter extends PagerAdapter {
                 Pair<View, String> p2 = Pair.create((View)title, "shareTitle");
                 ActivityOptionsCompat options = ActivityOptionsCompat.
                         makeSceneTransitionAnimation((Activity)context, p1, p2);
-                intent.putExtra("image", albumBookCaseList.get(position).getId()+".png");
+                intent.putExtra("image",hinhanhAlbum.get(position));
                 intent.putExtra("title", albumBookCaseList.get(position).getName());
+                intent.putExtra("id", albumBookCaseList.get(position).getId());
+                intent.putExtra("album",true);
                 context.startActivity(intent, options.toBundle());
             }
         });

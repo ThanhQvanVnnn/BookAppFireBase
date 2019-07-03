@@ -47,7 +47,7 @@
     <string name="say_no">Hủy</string>
     <string name="chon_goi_mua_sach">Chọn gói mua</string>
     <string name="xac_nhan">Xác nhận mua sách</string>
-    <string name="tai_khoan_co">Tài Khoản có:</string>
+    <string name="tai_khoan_co">Tài khoản có:</string>
     <string name="thanh_toan_cho_time">Thanh toán cho:</string>
     <string name="thanh_toan_bang_xu">Thanh toán bằng xu</string>
     <string name="thanh_toan_bang_momo">Thanh toán qua ví momo</string>
@@ -101,4 +101,5 @@
     <string name="dangnhapthanhcong">Đăng nhập thành công!</string>
     <string name="dangnhapthatbai">Đăng nhập thất bại!</string>
     <string name="resetpass">Vui lòng kiểm tra mail để đổi mật khẩu !</string>
+    <string name ="dangtaidulieu">Đang tải dữ liệu !</string>
 </resources>

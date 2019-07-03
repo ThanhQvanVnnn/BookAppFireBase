@@ -4,6 +4,7 @@ import com.phungthanhquan.bookapp.Model.Fragment.TrangChuModel;
 import com.phungthanhquan.bookapp.Object.Album;
 import com.phungthanhquan.bookapp.Object.Album_BookCase;
 import com.phungthanhquan.bookapp.Object.Marketing;
+import com.phungthanhquan.bookapp.Object.NXB;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewFragmentTrangChu;
 
 import java.util.List;
@@ -32,14 +33,19 @@ public class PresenterTrangChu implements PresenterInterfaceTrangChu {
 
     }
 
-//    @Override
-//    public void xuliHienthiDsSachMoi() {
-//        List<ItemBook> dsSachMoi = trangChuModel.getDataDsSachMoi();
-//        if(dsSachMoi.size()>0){
-//            interfaceViewFragmentTrangChu.hienthidsSachmoi(dsSachMoi);
-//        }
-//    }
-//
+    @Override
+    public void xuliHienthiDsSachMoi() {
+        trangChuModel.getSachMoi(new TrangChuModel.CallBackSlider() {
+            @Override
+            public void onCallbackSlider(List<Marketing> marketingList) {
+                if(marketingList.size()>0){
+                    interfaceViewFragmentTrangChu.hienthidsSachmoi(marketingList);
+                }
+            }
+        });
+
+    }
+
 //    @Override
 //    public void xuliHienthiDsSachKhuyenDoc() {
 //        List<ItemBook> dsSachKhuyenDoc = trangChuModel.getDataDsSachKhuyenDoc();
@@ -64,14 +70,19 @@ public class PresenterTrangChu implements PresenterInterfaceTrangChu {
 //        }
 //    }
 //
-//    @Override
-//    public void xuliHienThiDsNhaXuatBan() {
-//        List<NXB> dsNXB = trangChuModel.getDataDsNhaXuatBan();
-//        if(dsNXB.size()>0){
-//            interfaceViewFragmentTrangChu.hienthidsNhaXuatBan(dsNXB);
-//        }
-//    }
-//
+    @Override
+    public void xuliHienThiDsNhaXuatBan() {
+        trangChuModel.getNXB(new TrangChuModel.CallBackNXB() {
+            @Override
+            public void onCallbackAlbum(List<NXB> NXBList) {
+                if(NXBList.size()>0){
+                    interfaceViewFragmentTrangChu.hienthidsNhaXuatBan(NXBList);
+                }
+            }
+        });
+
+    }
+
     @Override
     public void xuliHienThiAlBumSach() {
         trangChuModel.getAlbum(new TrangChuModel.CallBackAlbum() {

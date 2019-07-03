@@ -12,6 +12,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.phungthanhquan.bookapp.Object.Album;
 import com.phungthanhquan.bookapp.Object.Album_BookCase;
 import com.phungthanhquan.bookapp.Object.Marketing;
+import com.phungthanhquan.bookapp.Object.NXB;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,9 @@ public class TrangChuModel {
     }
     public interface CallBackAlbum{
         void onCallbackAlbum(List<Album> albumList);
+    }
+    public interface CallBackNXB{
+        void onCallbackAlbum(List<NXB> NXBList);
     }
     // lấy silder:
     public void getSlider(final CallBackSlider myCallback) {
@@ -60,6 +64,43 @@ public class TrangChuModel {
                         albumBookList.add(album);
                     }
                         myCallback.onCallbackAlbum(albumBookList);
+                }
+            }
+        });
+    }
+
+    // lấy Sách mới:
+    public void getSachMoi(final CallBackSlider myCallback) {
+        firebaseFirestore.collection("marketing_bookcase").whereEqualTo("marketing_id","1HjY7wPuA7WM2hsmd8NE").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<Marketing> attractionsList = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()) {
+                        Marketing attraction = document.toObject(Marketing.class);
+                        Log.d("kiemtraID", attraction.getBook_id()+"");
+                        attractionsList.add(attraction);
+                    }
+                    myCallback.onCallbackSlider(attractionsList);
+                }
+            }
+        });
+    }
+
+    // lấy NXB_BookCase:
+    public void getNXB(final CallBackNXB myCallback) {
+        firebaseFirestore.collection("publisher").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    List<NXB> NXBBookList = new ArrayList<>();
+                    for (QueryDocumentSnapshot document : task.getResult()){
+                        NXB nxb = new NXB();
+                       nxb.setId(document.getId());
+                        nxb.setName(document.getString("name"));
+                        NXBBookList.add(nxb);
+                    }
+                    myCallback.onCallbackAlbum(NXBBookList);
                 }
             }
         });

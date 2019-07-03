@@ -2,27 +2,31 @@ package com.phungthanhquan.bookapp.Object;
 
 public class NXB {
 
-    private String imageNXB;
-    private String tenNXB;
+    private String id;
+    private String name;
 
-    public NXB(String imageNXB, String tenNXB) {
-        this.imageNXB = imageNXB;
-        this.tenNXB = tenNXB;
+    public NXB(String id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    public String getImageNXB() {
-        return imageNXB;
+    public NXB() {
+
     }
 
-    public void setImageNXB(String imageNXB) {
-        this.imageNXB = imageNXB;
+    public String getId() {
+        return id;
     }
 
-    public String getTenNXB() {
-        return tenNXB;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setTenNXB(String tenNXB) {
-        this.tenNXB = tenNXB;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

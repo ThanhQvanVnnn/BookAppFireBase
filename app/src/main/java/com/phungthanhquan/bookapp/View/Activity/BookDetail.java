@@ -10,16 +10,20 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.widget.NestedScrollView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
+
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
 import android.util.Log;
 import android.util.Pair;
 import android.view.Gravity;
@@ -32,6 +36,10 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.phungthanhquan.bookapp.Adapter.RecycleView_noidungbinhluan_Adapter;
 import com.phungthanhquan.bookapp.Object.BinhLuan;
@@ -56,7 +64,7 @@ import dmax.dialog.SpotsDialog;
 import okhttp3.ResponseBody;
 
 
-public class BookDetail extends AppCompatActivity implements InterfaceViewActivityDetailBook, View.OnClickListener  {
+public class BookDetail extends AppCompatActivity implements InterfaceViewActivityDetailBook, View.OnClickListener {
     private ImageView detailbook_image;
     private Toolbar toolbar;
     private TextView tenSach;
@@ -85,12 +93,15 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     private ImageButton imageButtonInternet;
     private ConstraintLayout constraintLayoutInternet;
     private int lenghtFile;
-    public  AlertDialog loadingDialog;
+    public AlertDialog loadingDialog;
     Toast toast;
 
     private final String FILENAME_BOOKSTORED = "book_dowload";
+    private String BOOK_ID;
+    private String IMAGE ="";
 
-    private Book ChiTietSach;
+    private FirebaseFirestore firebaseFirestore;
+    private StorageReference storageReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,10 +113,10 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         chiaSeCamNhan.setOnClickListener(this);
         xemThemDanhGia.setOnClickListener(this);
         nestedScrollView.getParent().requestChildFocus(nestedScrollView, nestedScrollView);
-        if(MainActivity.isNetworkConnected(this)) {
+        if (MainActivity.isNetworkConnected(this)) {
             nestedScrollView.setVisibility(View.VISIBLE);
             constraintLayoutInternet.setVisibility(View.GONE);
-        }else {
+        } else {
             constraintLayoutInternet.setVisibility(View.VISIBLE);
             nestedScrollView.setVisibility(View.GONE);
         }
@@ -137,9 +148,11 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         imageButtonInternet = findViewById(R.id.checkInternet);
         loadingDialog = new SpotsDialog.Builder().setContext(this).build();
         loadingDialog.setMessage(getResources().getString(R.string.vuilongcho));
-//        Intent intent = getIntent();
-//        String idSach = intent.getStringExtra("iD");
-//        String urlImage = getIntent().getStringExtra("image");
+        Intent intent = getIntent();
+        BOOK_ID = intent.getStringExtra("book_id");
+        IMAGE = getIntent().getStringExtra("image");
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        storageReference = FirebaseStorage.getInstance().getReference();
         toolbar = findViewById(R.id.toolbar_bookDetail);
         toolbar.setTitle(R.string.chi_tiet_sach);
         setSupportActionBar(toolbar);
@@ -147,19 +160,27 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         presenterBookDetail = new PresenterBookDetail(this);
-        ChiTietSach = new Book();
         dsBinhLuan = new ArrayList<>();
 
-        recycleView_noidungbinhluan_adapter = new RecycleView_noidungbinhluan_Adapter(this,dsBinhLuan);
+        recycleView_noidungbinhluan_adapter = new RecycleView_noidungbinhluan_Adapter(this, dsBinhLuan);
         recycle_DsDanhGia.setAdapter(recycleView_noidungbinhluan_adapter);
-        recycle_DsDanhGia.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+        recycle_DsDanhGia.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recycle_DsDanhGia.setHasFixedSize(false);
         recycle_DsDanhGia.setNestedScrollingEnabled(false);
-        presenterBookDetail.xuliHienThiSach();
-        presenterBookDetail.xuliHienThiDsDanhGia();
-        chensach(ChiTietSach);
-
+        presenterBookDetail.xuliHienThiSach(BOOK_ID);
+        presenterBookDetail.xuliHienThiDsDanhGia(BOOK_ID);
+        if(!IMAGE.equals("") ) {
+            Picasso.get().load(IMAGE).resize(150, 200).into(detailbook_image);
+        }else {
+            storageReference.child("images").child("books").child(BOOK_ID+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    Picasso.get().load(uri).resize(150, 200).into(detailbook_image);
+                }
+            });
+        }
     }
+
     @Override
     public boolean onSupportNavigateUp() {
         onBackPressed();
@@ -168,7 +189,27 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
 
     @Override
     public void hienThiNoiDungSach(Book book) {
-        ChiTietSach = book;
+        if (book != null) {
+
+//            tenSach.setText(book.getTen_sach());
+//            noidungSach.setText(book.getNoidung_sach());
+//            ratingSach.setRating(book.getSosao_danhgia());
+//            soluongdanhgia.setText(book.getSoluong_danhgia() + " đánh giá");
+//            tentacgia.setText(book.getTen_tacgia());
+//            nhaxuatban.setText(book.getNXB());
+//            ngayphathanh.setText(book.getNgayphathanh());
+//            sotrang.setText(book.getSo_trang() + "");
+//            DecimalFormat df = new DecimalFormat("###,###.###");
+//            df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ITALY));
+//            String giatien_format = df.format(book.getGiatien_sach());
+//            //nếu đã mua sách thì set giá tiền bằng đã mua, set chữ màu xanh lá cây........
+//
+//            //nếu chưa mua sách
+//            giatien.setText(giatien_format + "");
+//            menhgia.setPaintFlags(menhgia.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        } else {
+
+        }
     }
 
     @Override
@@ -180,9 +221,9 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     @Override
     public void onClick(View v) {
         Intent intent;
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.button_chiasecamnhan:
-                if(MainActivity.isNetworkConnected(this)) {
+                if (MainActivity.isNetworkConnected(this)) {
                     dialogCamNhan = new Dialog(this);
                     dialogCamNhan.setContentView(R.layout.dialog_danhgia);
                     TextView txtClose = dialogCamNhan.findViewById(R.id.textview_cancel);
@@ -195,12 +236,12 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                     dialogCamNhan.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
                     dialogCamNhan.show();
                     dialogCamNhan.setCanceledOnTouchOutside(false);
-                }else {
-                 showAToast(getResources().getString(R.string.openinternet));
+                } else {
+                    showAToast(getResources().getString(R.string.openinternet));
                 }
                 break;
             case R.id.xemthemdanhgia:
-                if(MainActivity.isNetworkConnected(this)) {
+                if (MainActivity.isNetworkConnected(this)) {
                     intent = new Intent(this, XemThemDanhGia.class);
                     ActivityOptions options = null;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
@@ -208,19 +249,19 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                                 chiaSeCamNhan, "chiasecamnhan");
                     }
                     startActivity(intent, options.toBundle());
-                }else{
+                } else {
                     showAToast(getResources().getString(R.string.openinternet));
                 }
                 break;
             case R.id.button_docsach:
-                if(MainActivity.isNetworkConnected(this)) {
+                if (MainActivity.isNetworkConnected(this)) {
                     //nếu chưa mua sách:
 
                     ///nếu đã mua sách:
                     File directory;
                     ContextWrapper cw = new ContextWrapper(BookDetail.this);
                     directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
-                    final File file = new File(directory, ChiTietSach.getId_sach() + ".pdf");
+                    final File file = new File(directory, BOOK_ID + ".pdf");
                     final int file_size = (int) file.length();
 
 //                    new AsyncTask<String, Void, Void>() {
@@ -259,8 +300,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
 //                            }
 //                        }
 //                    }.execute("https://sachvui.com/sachvui-686868666888/ebooks/2016/pdf/Sachvui.Com-quang-ganh-lo-di-va-vui-song.pdf");
-                }
-                else {
+                } else {
                     //nếu chưa mua sách:
                     showAToast(getResources().getString(R.string.openinternet_readbook));
                 }
@@ -268,70 +308,50 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
 
 
             case R.id.checkInternet:
-                if(MainActivity.isNetworkConnected(this)){
+                if (MainActivity.isNetworkConnected(this)) {
                     nestedScrollView.setVisibility(View.VISIBLE);
                     constraintLayoutInternet.setVisibility(View.GONE);
                     docsach.setOnClickListener(this);
                     chiaSeCamNhan.setOnClickListener(this);
                     xemThemDanhGia.setOnClickListener(this);
                     nestedScrollView.getParent().requestChildFocus(nestedScrollView, nestedScrollView);
-                }else {
+                } else {
                     constraintLayoutInternet.setVisibility(View.VISIBLE);
                     nestedScrollView.setVisibility(View.GONE);
                 }
                 break;
         }
     }
-    public void chensach(final Book book){
-        if(book!=null) {
-                    Picasso.get().load(book.getHinhanh_sach()).resize(150,200).into(detailbook_image);
-                    tenSach.setText(book.getTen_sach());
-                    noidungSach.setText(book.getNoidung_sach());
-                    ratingSach.setRating(book.getSosao_danhgia());
-                    soluongdanhgia.setText(book.getSoluong_danhgia() + " đánh giá");
-                    tentacgia.setText(book.getTen_tacgia());
-                    nhaxuatban.setText(book.getNXB());
-                    ngayphathanh.setText(book.getNgayphathanh());
-                    sotrang.setText(book.getSo_trang() + "");
-                    DecimalFormat df = new DecimalFormat("###,###.###");
-                    df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ITALY));
-                    String giatien_format = df.format(book.getGiatien_sach());
-                    //nếu đã mua sách thì set giá tiền bằng đã mua, set chữ màu xanh lá cây........
 
-                    //nếu chưa mua sách
-                    giatien.setText(giatien_format + "");
-                    menhgia.setPaintFlags(menhgia.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        }else {
-
-        }
-    }
     private void RefreshTrang() {
         refreshLayout.setColorSchemeColors(getResources().getColor(android.R.color.holo_blue_dark)
-                ,getResources().getColor(android.R.color.holo_blue_light)
-                ,getResources().getColor(android.R.color.holo_orange_light));
+                , getResources().getColor(android.R.color.holo_blue_light)
+                , getResources().getColor(android.R.color.holo_orange_light));
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                if(MainActivity.isNetworkConnected(BookDetail.this)) {
+                if (MainActivity.isNetworkConnected(BookDetail.this)) {
                     constraintLayoutInternet.setVisibility(View.GONE);
                     nestedScrollView.setVisibility(View.VISIBLE);
                     refreshLayout.setRefreshing(true);
                     dsBinhLuan.clear();
-                    presenterBookDetail.xuliHienThiDsDanhGia();
-                    presenterBookDetail.xuliHienThiSach();
+                    presenterBookDetail.xuliHienThiDsDanhGia(BOOK_ID);
+                    presenterBookDetail.xuliHienThiSach(BOOK_ID);
 
-                }else {
+                } else {
                     nestedScrollView.setVisibility(View.GONE);
                     constraintLayoutInternet.setVisibility(View.VISIBLE);
                 }
                 refreshLayout.setRefreshing(false);
-            }});
+            }
+        });
     }
 
     private class DownloadBookFileTask extends AsyncTask<ResponseBody, Pair<Integer, Long>, Boolean> {
         private String bookID;
         private ProgressDialog dialog;
-        public DownloadBookFileTask(String bookID,ProgressDialog progressDialog) {
+
+        public DownloadBookFileTask(String bookID, ProgressDialog progressDialog) {
             this.bookID = bookID;
             this.dialog = progressDialog;
 
@@ -358,8 +378,8 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
             Log.d("API123", progress[0].second + " ");
 
             if (progress[0].first == 100) {
-               showAToast(getResources().getString(R.string.taisachthanhcong));
-               Intent intent = new Intent(BookDetail.this, Read.class);
+                showAToast(getResources().getString(R.string.taisachthanhcong));
+                Intent intent = new Intent(BookDetail.this, Read.class);
                 intent.putExtra("idSach", "id0");
                 startActivity(intent);
             }
@@ -370,7 +390,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
             }
 
             if (progress[0].first == -1) {
-               showAToast(getResources().getString(R.string.taisachthatbai));
+                showAToast(getResources().getString(R.string.taisachthatbai));
             }
 
 
@@ -461,25 +481,27 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
 //    }
 
     public int checkBookSize(String urls) {
-         int file_size = 0 ;
-         try {
-             URL url = new URL(urls);
-             URLConnection connection = url.openConnection();
-             connection.connect();
-            file_size= connection.getContentLength();
-         } catch (MalformedURLException e) {
-             e.printStackTrace();
-         } catch (IOException e) {
-             e.printStackTrace();
-         }
+        int file_size = 0;
+        try {
+            URL url = new URL(urls);
+            URLConnection connection = url.openConnection();
+            connection.connect();
+            file_size = connection.getContentLength();
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         return file_size;
     }
-    public void showAToast (String st){ //"Toast toast" is declared in the class
-        try{ toast.getView().isShown();     // true if visible
+
+    public void showAToast(String st) { //"Toast toast" is declared in the class
+        try {
+            toast.getView().isShown();     // true if visible
             toast.setText(st);
         } catch (Exception e) {         // invisible if exception
-            toast = Toast.makeText(this, st,  Toast.LENGTH_SHORT);
+            toast = Toast.makeText(this, st, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
         }
         toast.show();  //finally display it
