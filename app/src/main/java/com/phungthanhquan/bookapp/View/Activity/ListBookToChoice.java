@@ -11,7 +11,6 @@ import androidx.appcompat.widget.Toolbar;
 import android.widget.ImageView;
 
 import com.phungthanhquan.bookapp.Adapter.RecycleView_ItemBook_Adapter;
-import com.phungthanhquan.bookapp.Object.ItemBook;
 import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLogicListBookToChoice;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityListBookToChoice;
@@ -58,11 +57,11 @@ public class ListBookToChoice extends AppCompatActivity implements InterfaceView
         return super.onSupportNavigateUp();
     }
 
-    @Override
-    public void hienThiDanhSach(List<ItemBook> itemBookList) {
-        RecycleView_ItemBook_Adapter adapter = new RecycleView_ItemBook_Adapter(this,itemBookList,0);
-        listBookToChoice.setAdapter(adapter);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
-        listBookToChoice.setLayoutManager(gridLayoutManager);
-    }
+//    @Override
+//    public void hienThiDanhSach(List<ItemBook> itemBookList) {
+//        RecycleView_ItemBook_Adapter adapter = new RecycleView_ItemBook_Adapter(this,itemBookList,0);
+//        listBookToChoice.setAdapter(adapter);
+//        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
+//        listBookToChoice.setLayoutManager(gridLayoutManager);
+//    }
 }

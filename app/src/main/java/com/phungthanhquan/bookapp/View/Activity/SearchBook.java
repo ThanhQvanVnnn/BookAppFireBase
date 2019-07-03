@@ -13,7 +13,6 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.phungthanhquan.bookapp.Adapter.RecycleView_ItemBook_Adapter;
-import com.phungthanhquan.bookapp.Object.ItemBook;
 import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLogicSearch;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivitySearch;
@@ -23,7 +22,7 @@ import java.util.List;
 public class SearchBook extends AppCompatActivity implements InterfaceViewActivitySearch, SearchView.OnQueryTextListener {
     private Toolbar toolbar;
     private RecyclerView recyclerViewTimKiem;
-    private List<ItemBook> dsSachTimKiem;
+//    private List<ItemBook> dsSachTimKiem;
     private RecycleView_ItemBook_Adapter recycleViewItemBookAdapter;
     PresenterLogicSearch presenterLogicSearch;
     private SearchView searchView;
@@ -59,26 +58,26 @@ public class SearchBook extends AppCompatActivity implements InterfaceViewActivi
        return super.onCreateOptionsMenu(menu);
     }
 
-
-    @Override
-    public void timkiemsachthanhcong(List<ItemBook> dsSachs) {
-        dsSachTimKiem = dsSachs;
-        recycleViewItemBookAdapter = new RecycleView_ItemBook_Adapter(this,dsSachTimKiem,0);
-        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,3);
-        recyclerViewTimKiem.setAdapter(recycleViewItemBookAdapter);
-        recyclerViewTimKiem.setLayoutManager(layoutManager);
-        recycleViewItemBookAdapter.notifyDataSetChanged();
-    }
-
-    @Override
-    public void timkiemsachthatbai() {
-
-    }
+//
+//    @Override
+//    public void searchSuccess(List<ItemBook> dsSachs) {
+//        dsSachTimKiem = dsSachs;
+//        recycleViewItemBookAdapter = new RecycleView_ItemBook_Adapter(this,dsSachTimKiem,0);
+//        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,3);
+//        recyclerViewTimKiem.setAdapter(recycleViewItemBookAdapter);
+//        recyclerViewTimKiem.setLayoutManager(layoutManager);
+//        recycleViewItemBookAdapter.notifyDataSetChanged();
+//    }
+//
+//    @Override
+//    public void searchFail() {
+//
+//    }
 
     @Override
     public boolean onQueryTextSubmit(String s) {
         if(MainActivity.isNetworkConnected(this)) {
-            presenterLogicSearch.xuliTimKiem(s);
+            presenterLogicSearch.handlerSearch(s);
             searchView.onActionViewCollapsed();
         }else {
             showAToast(getResources().getString(R.string.openinternet));

@@ -1,98 +1,56 @@
 package com.phungthanhquan.bookapp.Object;
 
 public class User {
-    private String idUser;
-    private String tenUser;
-    private String anhDaiDien;
-    private float tongSoTien;
-    private int tongSoSach;
-    private int soNguoiTheoDoi;
-    private int soNguoiDangTheoDoi;
-    private int soSachYeuThich;
-    private int soSachDaDoc;
+    private String user_id;
+    private String email;
+    private String name;
+    private String phone;
+    private Float budget;
 
-    public User(String idUser, String tenUser, String anhDaiDien, float tongSoTien, int tongSoSach
-            , int soNguoiTheoDoi, int soNguoiDangTheoDoi, int soSachYeuThich, int soSachDaDoc) {
-        this.idUser = idUser;
-        this.tenUser = tenUser;
-        this.anhDaiDien = anhDaiDien;
-        this.tongSoTien = tongSoTien;
-        this.tongSoSach = tongSoSach;
-        this.soNguoiTheoDoi = soNguoiTheoDoi;
-        this.soNguoiDangTheoDoi = soNguoiDangTheoDoi;
-        this.soSachYeuThich = soSachYeuThich;
-        this.soSachDaDoc = soSachDaDoc;
+    public User(String email, String name, String phone,Float budget ) {
+        this.email = email;
+        this.name = name;
+        this.phone = phone;
+        this.budget = budget;
     }
 
-    public String getIdUser() {
-        return idUser;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public void setIdUser(String idUser) {
-        this.idUser = idUser;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
-    public String getTenUser() {
-        return tenUser;
+    public String getEmail() {
+        return email;
     }
 
-    public void setTenUser(String tenUser) {
-        this.tenUser = tenUser;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public String getAnhDaiDien() {
-        return anhDaiDien;
+    public String getName() {
+        return name;
     }
 
-    public void setAnhDaiDien(String anhDaiDien) {
-        this.anhDaiDien = anhDaiDien;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public float getTongSoTien() {
-        return tongSoTien;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setTongSoTien(float tongSoTien) {
-        this.tongSoTien = tongSoTien;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public int getTongSoSach() {
-        return tongSoSach;
+    public Float getBudget() {
+        return budget;
     }
 
-    public void setTongSoSach(int tongSoSach) {
-        this.tongSoSach = tongSoSach;
-    }
-
-    public int getSoNguoiTheoDoi() {
-        return soNguoiTheoDoi;
-    }
-
-    public void setSoNguoiTheoDoi(int soNguoiTheoDoi) {
-        this.soNguoiTheoDoi = soNguoiTheoDoi;
-    }
-
-    public int getSoNguoiDangTheoDoi() {
-        return soNguoiDangTheoDoi;
-    }
-
-    public void setSoNguoiDangTheoDoi(int soNguoiDangTheoDoi) {
-        this.soNguoiDangTheoDoi = soNguoiDangTheoDoi;
-    }
-
-    public int getSoSachYeuThich() {
-        return soSachYeuThich;
-    }
-
-    public void setSoSachYeuThich(int soSachYeuThich) {
-        this.soSachYeuThich = soSachYeuThich;
-    }
-
-    public int getSoSachDaDoc() {
-        return soSachDaDoc;
-    }
-
-    public void setSoSachDaDoc(int soSachDaDoc) {
-        this.soSachDaDoc = soSachDaDoc;
+    public void setBudget(Float budget) {
+        this.budget = budget;
     }
 }

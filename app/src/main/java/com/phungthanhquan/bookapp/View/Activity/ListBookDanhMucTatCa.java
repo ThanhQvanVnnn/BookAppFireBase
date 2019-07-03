@@ -16,7 +16,6 @@ import android.widget.ProgressBar;
 import com.phungthanhquan.bookapp.Adapter.RecycleView_ItemBook_Adapter;
 import com.phungthanhquan.bookapp.Model.LoadMore.InterfaceLoadMore;
 import com.phungthanhquan.bookapp.Model.LoadMore.LoadMoreScroll;
-import com.phungthanhquan.bookapp.Object.ItemBook;
 import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLogicListDanhMucTatCa;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityListBookDanhMucTatCa;
@@ -30,7 +29,7 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
     private RecyclerView recyclerView_ds;
     private RecycleView_ItemBook_Adapter recycleView_itemBook_adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-    private List<ItemBook> itemBookList;
+//    private List<ItemBook> itemBookList;
     private ProgressBar progressBar;
     private PresenterLogicListDanhMucTatCa presenterLogicListDanhMucTatCa;
     private LoadMoreScroll loadMoreScroll;
@@ -59,8 +58,8 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        itemBookList = new ArrayList<>();
-        recycleView_itemBook_adapter = new RecycleView_ItemBook_Adapter(this,itemBookList,0);
+//        itemBookList = new ArrayList<>();
+//        recycleView_itemBook_adapter = new RecycleView_ItemBook_Adapter(this,itemBookList,0);
         recyclerView_ds.setAdapter(recycleView_itemBook_adapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
         recyclerView_ds.setLayoutManager(gridLayoutManager);
@@ -70,11 +69,11 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
         presenterLogicListDanhMucTatCa.xuliHienThiChiTietDanhMuc();
     }
 
-    @Override
-    public void hienthiDanhSachChitiet(List<ItemBook> itemBooks) {
-        itemBookList.addAll(itemBooks);
-        recycleView_itemBook_adapter.notifyDataSetChanged();
-    }
+//    @Override
+//    public void hienthiDanhSachChitiet(List<ItemBook> itemBooks) {
+////        itemBookList.addAll(itemBooks);
+//        recycleView_itemBook_adapter.notifyDataSetChanged();
+//    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -92,7 +91,7 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
                 (new Handler()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        itemBookList.clear();
+//                        itemBookList.clear();
                         presenterLogicListDanhMucTatCa.xuliHienThiChiTietDanhMuc();
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -105,8 +104,8 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
     public void hienThiLoadMore(int tongItem) {
         progressBar.setVisibility(View.VISIBLE);
         recyclerView_ds.setNestedScrollingEnabled(false);
-        List<ItemBook> itemBooks = presenterLogicListDanhMucTatCa.getLoadMore(tongItem,progressBar,recyclerView_ds);
-        itemBookList.addAll(itemBooks);
+//        List<ItemBook> itemBooks = presenterLogicListDanhMucTatCa.getLoadMore(tongItem,progressBar,recyclerView_ds);
+//        itemBookList.addAll(itemBooks);
         recycleView_itemBook_adapter.notifyDataSetChanged();
     }
 }

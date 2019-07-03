@@ -9,21 +9,23 @@
     android:layout_height="match_parent">
 
     <ImageView
+        android:layout_gravity="center"
+        android:scaleType="fitXY"
         android:id="@+id/pager_slider_image"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@tools:sample/backgrounds/scenic" />
+        app:layout_constraintTop_toTopOf="parent">
+
+    </ImageView>
 
     <ImageView
 
         android:id="@+id/imageView"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"

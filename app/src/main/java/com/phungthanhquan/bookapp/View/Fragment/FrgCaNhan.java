@@ -102,15 +102,15 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
     }
     @Override
     public void hienThiThongTinCaNhan(User user) {
-        Picasso.get().load(user.getAnhDaiDien()).into(anhdaidienBackGround);
-        Picasso.get().load(user.getAnhDaiDien()).into(anhdaidien);
-        tenNguoidung.setText(user.getTenUser());
-        sotientrongTaiKhoan.setText(user.getTongSoTien()+"");
-        tongsoSach.setText(user.getTongSoSach()+"");
-        songuoitheodoi.setText(user.getSoNguoiTheoDoi()+"");
-        songuoidangtheodoi.setText(user.getSoNguoiDangTheoDoi()+"");
-        sosachdadoc.setText(user.getSoSachDaDoc()+"");
-        sosachyeuthich.setText(user.getSoSachYeuThich()+"");
+//        Picasso.get().load(user.getAnhDaiDien()).into(anhdaidienBackGround);
+//        Picasso.get().load(user.getAnhDaiDien()).into(anhdaidien);
+//        tenNguoidung.setText(user.getTenUser());
+//        sotientrongTaiKhoan.setText(user.getTongSoTien()+"");
+//        tongsoSach.setText(user.getTongSoSach()+"");
+//        songuoitheodoi.setText(user.getSoNguoiTheoDoi()+"");
+//        songuoidangtheodoi.setText(user.getSoNguoiDangTheoDoi()+"");
+//        sosachdadoc.setText(user.getSoSachDaDoc()+"");
+//        sosachyeuthich.setText(user.getSoSachYeuThich()+"");
     }
     @Override
     public void onClick(View v) {

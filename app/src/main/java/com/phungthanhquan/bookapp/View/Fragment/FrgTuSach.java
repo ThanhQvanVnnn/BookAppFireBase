@@ -18,7 +18,6 @@ import android.widget.Toast;
 import com.phungthanhquan.bookapp.Adapter.Tusach_Adapter;
 import com.phungthanhquan.bookapp.Model.LoadMore.InterfaceLoadMore;
 import com.phungthanhquan.bookapp.Model.LoadMore.LoadMoreScroll;
-import com.phungthanhquan.bookapp.Object.ItemBookCase;
 import com.phungthanhquan.bookapp.Presenter.Fragment.PresenterLogicTuSach;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewFragmentTuSach;
@@ -31,7 +30,7 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach, 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
     private Tusach_Adapter tusach_adapter;
-    private List<ItemBookCase> itemBookCaseList;
+//    private List<ItemBookCase> itemBookCaseList;
     private PresenterLogicTuSach presenterLogicTuSach;
     private LoadMoreScroll loadMoreScroll;
     private ProgressBar progressBarLoadMore;
@@ -48,8 +47,8 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach, 
         recyclerView = view.findViewById(R.id.recycle_tusach);
         swipeRefreshLayout = view.findViewById(R.id.refresh_tusach);
         progressBarLoadMore = view.findViewById(R.id.loadmoreProgress);
-        itemBookCaseList = new ArrayList<>();
-        tusach_adapter = new Tusach_Adapter(getContext(),itemBookCaseList);
+//        itemBookCaseList = new ArrayList<>();
+//        tusach_adapter = new Tusach_Adapter(getContext(),itemBookCaseList);
         recyclerView.setAdapter(tusach_adapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),3);
         recyclerView.setLayoutManager(gridLayoutManager);
@@ -59,11 +58,11 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach, 
         presenterLogicTuSach.xulihienthiDSCuaTuSach();
     }
 
-    @Override
-    public void hienthiDsSach(List<ItemBookCase> itemBookCases) {
-        itemBookCaseList.addAll(itemBookCases);
-        tusach_adapter.notifyDataSetChanged();
-    }
+//    @Override
+//    public void hienthiDsSach(List<ItemBookCase> itemBookCases) {
+//        itemBookCaseList.addAll(itemBookCases);
+//        tusach_adapter.notifyDataSetChanged();
+//    }
     public void refresherData(){
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary)
                 ,getResources().getColor(R.color.colorPrimary)
@@ -75,7 +74,7 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach, 
                 (new Handler()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                    itemBookCaseList.clear();
+//                    itemBookCaseList.clear();
                     presenterLogicTuSach.xulihienthiDSCuaTuSach();
                     swipeRefreshLayout.setRefreshing(false);
                     }
@@ -88,15 +87,15 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach, 
     public void hienThiLoadMore(final int tongItem) {
         recyclerView.setNestedScrollingEnabled(false);
         progressBarLoadMore.setVisibility(View.VISIBLE);
-        List<ItemBookCase> dsSachLayVe = presenterLogicTuSach.xuliLoadMore(tongItem,progressBarLoadMore,recyclerView);
-        itemBookCaseList.addAll(dsSachLayVe);
+//        List<ItemBookCase> dsSachLayVe = presenterLogicTuSach.xuliLoadMore(tongItem,progressBarLoadMore,recyclerView);
+//        itemBookCaseList.addAll(dsSachLayVe);
         tusach_adapter.notifyDataSetChanged();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        itemBookCaseList.clear();
+//        itemBookCaseList.clear();
         presenterLogicTuSach.xulihienthiDSCuaTuSach();
     }
     public void showAToast (String st){ //"Toast toast" is declared in the class

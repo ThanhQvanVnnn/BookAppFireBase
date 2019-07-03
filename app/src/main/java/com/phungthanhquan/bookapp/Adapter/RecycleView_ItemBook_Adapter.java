@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.phungthanhquan.bookapp.Object.ItemBook;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.Activity.BookDetail;
 import com.squareup.picasso.Callback;
@@ -26,18 +25,18 @@ import java.util.Random;
 
 public class RecycleView_ItemBook_Adapter extends RecyclerView.Adapter<RecycleView_ItemBook_Adapter.ViewHolder> {
     private Context context;
-    private List<ItemBook> dsSach;
-    private List<ItemBook> dsRandom;
+//    private List<ItemBook> dsSach;
+//    private List<ItemBook> dsRandom;
     private Random randomc;
     private int type_layout;
 
-    public RecycleView_ItemBook_Adapter(Context context, List<ItemBook> dsSach,int type_layout) {
-        this.context = context;
-        this.dsSach = dsSach;
-        randomc = new Random();
-        dsRandom = new ArrayList<>();
-        this.type_layout = type_layout;
-    }
+//    public RecycleView_ItemBook_Adapter(Context context, List<ItemBook> dsSach,int type_layout) {
+//        this.context = context;
+//        this.dsSach = dsSach;
+//        randomc = new Random();
+//        dsRandom = new ArrayList<>();
+//        this.type_layout = type_layout;
+//    }
 
     @NonNull
     @Override
@@ -57,18 +56,18 @@ public class RecycleView_ItemBook_Adapter extends RecyclerView.Adapter<RecycleVi
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
 
-        viewHolder.titleSach.setText(dsSach.get(position).getTitle());
-        Picasso.get().load(dsSach.get(position).getUrlImage()).into(viewHolder.imageSach, new Callback() {
-            @Override
-            public void onSuccess() {
-                viewHolder.progressBar.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onError(Exception e) {
-
-            }
-        });
+//        viewHolder.titleSach.setText(dsSach.get(position).getTitle());
+//        Picasso.get().load(dsSach.get(position).getUrlImage()).into(viewHolder.imageSach, new Callback() {
+//            @Override
+//            public void onSuccess() {
+//                viewHolder.progressBar.setVisibility(View.GONE);
+//            }
+//
+//            @Override
+//            public void onError(Exception e) {
+//
+//            }
+//        });
 
         new Thread(new Runnable() {
             @Override
@@ -77,7 +76,7 @@ public class RecycleView_ItemBook_Adapter extends RecyclerView.Adapter<RecycleVi
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(context, BookDetail.class);
-                        intent.putExtra("image",dsSach.get(position).getUrlImage());
+//                        intent.putExtra("image",dsSach.get(position).getUrlImage());
                         ActivityOptions options = null;
                         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                             options = ActivityOptions.makeSceneTransitionAnimation((Activity) context,
@@ -94,7 +93,7 @@ public class RecycleView_ItemBook_Adapter extends RecyclerView.Adapter<RecycleVi
 
     @Override
     public int getItemCount() {
-        return dsSach.size();
+        return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -3,7 +3,7 @@ package com.phungthanhquan.bookapp.View.Fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -29,11 +29,11 @@ import com.phungthanhquan.bookapp.Adapter.ListAlbum_Adapter;
 import com.phungthanhquan.bookapp.Adapter.RecycleView_ItemBook_Adapter;
 import com.phungthanhquan.bookapp.Adapter.RecycleView_NXB_Adapter;
 import com.phungthanhquan.bookapp.Adapter.ViewPager_Slider_Adapter;
-import com.phungthanhquan.bookapp.Object.AlbumBook;
-import com.phungthanhquan.bookapp.Object.ItemBook;
+import com.phungthanhquan.bookapp.Object.Album;
+import com.phungthanhquan.bookapp.Object.Album_BookCase;
+import com.phungthanhquan.bookapp.Object.Marketing;
 import com.phungthanhquan.bookapp.Object.NXB;
-import com.phungthanhquan.bookapp.Object.Slider;
-import com.phungthanhquan.bookapp.Presenter.Fragment.PresenterFragmentTrangChu;
+import com.phungthanhquan.bookapp.Presenter.Fragment.PresenterTrangChu;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.Activity.MainActivity;
 import com.phungthanhquan.bookapp.View.Activity.MarketingChiTiet;
@@ -63,15 +63,15 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
 
 
     private SwipeRefreshLayout swipeRefreshLayout;
-    private PresenterFragmentTrangChu presenterFragmentTrangChu;
+    private PresenterTrangChu presenterFragmentTrangChu;
 
 
-    private List<Slider> sliderList;
-    private List<AlbumBook> albumBook;
+    private List<Marketing> sliderList;
+    private List<Album> albumBookCase;
     private List<NXB> danhSachNXB;
-    private List<ItemBook> danhSachVanHocTrongNuoc;
-    private List<ItemBook> danhSachKhuyenDoc;
-    private List<ItemBook> danhSachSachMoi;
+//    private List<ItemBook> danhSachVanHocTrongNuoc;
+//    private List<ItemBook> danhSachKhuyenDoc;
+//    private List<ItemBook> danhSachSachMoi;
 
     private ListAlbum_Adapter adapterAlbum;
     private ViewPager_Slider_Adapter slider_Adapter;
@@ -128,13 +128,13 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         allSachVanHocTrongNuoc.setOnClickListener(this);
         search.setOnClickListener(this);
         //presenter logic
-        presenterFragmentTrangChu = new PresenterFragmentTrangChu(this);
-        OnsCroll();
+        presenterFragmentTrangChu = new PresenterTrangChu(this);
+//        OnsCroll();
     }
 
 
     @Override
-    public void hienthislider(final List<Slider> sliderListReturn) {
+    public void hienthislider(final List<Marketing> sliderListReturn) {
         sliderList.addAll(sliderListReturn);
         slider_Adapter.notifyDataSetChanged();
         indicator.setupWithViewPager(slider, true);
@@ -143,97 +143,97 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         timer.scheduleAtFixedRate(new FrgTrangChu.TimeWork(sizesliderList), 4000, 6000);
     }
 
+//    @Override
+//    public void hienthidsSachmoi(final List<ItemBook> dsSachMoi) {
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                danhSachSachMoi.addAll(dsSachMoi);
+//                try {
+//                    // code runs in a thread
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            adapterSachMoi.notifyDataSetChanged();
+//                        }
+//                    });
+//                } catch (final Exception ex) {
+//                }
+//            }
+//        }.start();
+//
+//
+//    }
+//
+//    @Override
+//    public void hienthidsSachKhuyenDoc(final List<ItemBook> dsSachKhuyenDoc) {
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                danhSachKhuyenDoc.addAll(dsSachKhuyenDoc);
+//                try {
+//                    // code runs in a thread
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            adapterSachKhuyenDoc.notifyDataSetChanged();
+//                        }
+//                    });
+//                } catch (final Exception ex) {
+//                }
+//            }
+//        }.start();
+//
+//
+//    }
+//
+//    @Override
+//    public void hienthidsSachVanHocTrongNuoc(final List<ItemBook> dsSachVanHocTrongNuoc) {
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                danhSachVanHocTrongNuoc.addAll(dsSachVanHocTrongNuoc);
+//                try {
+//                    // code runs in a thread
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            adapterVanHocTrongNuoc.notifyDataSetChanged();
+//                        }
+//                    });
+//                } catch (final Exception ex) {
+//                }
+//            }
+//        }.start();
+//
+//
+//    }
+
+//    @Override
+//    public void hienthidsNhaXuatBan(final List<NXB> dsNXB) {
+//        new Thread() {
+//            @Override
+//            public void run() {
+//                danhSachNXB.addAll(dsNXB);
+//                try {
+//                    // code runs in a thread
+//                    getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            adapterNXB.notifyDataSetChanged();
+//                        }
+//                    });
+//                } catch (final Exception ex) {
+//                }
+//            }
+//        }.start();
+//
+//
+//    }
+//
     @Override
-    public void hienthidsSachmoi(final List<ItemBook> dsSachMoi) {
-        new Thread() {
-            @Override
-            public void run() {
-                danhSachSachMoi.addAll(dsSachMoi);
-                try {
-                    // code runs in a thread
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapterSachMoi.notifyDataSetChanged();
-                        }
-                    });
-                } catch (final Exception ex) {
-                }
-            }
-        }.start();
-
-
-    }
-
-    @Override
-    public void hienthidsSachKhuyenDoc(final List<ItemBook> dsSachKhuyenDoc) {
-        new Thread() {
-            @Override
-            public void run() {
-                danhSachKhuyenDoc.addAll(dsSachKhuyenDoc);
-                try {
-                    // code runs in a thread
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapterSachKhuyenDoc.notifyDataSetChanged();
-                        }
-                    });
-                } catch (final Exception ex) {
-                }
-            }
-        }.start();
-
-
-    }
-
-    @Override
-    public void hienthidsSachVanHocTrongNuoc(final List<ItemBook> dsSachVanHocTrongNuoc) {
-        new Thread() {
-            @Override
-            public void run() {
-                danhSachVanHocTrongNuoc.addAll(dsSachVanHocTrongNuoc);
-                try {
-                    // code runs in a thread
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapterVanHocTrongNuoc.notifyDataSetChanged();
-                        }
-                    });
-                } catch (final Exception ex) {
-                }
-            }
-        }.start();
-
-
-    }
-
-    @Override
-    public void hienthidsNhaXuatBan(final List<NXB> dsNXB) {
-        new Thread() {
-            @Override
-            public void run() {
-                danhSachNXB.addAll(dsNXB);
-                try {
-                    // code runs in a thread
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            adapterNXB.notifyDataSetChanged();
-                        }
-                    });
-                } catch (final Exception ex) {
-                }
-            }
-        }.start();
-
-
-    }
-
-    @Override
-    public void hienthiAlbumSach(final List<AlbumBook> albumBooks) {
-        albumBook.addAll(albumBooks);
+    public void hienthiAlbumSach(final List<Album> albumBookCases) {
+        albumBookCase.addAll(albumBookCases);
         pager_album.notifyDataSetChanged();
         pager_album.setMediumScaled(true);
         pager_album.setScrollDuration(200);
@@ -275,21 +275,21 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
     private void CreateAdapterAddView() {
         //list book
         sliderList = new ArrayList<>();
-        albumBook = new ArrayList<>();
+        albumBookCase = new ArrayList<>();
         danhSachNXB = new ArrayList<>();
-        danhSachVanHocTrongNuoc = new ArrayList<>();
-        danhSachKhuyenDoc = new ArrayList<>();
-        danhSachSachMoi = new ArrayList<>();
+//        danhSachVanHocTrongNuoc = new ArrayList<>();
+//        danhSachKhuyenDoc = new ArrayList<>();
+//        danhSachSachMoi = new ArrayList<>();
         //list adapter
         slider_Adapter = new ViewPager_Slider_Adapter(getActivity(), sliderList);
-        adapterAlbum = new ListAlbum_Adapter(albumBook, getContext());
+        adapterAlbum = new ListAlbum_Adapter(albumBookCase, getContext());
         adapterNXB = new RecycleView_NXB_Adapter(getActivity(), danhSachNXB);
-        adapterVanHocTrongNuoc = new RecycleView_ItemBook_Adapter(getContext(), danhSachVanHocTrongNuoc, 0);
-        adapterSachKhuyenDoc = new RecycleView_ItemBook_Adapter(getContext(), danhSachKhuyenDoc, 0);
-        adapterSachMoi = new RecycleView_ItemBook_Adapter(getContext(), danhSachSachMoi, 0);
+//        adapterVanHocTrongNuoc = new RecycleView_ItemBook_Adapter(getContext(), danhSachVanHocTrongNuoc, 0);
+//        adapterSachKhuyenDoc = new RecycleView_ItemBook_Adapter(getContext(), danhSachKhuyenDoc, 0);
+//        adapterSachMoi = new RecycleView_ItemBook_Adapter(getContext(), danhSachSachMoi, 0);
         //slider
         slider.setAdapter(slider_Adapter);
-        //album
+        //albumBookCase
         pager_album.setAdapter(adapterAlbum);
         //NXB
         hienthiDSNhaXuatBan.setAdapter(adapterNXB);
@@ -305,7 +305,7 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         hienthiDSSachKhuyenDoc.setLayoutManager(layoutManagerSachKhuyenDoc);
         hienthiDSSachKhuyenDoc.setHasFixedSize(true);
         //sách mới
-        adapterSachMoi.setHasStableIds(true);
+//        adapterSachMoi.setHasStableIds(true);
         hienthiDSSachMoi.setAdapter(adapterSachMoi);
         hienthiDSSachMoi.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         hienthiDSSachMoi.setHasFixedSize(true);
@@ -313,11 +313,11 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
 
     private void ActivePresenter() {
         presenterFragmentTrangChu.xulislider();
-        presenterFragmentTrangChu.xuliHienthiDsSachMoi();
+//        presenterFragmentTrangChu.xuliHienthiDsSachMoi();
         presenterFragmentTrangChu.xuliHienThiAlBumSach();
-        presenterFragmentTrangChu.xuliHienthiDsSachVanHocTrongNuoc();
-        presenterFragmentTrangChu.xuliHienThiDsNhaXuatBan();
-        presenterFragmentTrangChu.xuliHienthiDsSachKhuyenDoc();
+//        presenterFragmentTrangChu.xuliHienthiDsSachVanHocTrongNuoc();
+//        presenterFragmentTrangChu.xuliHienThiDsNhaXuatBan();
+//        presenterFragmentTrangChu.xuliHienthiDsSachKhuyenDoc();
     }
     //refresher layout
     public void RefresherLayout() {
@@ -333,22 +333,22 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
                         timer.cancel();
                     }
                     sliderList.clear();
-                    albumBook.clear();
+                    albumBookCase.clear();
                     danhSachNXB.clear();
-                    danhSachVanHocTrongNuoc.clear();
-                    danhSachKhuyenDoc.clear();
-                    danhSachSachMoi.clear();
+//                    danhSachVanHocTrongNuoc.clear();
+//                    danhSachKhuyenDoc.clear();
+//                    danhSachSachMoi.clear();
                     InternetConnected();
                 }else {
                     if(timer!=null) {
                         timer.cancel();
                     }
                     sliderList.clear();
-                    albumBook.clear();
+                    albumBookCase.clear();
                     danhSachNXB.clear();
-                    danhSachVanHocTrongNuoc.clear();
-                    danhSachKhuyenDoc.clear();
-                    danhSachSachMoi.clear();
+//                    danhSachVanHocTrongNuoc.clear();
+//                    danhSachKhuyenDoc.clear();
+//                    danhSachSachMoi.clear();
                     InternetConnected();
                 }
                 swipeRefreshLayout.setRefreshing(false);
@@ -377,50 +377,50 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         }
     }
  // onscroll listener screen
-    public void OnsCroll() {
-        if (nestedScrollView != null) {
-
-            nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-                @Override
-                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-//                    String TAG = "nested_sync";
-                    final int sizeListSachKhuyenDoc = danhSachKhuyenDoc.size();
-
-                    if (scrollY > oldScrollY) {
-//                        Log.i(TAG, "Scroll DOWN");
-                    }
-                    if (scrollY < oldScrollY) {
-//                        Log.i(TAG, "Scroll UP");
-                    }
-
-                    if (scrollY == 0) {
-//                        Log.i(TAG, "TOP SCROLL");
-                    }
-
-                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-                        hienthiDSSachKhuyenDoc.setNestedScrollingEnabled(false);
-                        progressBarLoadMoreKhuyenDoc.setVisibility(View.VISIBLE);
-                        Handler handler = new Handler();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                List<ItemBook> dsSachLayVe = new ArrayList<>();
-                                dsSachLayVe = presenterFragmentTrangChu.xuliHienThiDsKhuyenDocLoadMore(sizeListSachKhuyenDoc,
-                                        progressBarLoadMoreKhuyenDoc, hienthiDSSachKhuyenDoc);
-                                if (dsSachLayVe.size() != 0) //check for scroll down
-                                {
-                                    danhSachKhuyenDoc.addAll(dsSachLayVe);
-                                    adapterSachKhuyenDoc.notifyDataSetChanged();
-                                }
-
-                            }
-                        }, 1000);
-//                        Log.i(TAG, "BOTTOM SCROLL");
-                    }
-                }
-            });
-        }
-    }
+//    public void OnsCroll() {
+//        if (nestedScrollView != null) {
+//
+//            nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+//                @Override
+//                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+////                    String TAG = "nested_sync";
+//                    final int sizeListSachKhuyenDoc = danhSachKhuyenDoc.size();
+//
+//                    if (scrollY > oldScrollY) {
+////                        Log.i(TAG, "Scroll DOWN");
+//                    }
+//                    if (scrollY < oldScrollY) {
+////                        Log.i(TAG, "Scroll UP");
+//                    }
+//
+//                    if (scrollY == 0) {
+////                        Log.i(TAG, "TOP SCROLL");
+//                    }
+//
+//                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+//                        hienthiDSSachKhuyenDoc.setNestedScrollingEnabled(false);
+//                        progressBarLoadMoreKhuyenDoc.setVisibility(View.VISIBLE);
+//                        Handler handler = new Handler();
+//                        handler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                List<ItemBook> dsSachLayVe = new ArrayList<>();
+//                                dsSachLayVe = presenterFragmentTrangChu.xuliHienThiDsKhuyenDocLoadMore(sizeListSachKhuyenDoc,
+//                                        progressBarLoadMoreKhuyenDoc, hienthiDSSachKhuyenDoc);
+//                                if (dsSachLayVe.size() != 0) //check for scroll down
+//                                {
+//                                    danhSachKhuyenDoc.addAll(dsSachLayVe);
+//                                    adapterSachKhuyenDoc.notifyDataSetChanged();
+//                                }
+//
+//                            }
+//                        }, 1000);
+////                        Log.i(TAG, "BOTTOM SCROLL");
+//                    }
+//                }
+//            });
+//        }
+//    }
 
     @Override
     public void onDestroy() {

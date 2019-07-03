@@ -3,6 +3,9 @@ package com.phungthanhquan.bookapp.View.Activity;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -23,7 +26,6 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
-import com.facebook.appevents.AppEventsLogger;
 
 
 import com.facebook.login.LoginManager;
@@ -34,16 +36,28 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+import com.phungthanhquan.bookapp.Object.User;
 import com.phungthanhquan.bookapp.R;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.Arrays;
 
 import dmax.dialog.SpotsDialog;
@@ -61,6 +75,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
     public static GoogleSignInClient mGoogleSignInClient;
     private final int RC_SIGN_IN = 111;
     private FirebaseAuth mAuth;
+    private FirebaseFirestore firebaseFirestore;
+    private StorageReference root;
     public AlertDialog loadingDialog;
 
     Toast toast;
@@ -70,6 +86,8 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
         super.onCreate(savedInstanceState);
         //facebook
         mAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        root = FirebaseStorage.getInstance().getReference();
         FacebookSdk.sdkInitialize(this);
         callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager,
@@ -193,6 +211,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        mAuth.removeAuthStateListener(this);
         callbackManager.onActivityResult(requestCode, resultCode, data);
         // Result returned from launching the Intent from GoogleSignInClient.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
@@ -203,6 +222,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
             try {
                 // Google Sign In was successful, authenticate with Firebase
                 GoogleSignInAccount account = task.getResult(ApiException.class);
+
                 firebaseAuthWithGoogle(account);
             } catch (ApiException e) {
                 // Google Sign In failed, update UI appropriately
@@ -218,6 +238,70 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            firebaseFirestore.collection("user").document(mAuth.getCurrentUser().getUid())
+                                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            mAuth.addAuthStateListener(Login.this);
+                                        } else {
+                                            //
+                                            final FirebaseUser user = mAuth.getCurrentUser();
+                                            final String uid = mAuth.getUid();
+                                            User userInfo = new User(user.getEmail(),user.getDisplayName(),user.getPhoneNumber(), (float) 0);
+                                            userInfo.setUser_id(uid);
+                                            firebaseFirestore.collection("user").document(userInfo.getUser_id()).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(final Void aVoid) {
+                                                    final StorageReference imageUser = root.child("images").child("users").child(uid+".png");
+                                                    new AsyncTask<Void,Void,Bitmap>(){
+
+                                                        @Override
+                                                        protected Bitmap doInBackground(Void... voids) {
+                                                          Bitmap bitmap =  getBitmapFromURL(user.getPhotoUrl().toString());
+                                                            return bitmap;
+                                                        }
+
+                                                        @Override
+                                                        protected void onPostExecute(Bitmap bitmap) {
+                                                            Bitmap icon = bitmap;
+                                                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                                            icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                                                            byte[] data = baos.toByteArray();
+                                                            UploadTask uploadTask = imageUser.putBytes(data);
+                                                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                                @Override
+                                                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                    mAuth.addAuthStateListener(Login.this);
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Log.d("upload", e.toString());
+                                                                }
+                                                            });
+                                                        }
+                                                    }.execute();
+
+                                                }
+
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("register", e.toString());
+                                                }
+                                            });
+
+                                            //
+                                        }
+                                    }else {
+                                        Log.d("document", "Failed with: ", task.getException());
+                                    }
+                                }
+                            });
+
                         } else {
                             // If sign in fails, display a message to the user.
 
@@ -236,7 +320,69 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
+                            firebaseFirestore.collection("user").document(mAuth.getCurrentUser().getUid())
+                                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    if(task.isSuccessful()){
+                                        DocumentSnapshot document = task.getResult();
+                                        if (document.exists()) {
+                                            mAuth.addAuthStateListener(Login.this);
+                                        } else {
+                                            //
+                                            final FirebaseUser user = mAuth.getCurrentUser();
+                                            final String uid = mAuth.getUid();
+                                            User userInfo = new User(user.getEmail(),user.getDisplayName(),user.getPhoneNumber(), (float) 0);
+                                            userInfo.setUser_id(uid);
+                                            firebaseFirestore.collection("user").document(userInfo.getUser_id()).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(final Void aVoid) {
+                                                    final StorageReference imageUser = root.child("images").child("users").child(uid+".png");
+                                                    new AsyncTask<Void,Void,Bitmap>(){
 
+                                                        @Override
+                                                        protected Bitmap doInBackground(Void... voids) {
+                                                            Bitmap bitmap =  getBitmapFromURL(user.getPhotoUrl().toString());
+                                                            return bitmap;
+                                                        }
+
+                                                        @Override
+                                                        protected void onPostExecute(Bitmap bitmap) {
+                                                            Bitmap icon = bitmap;
+                                                            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                                            icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                                                            byte[] data = baos.toByteArray();
+                                                            UploadTask uploadTask = imageUser.putBytes(data);
+                                                            uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                                                @Override
+                                                                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                                                    mAuth.addAuthStateListener(Login.this);
+                                                                }
+                                                            }).addOnFailureListener(new OnFailureListener() {
+                                                                @Override
+                                                                public void onFailure(@NonNull Exception e) {
+                                                                    Log.d("upload", e.toString());
+                                                                }
+                                                            });
+                                                        }
+                                                    }.execute();
+
+                                                }
+
+                                            }).addOnFailureListener(new OnFailureListener() {
+                                                @Override
+                                                public void onFailure(@NonNull Exception e) {
+                                                    Log.d("register", e.toString());
+                                                }
+                                            });
+
+                                            //
+                                        }
+                                    }else {
+                                        Log.d("document", "Failed with: ", task.getException());
+                                    }
+                                }
+                            });
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -273,12 +419,11 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
         if(user!=null) {
             SharedPreferences.Editor editor = getSharedPreferences("User_Info", MODE_PRIVATE).edit();
             editor.apply();
-            loadingDialog.dismiss();
             Intent intent = new Intent(Login.this, MainActivity.class);
             startActivity(intent);
-            Log.d("kiemtrauser", user.getEmail());
-            showAToast(getString(R.string.dangnhapthanhcong));
             finish();
+            showAToast(getString(R.string.dangnhapthanhcong));
+            loadingDialog.dismiss();
         }
     }
     public void showAToast (String st){ //"Toast toast" is declared in the class
@@ -289,5 +434,19 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
             toast.setGravity(Gravity.CENTER, 0, 0);
         }
         toast.show();  //finally display it
+    }
+    public static Bitmap getBitmapFromURL(String src) {
+        try {
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+            return myBitmap;
+        } catch (IOException e) {
+            // Log exception
+            return null;
+        }
     }
 }

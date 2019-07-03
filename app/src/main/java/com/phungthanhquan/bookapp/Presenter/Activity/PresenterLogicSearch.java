@@ -1,27 +1,26 @@
 package com.phungthanhquan.bookapp.Presenter.Activity;
 
-import com.phungthanhquan.bookapp.Model.Activity.ModelActivitySearch;
-import com.phungthanhquan.bookapp.Object.ItemBook;
+import com.phungthanhquan.bookapp.Model.Activity.SearchModel;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivitySearch;
 
 import java.util.List;
 
 public class PresenterLogicSearch implements InPresenterSearch {
     InterfaceViewActivitySearch interfaceViewActivitySearch;
-    ModelActivitySearch modelActivitySearch;
+    SearchModel searchModel;
 
     public PresenterLogicSearch(InterfaceViewActivitySearch interfaceViewActivitySearch) {
         this.interfaceViewActivitySearch = interfaceViewActivitySearch;
-        modelActivitySearch = new ModelActivitySearch();
+        searchModel = new SearchModel();
     }
 
     @Override
-    public void xuliTimKiem(String kitu) {
-        List<ItemBook> itemBooks = modelActivitySearch.getDataSachSearch(kitu);
-        if (itemBooks.size()>0){
-            interfaceViewActivitySearch.timkiemsachthanhcong(itemBooks);
-        }else {
-            interfaceViewActivitySearch.timkiemsachthatbai();
-        }
+    public void handlerSearch(String characters) {
+//        List<ItemBook> itemBooks = searchModel.getDataSearch(characters);
+//        if (itemBooks.size()>0){
+//            interfaceViewActivitySearch.searchSuccess(itemBooks);
+//        }else {
+//            interfaceViewActivitySearch.searchFail();
+//        }
     }
 }

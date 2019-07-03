@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.phungthanhquan.bookapp.Object.ItemBookCase;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.Activity.BookDetail;
 import com.phungthanhquan.bookapp.View.Activity.MainActivity;
@@ -32,14 +31,14 @@ import java.util.List;
 
 public class Tusach_Adapter extends RecyclerView.Adapter<Tusach_Adapter.ViewHolder> {
     private Context context;
-    private List<ItemBookCase> itemBookCaseList;
+//    private List<ItemBookCase> itemBookCaseList;
     private final String FILENAME_BOOKSTORED = "book_dowload";
     Toast toast;
 
-    public Tusach_Adapter(Context context, List<ItemBookCase> itemBookCaseList) {
-        this.context = context;
-        this.itemBookCaseList = itemBookCaseList;
-    }
+//    public Tusach_Adapter(Context context, List<ItemBookCase> itemBookCaseList) {
+//        this.context = context;
+//        this.itemBookCaseList = itemBookCaseList;
+//    }
 
     @NonNull
     @Override
@@ -50,58 +49,58 @@ public class Tusach_Adapter extends RecyclerView.Adapter<Tusach_Adapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int position) {
-         final ItemBookCase itemBookCase = itemBookCaseList.get(position);
-        Picasso.get().load(itemBookCase.getUrlImage()).into(viewHolder.imageSach);
-        viewHolder.tentacgia.setText(itemBookCase.getTenTacGia());
-        viewHolder.phantram.setText((int) itemBookCase.getPhantramdoc()+"%");
-        viewHolder.phantramprogress.setProgress((int) itemBookCase.getPhantramdoc());
-        File directory;
-        ContextWrapper cw = new ContextWrapper(context);
-        directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
-         File file=new File(directory,itemBookCase.getBookID()+".pdf");
-        if(file.exists()){
-            viewHolder.download.setVisibility(View.GONE);
-        }else {
-            viewHolder.download.setVisibility(View.VISIBLE);
-        }
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                viewHolder.layout_tusachItem.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if(MainActivity.isNetworkConnected(context)) {
-                            Intent intent = new Intent(context, BookDetail.class);
-                            intent.putExtra("image", itemBookCase.getUrlImage());
-                            ActivityOptions options = null;
-                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-                                options = ActivityOptions.makeSceneTransitionAnimation((Activity) context,
-                                        viewHolder.imageSach, "sharedName");
-                            }
-                            context.startActivity(intent, options.toBundle());
-                        }else {
-                            //kiểm tra đã tải về chưa, nếu có cho đọc, còn chưa thì phải bật internet để tải..
-                            File directory;
-                            ContextWrapper cw = new ContextWrapper(context);
-                            directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
-                            File files=new File(directory,itemBookCase.getBookID()+".pdf");
-                            if ( files.exists() )
-                            {
-
-                                Intent intent;
-                                intent = new Intent(context, Read.class);
-                                intent.putExtra("idSach","id0");
-                                context.startActivity(intent);
-                            }
-                            else
-                            {
-                                showAToast(context.getResources().getString(R.string.openinternet_readbook));
-                            }
-                        }
-                    }
-                });
-            }
-        }).start();
+//         final ItemBookCase itemBookCase = itemBookCaseList.get(position);
+//        Picasso.get().load(itemBookCase.getUrlImage()).into(viewHolder.imageSach);
+//        viewHolder.tentacgia.setText(itemBookCase.getTenTacGia());
+//        viewHolder.phantram.setText((int) itemBookCase.getPhantramdoc()+"%");
+//        viewHolder.phantramprogress.setProgress((int) itemBookCase.getPhantramdoc());
+//        File directory;
+//        ContextWrapper cw = new ContextWrapper(context);
+//        directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
+//         File file=new File(directory,itemBookCase.getBookID()+".pdf");
+//        if(file.exists()){
+//            viewHolder.download.setVisibility(View.GONE);
+//        }else {
+//            viewHolder.download.setVisibility(View.VISIBLE);
+//        }
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                viewHolder.layout_tusachItem.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        if(MainActivity.isNetworkConnected(context)) {
+//                            Intent intent = new Intent(context, BookDetail.class);
+////                            intent.putExtra("image", itemBookCase.getUrlImage());
+//                            ActivityOptions options = null;
+//                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+//                                options = ActivityOptions.makeSceneTransitionAnimation((Activity) context,
+//                                        viewHolder.imageSach, "sharedName");
+//                            }
+//                            context.startActivity(intent, options.toBundle());
+//                        }else {
+//                            //kiểm tra đã tải về chưa, nếu có cho đọc, còn chưa thì phải bật internet để tải..
+//                            File directory;
+//                            ContextWrapper cw = new ContextWrapper(context);
+//                            directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
+//                            File files=new File(directory,itemBookCase.getBookID()+".pdf");
+//                            if ( files.exists() )
+//                            {
+//
+//                                Intent intent;
+//                                intent = new Intent(context, Read.class);
+//                                intent.putExtra("idSach","id0");
+//                                context.startActivity(intent);
+//                            }
+//                            else
+//                            {
+//                                showAToast(context.getResources().getString(R.string.openinternet_readbook));
+//                            }
+//                        }
+//                    }
+//                });
+//            }
+//        }).start();
     }
     public void showAToast (String st){ //"Toast toast" is declared in the class
         try{ toast.getView().isShown();     // true if visible
@@ -114,7 +113,7 @@ public class Tusach_Adapter extends RecyclerView.Adapter<Tusach_Adapter.ViewHold
     }
     @Override
     public int getItemCount() {
-        return itemBookCaseList.size();
+        return 0;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
