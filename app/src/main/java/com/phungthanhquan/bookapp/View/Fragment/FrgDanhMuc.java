@@ -1,5 +1,6 @@
 package com.phungthanhquan.bookapp.View.Fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,9 +27,7 @@ import java.util.List;
 
 public class FrgDanhMuc extends Fragment implements InterfaceViewFragmentDanhMuc {
 
-    private Toolbar toolbar;
     private RecyclerView recyclerView_dsSach;
-    private List<DanhMuc> danhsachSach;
     private DanhMuc_Adapter danhMuc_adapter;
     private PresenterLogicDanhMuc presenterLogicDanhMuc;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -44,17 +43,12 @@ public class FrgDanhMuc extends Fragment implements InterfaceViewFragmentDanhMuc
 
     private void initControls(View view) {
         //assign
-        toolbar = view.findViewById(R.id.toolbar);
         recyclerView_dsSach = view.findViewById(R.id.recycle_danhmuc);
         swipeRefreshLayout = view.findViewById(R.id.swiperefresh);
         constraintLayoutCheckInterNet = view.findViewById(R.id.layout_internet_disconnect);
         checkInternet = view.findViewById(R.id.checkInternet);
-        //init
-        danhsachSach = new ArrayList<>();
-        danhMuc_adapter = new DanhMuc_Adapter(getContext(),danhsachSach);
-        recyclerView_dsSach.setAdapter(danhMuc_adapter);
-        recyclerView_dsSach.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
         presenterLogicDanhMuc = new PresenterLogicDanhMuc(this);
+        //init
         presenterLogicDanhMuc.xuliHienThiDanhMuc();
         InternetConnected();
         checkInternet.setOnClickListener(new View.OnClickListener() {
@@ -85,7 +79,6 @@ public class FrgDanhMuc extends Fragment implements InterfaceViewFragmentDanhMuc
             public void onRefresh() {
                 InternetConnected();
                 swipeRefreshLayout.setRefreshing(true);
-               danhsachSach.clear();
                presenterLogicDanhMuc.xuliHienThiDanhMuc();
                swipeRefreshLayout.setRefreshing(false);
             }
@@ -94,7 +87,14 @@ public class FrgDanhMuc extends Fragment implements InterfaceViewFragmentDanhMuc
 
     @Override
     public void hienThiDanhMuc(List<DanhMuc> danhMucList) {
-        danhsachSach.addAll(danhMucList);
-        danhMuc_adapter.notifyDataSetChanged();
+        List<String> DanhMucName = new ArrayList<>();
+        List<String> DanhMucImg  = new ArrayList<>();
+        for (int i = 0; i <danhMucList.size() ; i++) {
+            DanhMucImg.add("a");
+            DanhMucName.add("a");
+        }
+        danhMuc_adapter = new DanhMuc_Adapter(getContext(),danhMucList,DanhMucImg,DanhMucName);
+        recyclerView_dsSach.setAdapter(danhMuc_adapter);
+        recyclerView_dsSach.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
     }
 }

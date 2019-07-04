@@ -150,4 +150,13 @@ public class Album_NXB_Adapter extends RecyclerView.Adapter<Album_NXB_Adapter.Vi
             layout_itemBook = itemView.findViewById(R.id.layout_itembook);
         }
     }
+    public void addMoreImage(){
+        int size = listBook.size() - dsHinhAnh.size();
+        if(size!=0){
+            for (int i=0;i<size;i++){
+                dsHinhAnh.add("a");
+                dsBookName.add("a");
+            }
+        }
+    }
 }

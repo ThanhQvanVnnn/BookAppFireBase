@@ -17,9 +17,14 @@ public class PresenterLogicDanhMuc implements PresenterInterfaceDanhMuc {
 
     @Override
     public void xuliHienThiDanhMuc() {
-        List<DanhMuc> danhMucs = danhMucModel.getDanhMuc();
-        if(danhMucs.size()!=0){
-            interfaceViewFragmentDanhMuc.hienThiDanhMuc(danhMucs);
+    danhMucModel.layDanhSachDanhMuc(new DanhMucModel.CallBack() {
+        @Override
+        public void getDanhMucList(List<DanhMuc> danhMucList) {
+            if(danhMucList.size()>0){
+                interfaceViewFragmentDanhMuc.hienThiDanhMuc(danhMucList);
+            }
         }
+    });
+
     }
 }

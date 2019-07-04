@@ -317,9 +317,9 @@
                             </androidx.recyclerview.widget.RecyclerView>
 
                             <LinearLayout
+                                android:background="@drawable/gradient_background"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:background="@color/white"
                                 android:gravity="center">
 
                                 <ProgressBar

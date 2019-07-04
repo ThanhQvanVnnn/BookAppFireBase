@@ -1,5 +1,13 @@
 package com.phungthanhquan.bookapp.Presenter.Fragment;
 
+import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
+
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.phungthanhquan.bookapp.Model.Fragment.TrangChuModel;
 import com.phungthanhquan.bookapp.Object.Album;
 import com.phungthanhquan.bookapp.Object.Album_BookCase;
@@ -7,6 +15,7 @@ import com.phungthanhquan.bookapp.Object.Marketing;
 import com.phungthanhquan.bookapp.Object.NXB;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewFragmentTrangChu;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PresenterTrangChu implements PresenterInterfaceTrangChu {
@@ -20,13 +29,14 @@ public class PresenterTrangChu implements PresenterInterfaceTrangChu {
     }
 
     @Override
-    public void xulislider() {
+    public void xulislider(final SwipeRefreshLayout swipeRefreshLayout) {
 
         trangChuModel.getSlider(new TrangChuModel.CallBackSlider() {
             @Override
             public void onCallbackSlider(List<Marketing> marketingList) {
                 if(marketingList.size()>0){
                     interfaceViewFragmentTrangChu.hienthislider(marketingList);
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             }
         });
@@ -46,22 +56,28 @@ public class PresenterTrangChu implements PresenterInterfaceTrangChu {
 
     }
 
-//    @Override
-//    public void xuliHienthiDsSachKhuyenDoc() {
-//        List<ItemBook> dsSachKhuyenDoc = trangChuModel.getDataDsSachKhuyenDoc();
-//        if(dsSachKhuyenDoc.size()>0){
-//            interfaceViewFragmentTrangChu.hienthidsSachKhuyenDoc(dsSachKhuyenDoc);
-//        }
-//    }
-//    public List<ItemBook> xuliHienThiDsKhuyenDocLoadMore(int tongItem, ProgressBar progressBar, RecyclerView recyclerView){
-//        List<ItemBook> dsSachKhuyenDocLoadMore = trangChuModel.getDataDsSachKhuyenDoc();
-//        if(dsSachKhuyenDocLoadMore.size()==0) {
-//            recyclerView.setNestedScrollingEnabled(true);
-//            progressBar.setVisibility(View.INVISIBLE);
-//        }
-//        return dsSachKhuyenDocLoadMore;
-//    }
-//
+    @Override
+    public void xuliHienthiDsSachKhuyenDoc() {
+        trangChuModel.getSachKhuyenDoc(new TrangChuModel.CallBackKhuyenDoc() {
+            @Override
+            public void onCallbackSlider(List<Marketing> marketingList, DocumentSnapshot documentSnapshot) {
+                if(marketingList.size()>0){
+                    interfaceViewFragmentTrangChu.hienthidsSachKhuyenDoc(marketingList,documentSnapshot);
+                }
+            }
+        });
+
+    }
+    public void xuliHienThiDsKhuyenDocLoadMore(DocumentSnapshot documentSnapshot){
+       trangChuModel.getSachKhuyenDocLoadMore(documentSnapshot, new TrangChuModel.CallBackKhuyenDoc() {
+           @Override
+           public void onCallbackSlider(List<Marketing> marketingList, DocumentSnapshot documentSnapshots) {
+                   interfaceViewFragmentTrangChu.hienthiloadmoreKhuyenDoc(marketingList,documentSnapshots);
+           }
+
+       });
+
+    }
     @Override
     public void xuliHienthiDsSachVanHocTrongNuoc() {
         trangChuModel.getSachVHTN(new TrangChuModel.CallBackSlider() {

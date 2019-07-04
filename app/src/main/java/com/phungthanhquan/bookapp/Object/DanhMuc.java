@@ -1,37 +1,30 @@
 package com.phungthanhquan.bookapp.Object;
 
 public class DanhMuc {
-    private String idDanhMuc;
-    private String backGround;
-    private String tenDanhMuc;
+    private String id;
+    private String name;
 
-    public DanhMuc(String idDanhMuc, String backGround, String tenDanhMuc) {
-        this.idDanhMuc = idDanhMuc;
-        this.backGround = backGround;
-        this.tenDanhMuc = tenDanhMuc;
+    public DanhMuc(String id, String name) {
+        this.id = id;
+        this.name = name;
     }
 
-    public String getIdDanhMuc() {
-        return idDanhMuc;
+    public DanhMuc() {
     }
 
-    public void setIdDanhMuc(String idDanhMuc) {
-        this.idDanhMuc = idDanhMuc;
+    public String getId() {
+        return id;
     }
 
-    public String getBackGround() {
-        return backGround;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setBackGround(String backGround) {
-        this.backGround = backGround;
+    public String getName() {
+        return name;
     }
 
-    public String getTenDanhMuc() {
-        return tenDanhMuc;
-    }
-
-    public void setTenDanhMuc(String tenDanhMuc) {
-        this.tenDanhMuc = tenDanhMuc;
+    public void setName(String name) {
+        this.name = name;
     }
 }

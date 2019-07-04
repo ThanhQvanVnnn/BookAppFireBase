@@ -3,7 +3,6 @@ package com.phungthanhquan.bookapp.View.Fragment;
 
 import android.app.AlertDialog;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -30,9 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.gigamole.infinitecycleviewpager.HorizontalInfiniteCycleViewPager;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.phungthanhquan.bookapp.Adapter.Album_NXB_Adapter;
 import com.phungthanhquan.bookapp.Adapter.ListAlbum_Adapter;
-import com.phungthanhquan.bookapp.Adapter.RecycleView_ItemBook_Adapter;
 import com.phungthanhquan.bookapp.Adapter.RecycleView_NXB_Adapter;
 import com.phungthanhquan.bookapp.Adapter.ViewPager_Slider_Adapter;
 import com.phungthanhquan.bookapp.Object.Album;
@@ -67,7 +66,7 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
     private NestedScrollView nestedScrollView;
     private ConstraintLayout layoutInternetDisconnect;
     public AlertDialog loadingDialog;
-
+    private List<Marketing> dsKhuyenDoc;
     private SwipeRefreshLayout swipeRefreshLayout;
     private PresenterTrangChu presenterFragmentTrangChu;
 
@@ -77,21 +76,23 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
     private ViewPager slider;
     private RecycleView_NXB_Adapter adapterNXB;
     private Album_NXB_Adapter adapterVanHocTrongNuoc;
-    private RecycleView_ItemBook_Adapter adapterSachKhuyenDoc;
+    private Album_NXB_Adapter adapterSachKhuyenDoc;
     private RecyclerView.LayoutManager layoutManagerSachKhuyenDoc;
     private Album_NXB_Adapter adapterSachMoi;
+    private DocumentSnapshot documentCuoiCung;
     Toast toast;
     Timer timer;
+    List<String> dsHinhAnhKhuyenDoc;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_trangchu, container, false);
         InitControls(view);
-        loadingDialog.show();
-        CreateAdapterAddView();
-        InternetConnected();
         RefresherLayout();
+        loadingDialog.show();
+        InternetConnected();
         return view;
     }
 
@@ -125,6 +126,7 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         checkInternet = view.findViewById(R.id.checkInternet);
         loadingDialog = new SpotsDialog.Builder().setContext(getContext()).build();
         loadingDialog.setMessage(getResources().getString(R.string.dangtaidulieu));
+        dsKhuyenDoc = new ArrayList<>();
         //onclick
         checkInternet.setOnClickListener(this);
         allSachMoi.setOnClickListener(this);
@@ -132,7 +134,7 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         search.setOnClickListener(this);
         //presenter logic
         presenterFragmentTrangChu = new PresenterTrangChu(this);
-//        OnsCroll();
+        OnsCroll();
     }
 
 
@@ -166,28 +168,37 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
 
     }
 
-//    @Override
-//    public void hienthidsSachKhuyenDoc(final List<ItemBook> dsSachKhuyenDoc) {
-//        new Thread() {
-//            @Override
-//            public void run() {
-//                danhSachKhuyenDoc.addAll(dsSachKhuyenDoc);
-//                try {
-//                    // code runs in a thread
-//                    getActivity().runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            adapterSachKhuyenDoc.notifyDataSetChanged();
-//                        }
-//                    });
-//                } catch (final Exception ex) {
-//                }
-//            }
-//        }.start();
-//
-//
-//    }
-//
+    @Override
+    public void hienthidsSachKhuyenDoc(final List<Marketing> dsSachKhuyenDocs, DocumentSnapshot documentSnapshot) {
+        dsKhuyenDoc.addAll(dsSachKhuyenDocs);
+         dsHinhAnhKhuyenDoc = new ArrayList<>();
+        for (int i = 0; i < dsKhuyenDoc.size(); i++) {
+            dsHinhAnhKhuyenDoc.add("a");
+        }
+        documentCuoiCung = documentSnapshot;
+        adapterSachKhuyenDoc = new Album_NXB_Adapter(getContext(),dsKhuyenDoc,dsHinhAnhKhuyenDoc);
+        hienthiDSSachKhuyenDoc.setAdapter(adapterSachKhuyenDoc);
+        layoutManagerSachKhuyenDoc = new GridLayoutManager(getContext(), 3);
+        hienthiDSSachKhuyenDoc.setLayoutManager(layoutManagerSachKhuyenDoc);
+        hienthiDSSachKhuyenDoc.setHasFixedSize(true);
+    }
+
+    @Override
+    public void hienthiloadmoreKhuyenDoc(List<Marketing> dsSachKhuyenDoc, DocumentSnapshot documentSnapshot) {
+        if(dsSachKhuyenDoc.size()<6){
+            progressBarLoadMoreKhuyenDoc.setVisibility(View.INVISIBLE);
+            hienthiDSSachKhuyenDoc.setNestedScrollingEnabled(false);
+            documentCuoiCung = documentSnapshot;
+        }
+        else {
+            dsKhuyenDoc.addAll(dsSachKhuyenDoc);
+            documentCuoiCung = documentSnapshot;
+            adapterSachKhuyenDoc.addMoreImage();
+            adapterSachKhuyenDoc.notifyDataSetChanged();
+            hienthiDSSachKhuyenDoc.setNestedScrollingEnabled(true);
+        }
+    }
+
     @Override
     public void hienthidsSachVanHocTrongNuoc( List<Marketing> dsSachVanHocTrongNuoc) {
         List<String> hinhanhList = new ArrayList<>();
@@ -202,6 +213,7 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
 
     @Override
     public void hienthidsNhaXuatBan(final List<NXB> dsNXB) {
+
         List<String> listAnh = new ArrayList<>();
         for (int i = 0; i < dsNXB.size(); i++) {
             listAnh.add("a");
@@ -235,12 +247,14 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         switch (v.getId()) {
             case R.id.xemtatca_sachmoi:
                 intent = new Intent(getActivity(), MarketingChiTiet.class);
-                intent.putExtra("Title", "Sách mới");
+                intent.putExtra("Title", R.string.sach_moi);
+                intent.putExtra("id","1HjY7wPuA7WM2hsmd8NE");
                 startActivity(intent);
                 break;
             case R.id.xemtatca_vanhoctrongnuoc:
                 intent = new Intent(getActivity(), MarketingChiTiet.class);
-                intent.putExtra("Title", "Văn học trong nước");
+                intent.putExtra("Title", R.string.van_hoc_trongnuoc);
+                intent.putExtra("id","nzqndZ3vpgLlJHz4mjy7");
                 startActivity(intent);
                 break;
             case R.id.search_book:
@@ -258,28 +272,17 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         }
     }
 
-    private void CreateAdapterAddView() {
-
-
-//        adapterSachKhuyenDoc = new RecycleView_ItemBook_Adapter(getContext(), danhSachKhuyenDoc, 0);
-
-        //khuyên đọc
-        hienthiDSSachKhuyenDoc.setAdapter(adapterSachKhuyenDoc);
-        layoutManagerSachKhuyenDoc = new GridLayoutManager(getContext(), 3);
-        hienthiDSSachKhuyenDoc.setLayoutManager(layoutManagerSachKhuyenDoc);
-        hienthiDSSachKhuyenDoc.setHasFixedSize(true);
-        //sách mới
-//
-
-    }
 
     private void ActivePresenter() {
-        presenterFragmentTrangChu.xulislider();
+        documentCuoiCung = null;
+        progressBarLoadMoreKhuyenDoc.setVisibility(View.VISIBLE);
+        dsKhuyenDoc.clear();
+        presenterFragmentTrangChu.xulislider(swipeRefreshLayout);
         presenterFragmentTrangChu.xuliHienthiDsSachMoi();
         presenterFragmentTrangChu.xuliHienThiAlBumSach();
         presenterFragmentTrangChu.xuliHienthiDsSachVanHocTrongNuoc();
         presenterFragmentTrangChu.xuliHienThiDsNhaXuatBan();
-//        presenterFragmentTrangChu.xuliHienthiDsSachKhuyenDoc();
+        presenterFragmentTrangChu.xuliHienthiDsSachKhuyenDoc();
     }
 
     //refresher layout
@@ -296,7 +299,7 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
                 } else {
                     InternetConnected();
                 }
-                swipeRefreshLayout.setRefreshing(false);
+
             }
         });
     }
@@ -324,51 +327,35 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
             }
         }
     }
-    // onscroll listener screen
-//    public void OnsCroll() {
-//        if (nestedScrollView != null) {
-//
-//            nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
-//                @Override
-//                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
-////                    String TAG = "nested_sync";
-//                    final int sizeListSachKhuyenDoc = danhSachKhuyenDoc.size();
-//
-//                    if (scrollY > oldScrollY) {
-////                        Log.i(TAG, "Scroll DOWN");
-//                    }
-//                    if (scrollY < oldScrollY) {
-////                        Log.i(TAG, "Scroll UP");
-//                    }
-//
-//                    if (scrollY == 0) {
-////                        Log.i(TAG, "TOP SCROLL");
-//                    }
-//
-//                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
-//                        hienthiDSSachKhuyenDoc.setNestedScrollingEnabled(false);
-//                        progressBarLoadMoreKhuyenDoc.setVisibility(View.VISIBLE);
-//                        Handler handler = new Handler();
-//                        handler.postDelayed(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                List<ItemBook> dsSachLayVe = new ArrayList<>();
-//                                dsSachLayVe = presenterFragmentTrangChu.xuliHienThiDsKhuyenDocLoadMore(sizeListSachKhuyenDoc,
-//                                        progressBarLoadMoreKhuyenDoc, hienthiDSSachKhuyenDoc);
-//                                if (dsSachLayVe.size() != 0) //check for scroll down
-//                                {
-//                                    danhSachKhuyenDoc.addAll(dsSachLayVe);
-//                                    adapterSachKhuyenDoc.notifyDataSetChanged();
-//                                }
-//
-//                            }
-//                        }, 1000);
-////                        Log.i(TAG, "BOTTOM SCROLL");
-//                    }
-//                }
-//            });
-//        }
-//    }
+
+    public void OnsCroll() {
+        if (nestedScrollView != null) {
+
+            nestedScrollView.setOnScrollChangeListener(new NestedScrollView.OnScrollChangeListener() {
+                @Override
+                public void onScrollChange(NestedScrollView v, int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+//                    String TAG = "nested_sync";
+                    final int sizeListSachKhuyenDoc = dsKhuyenDoc.size();
+
+                    if (scrollY > oldScrollY) {
+//                        Log.i(TAG, "Scroll DOWN");
+                    }
+                    if (scrollY < oldScrollY) {
+//                        Log.i(TAG, "Scroll UP");
+                    }
+
+                    if (scrollY == 0) {
+//                        Log.i(TAG, "TOP SCROLL");
+                    }
+
+                    if (scrollY == (v.getChildAt(0).getMeasuredHeight() - v.getMeasuredHeight())) {
+                        hienthiDSSachKhuyenDoc.setNestedScrollingEnabled(false);
+                        presenterFragmentTrangChu.xuliHienThiDsKhuyenDocLoadMore(documentCuoiCung);
+                    }
+                }
+            });
+        }
+    }
 
     public void showAToast(String st) { //"Toast toast" is declared in the class
         try {

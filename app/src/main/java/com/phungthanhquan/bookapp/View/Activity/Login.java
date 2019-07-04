@@ -227,8 +227,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                 // Google Sign In failed, update UI appropriately
                 loadingDialog.dismiss();
             }
-        }else {
-            loadingDialog.dismiss();
         }
     }
 
@@ -423,7 +421,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
             Intent intent = new Intent(Login.this, MainActivity.class);
             startActivity(intent);
             finish();
-            loadingDialog.dismiss();
             showAToast(getString(R.string.dangnhapthanhcong));
         }
     }

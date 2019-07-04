@@ -12,9 +12,12 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.phungthanhquan.bookapp.Adapter.Album_NXB_Adapter;
 import com.phungthanhquan.bookapp.Adapter.RecycleView_ItemBook_Adapter;
 import com.phungthanhquan.bookapp.Model.LoadMore.InterfaceLoadMore;
 import com.phungthanhquan.bookapp.Model.LoadMore.LoadMoreScroll;
+import com.phungthanhquan.bookapp.Object.Marketing;
 import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLogicMarketing;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityMarketing;
@@ -27,11 +30,13 @@ public class MarketingChiTiet extends AppCompatActivity implements InterfaceLoad
     private Toolbar toolbar;
     private RecyclerView recyclerView;
     private SwipeRefreshLayout swipeRefreshLayout;
-//    private List<ItemBook> itemBooks;
-    private RecycleView_ItemBook_Adapter recycleView_itemBook_adapter;
+    private List<Marketing> itemBooks;
+    private String ID_MARKETING;
     private ProgressBar progressBar;
     private LoadMoreScroll loadMoreScroll;
     private PresenterLogicMarketing presenterLogicMarketing;
+    private Album_NXB_Adapter adapter;
+    private DocumentSnapshot lastDocument;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,6 +52,8 @@ public class MarketingChiTiet extends AppCompatActivity implements InterfaceLoad
         recyclerView = findViewById(R.id.recycle_marketingchitiet);
         swipeRefreshLayout = findViewById(R.id.refresh_marketing);
         String title = intent.getStringExtra("Title");
+        ID_MARKETING = intent.getStringExtra("id");
+        lastDocument = null;
         toolbar.setTitle(title);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             toolbar.setTitleTextColor(getColor(R.color.white));
@@ -54,14 +61,9 @@ public class MarketingChiTiet extends AppCompatActivity implements InterfaceLoad
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        itemBooks = new ArrayList<>();
-//        recycleView_itemBook_adapter = new RecycleView_ItemBook_Adapter(this,itemBooks,0);
-        recyclerView.setAdapter(recycleView_itemBook_adapter);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
-        recyclerView.setLayoutManager(gridLayoutManager);
-        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,12);
-        recyclerView.addOnScrollListener(loadMoreScroll);
-        presenterLogicMarketing = new PresenterLogicMarketing(this);
+        itemBooks = new ArrayList<>();
+
+        presenterLogicMarketing = new PresenterLogicMarketing(this,ID_MARKETING);
         presenterLogicMarketing.xuliHienThiChiTietMarketing();
     }
     @Override
@@ -76,14 +78,24 @@ public class MarketingChiTiet extends AppCompatActivity implements InterfaceLoad
         recyclerView.setNestedScrollingEnabled(false);
 //        List<ItemBook> itemBookList = presenterLogicMarketing.getLoadMore(tongItem,progressBar,recyclerView);
 //        itemBooks.addAll(itemBookList);
-        recycleView_itemBook_adapter.notifyDataSetChanged();
+
     }
 
-//    @Override
-//    public void hienThidulieu(List<ItemBook> itemBookList) {
-//        itemBooks.addAll(itemBookList);
-//        recycleView_itemBook_adapter.notifyDataSetChanged();
-//    }
+    @Override
+    public void hienThidulieu(List<Marketing> itemBookList,DocumentSnapshot documentSnapshot) {
+        lastDocument = documentSnapshot;
+        List<String> dsHinh = new ArrayList<>();
+        for (int i = 0; i <itemBookList.size() ; i++) {
+            dsHinh.add("a");
+        }
+        itemBooks.addAll(itemBookList);
+        adapter = new Album_NXB_Adapter(this,itemBooks,dsHinh);
+        recyclerView.setAdapter(adapter);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,12);
+        recyclerView.addOnScrollListener(loadMoreScroll);
+    }
     public void refresh(){
         swipeRefreshLayout.setColorSchemeColors(getResources().getColor(android.R.color.holo_blue_dark)
                 , getResources().getColor(android.R.color.holo_blue_light)
@@ -95,7 +107,6 @@ public class MarketingChiTiet extends AppCompatActivity implements InterfaceLoad
                 (new Handler()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-//                        itemBooks.clear();
                         presenterLogicMarketing.xuliHienThiChiTietMarketing();
                         swipeRefreshLayout.setRefreshing(false);
                     }
@@ -103,4 +114,6 @@ public class MarketingChiTiet extends AppCompatActivity implements InterfaceLoad
             }
         });
     }
+
+
 }

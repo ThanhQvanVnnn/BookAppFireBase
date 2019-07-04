@@ -1,37 +1,51 @@
 package com.phungthanhquan.bookapp.Model.Activity;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.storage.FirebaseStorage;
+import com.phungthanhquan.bookapp.Model.Fragment.DanhMucModel;
+import com.phungthanhquan.bookapp.Object.Marketing;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class MarketingModel {
-//    private List<ItemBook> itemBookList;
-//
-//    public  List<ItemBook> layDanhSachSach(){
-//        itemBookList = new ArrayList<>();
-//        ItemBook itemBook1 = new ItemBook("Hoa vàng trên đồi cỏ",
-//                "https://webtruyen.com/public/images/toithayhoavangtrencoxanh1woCMXi6Ln.jpg",
-//                "15");
-//        ItemBook itemBook2 = new ItemBook("Nhà Giả Kim",
-//                "https://www.fahasa.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/8/9/8935235213746.jpg",
-//                "15");
-//        ItemBook itemBook3 = new ItemBook("Quảng gánh lo vui mà sống",
-//                "https://nhanvan.vn/images/detailed/8/8935086828410.jpg",
-//                "15");
-//        ItemBook itemBook4 = new ItemBook("Khi lỗi thuộc về những vì sao",
-//                "https://www.fahasa.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/k/h/khi-loi-thuoc-ve-nhung-vi-sao-b.jpg",
-//                "15");
-//        itemBookList.add(itemBook1);
-//        itemBookList.add(itemBook2);
-//        itemBookList.add(itemBook3);
-//        itemBookList.add(itemBook4);
-//        itemBookList.add(itemBook1);
-//        itemBookList.add(itemBook2);
-//        itemBookList.add(itemBook3);
-//        itemBookList.add(itemBook4);
-//        itemBookList.add(itemBook1);
-//        itemBookList.add(itemBook2);
-//        itemBookList.add(itemBook3);
-//        itemBookList.add(itemBook4);
-//        return itemBookList;
-//    }
+    FirebaseFirestore firebaseFirestore;
+    private String id_marketing;
+    public MarketingModel(String id) {
+        firebaseFirestore = FirebaseFirestore.getInstance();
+        this.id_marketing = id;
+    }
+
+    public interface CallBacks{
+        void GetListBook(List<Marketing> marketingList, DocumentSnapshot documentSnapshot);
+    }
+
+    public void getBookList(final CallBacks callBack){
+        firebaseFirestore.collection("marketing_bookcase")
+                .whereEqualTo("marketing_id",this.id_marketing).limit(9).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        DocumentSnapshot documentSnapshot;
+                        List<Marketing> getList = new ArrayList<>();
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot queryDocumentSnapshot:task.getResult()){
+                                if(queryDocumentSnapshot.exists()){
+                                    Marketing marketing = queryDocumentSnapshot.toObject(Marketing.class);
+                                    getList.add(marketing);
+                                }
+                            }
+                            documentSnapshot = task.getResult().getDocuments().get(task.getResult().size()-1);
+                            callBack.GetListBook(getList, documentSnapshot);
+                        }
+                    }
+                });
+    }
 }
