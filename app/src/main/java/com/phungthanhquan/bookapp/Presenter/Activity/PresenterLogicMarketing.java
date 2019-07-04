@@ -36,10 +36,13 @@ public class PresenterLogicMarketing implements InPresenterMarketing {
 
     }
 
-//    public List<ItemBook> getLoadMore(int soluong, ProgressBar progressBar, RecyclerView recyclerView){
-//        List<ItemBook> itemBooks = marketingModel.layDanhSachSach();
-//        recyclerView.setNestedScrollingEnabled(true);
-//        progressBar.setVisibility(View.GONE);
-//        return itemBooks;
-//    }
+    public void getLoadMore(DocumentSnapshot documentSnapshot){
+         marketingModel.getBookListLoadMore(documentSnapshot, new MarketingModel.CallBacks() {
+            @Override
+            public void GetListBook(List<Marketing> marketingList, DocumentSnapshot documentSnapshot) {
+                 interfaceViewActivityMarketing.hienThiDuLieuLoadMore(marketingList,documentSnapshot);
+            }
+        });
+
+    }
 }

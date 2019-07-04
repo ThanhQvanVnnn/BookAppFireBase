@@ -13,6 +13,7 @@ import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.phungthanhquan.bookapp.Adapter.RecycleView_ItemBook_Adapter;
 import com.phungthanhquan.bookapp.Model.LoadMore.InterfaceLoadMore;
 import com.phungthanhquan.bookapp.Model.LoadMore.LoadMoreScroll;
@@ -63,7 +64,7 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
         recyclerView_ds.setAdapter(recycleView_itemBook_adapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
         recyclerView_ds.setLayoutManager(gridLayoutManager);
-        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,12);
+//        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,12);
         recyclerView_ds.addOnScrollListener(loadMoreScroll);
         presenterLogicListDanhMucTatCa = new PresenterLogicListDanhMucTatCa(this);
         presenterLogicListDanhMucTatCa.xuliHienThiChiTietDanhMuc();
@@ -100,12 +101,9 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
         });
     }
 
+
     @Override
-    public void hienThiLoadMore(int tongItem) {
-        progressBar.setVisibility(View.VISIBLE);
-        recyclerView_ds.setNestedScrollingEnabled(false);
-//        List<ItemBook> itemBooks = presenterLogicListDanhMucTatCa.getLoadMore(tongItem,progressBar,recyclerView_ds);
-//        itemBookList.addAll(itemBooks);
-        recycleView_itemBook_adapter.notifyDataSetChanged();
+    public void hienThiLoadMore() {
+
     }
 }

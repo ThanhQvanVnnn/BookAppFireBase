@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface InterfaceViewActivityMarketing {
     void hienThidulieu(List<Marketing> itemBookList, DocumentSnapshot documentSnapshot);
+    void hienThiDuLieuLoadMore(List<Marketing> itemBookList, DocumentSnapshot documentSnapshot);
 }

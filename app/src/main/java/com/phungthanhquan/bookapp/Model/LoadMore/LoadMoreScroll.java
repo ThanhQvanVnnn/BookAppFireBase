@@ -5,6 +5,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
+import android.widget.Toast;
+
+import com.google.firebase.firestore.DocumentSnapshot;
 
 public class LoadMoreScroll extends RecyclerView.OnScrollListener {
 
@@ -13,11 +16,13 @@ public class LoadMoreScroll extends RecyclerView.OnScrollListener {
     private int tongItem;
     private int itemDaLoad;
     private int itemLoadTruoc;
+    private DocumentSnapshot documentSnapshotLast;
 
-    public LoadMoreScroll(RecyclerView.LayoutManager layoutManager, InterfaceLoadMore interfaceLoadMore, int itemLoadTruoc) {
+    public LoadMoreScroll(RecyclerView.LayoutManager layoutManager, InterfaceLoadMore interfaceLoadMore, int itemLoadTruoc,DocumentSnapshot documentSnapshot) {
         this.layoutManager = layoutManager;
         this.interfaceLoadMore = interfaceLoadMore;
         this.itemLoadTruoc = itemLoadTruoc;
+        this.documentSnapshotLast = documentSnapshot;
     }
 
     @Override
@@ -29,10 +34,11 @@ public class LoadMoreScroll extends RecyclerView.OnScrollListener {
         }else if(layoutManager instanceof GridLayoutManager){
             itemDaLoad = ((GridLayoutManager) layoutManager).findFirstVisibleItemPosition();
         }
-        Log.d("kiemtra",itemDaLoad +"-"+tongItem);
-        if(tongItem <= (itemLoadTruoc+itemDaLoad)){
-            interfaceLoadMore.hienThiLoadMore(tongItem);
+        if(tongItem == (itemLoadTruoc+itemDaLoad)){
+            interfaceLoadMore.hienThiLoadMore();
+            Log.d("loadmore",(itemLoadTruoc+itemDaLoad)+"");
         }
+
     }
     @Override
     public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {

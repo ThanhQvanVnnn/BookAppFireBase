@@ -29,7 +29,7 @@ public class MarketingModel {
 
     public void getBookList(final CallBacks callBack){
         firebaseFirestore.collection("marketing_bookcase")
-                .whereEqualTo("marketing_id",this.id_marketing).limit(9).get()
+                .whereEqualTo("marketing_id",this.id_marketing).limit(6).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -47,5 +47,28 @@ public class MarketingModel {
                         }
                     }
                 });
+    }
+    public void getBookListLoadMore(DocumentSnapshot documentSnapshot, final CallBacks callBacks){
+        firebaseFirestore.collection("marketing_bookcase") .whereEqualTo("marketing_id",this.id_marketing)
+                .startAfter(documentSnapshot).limit(6).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                DocumentSnapshot documentSnapshot;
+                List<Marketing> getList = new ArrayList<>();
+               if(task.isSuccessful()){
+                   for(QueryDocumentSnapshot queryDocumentSnapshot:task.getResult()){
+                       if(queryDocumentSnapshot.exists()){
+                           Marketing marketing = queryDocumentSnapshot.toObject(Marketing.class);
+                           getList.add(marketing);
+                       }
+                   }
+                   if(task.getResult().size()>0) {
+                       documentSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                       callBacks.GetListBook(getList, documentSnapshot);
+                   }
+
+               }
+            }
+        });
     }
 }

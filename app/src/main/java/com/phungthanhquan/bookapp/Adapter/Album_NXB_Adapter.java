@@ -5,6 +5,7 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,13 +41,14 @@ public class Album_NXB_Adapter extends RecyclerView.Adapter<Album_NXB_Adapter.Vi
     FirebaseFirestore firebaseFirestore;
     StorageReference storageReference;
 
-    public Album_NXB_Adapter(Context context, List<Marketing> dsSach, List<String> dsHinhAnh) {
+    public Album_NXB_Adapter(Context context, List<Marketing> dsSach) {
         this.context = context;
         this.listBook = dsSach;
-        this.dsHinhAnh = dsHinhAnh;
+        dsHinhAnh = new ArrayList<>();
         dsBookName = new ArrayList<>();
-        for (int i = 0; i < dsHinhAnh.size(); i++) {
+        for (int i = 0; i <dsSach.size(); i++) {
             dsBookName.add("a");
+            dsHinhAnh.add("a");
         }
         firebaseFirestore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
@@ -63,9 +65,8 @@ public class Album_NXB_Adapter extends RecyclerView.Adapter<Album_NXB_Adapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull final Album_NXB_Adapter.ViewHolder viewHolder, final int position) {
-        String id_book = listBook.get(position).getBook_id();
         if(dsBookName.get(position).equals("a")) {
-            firebaseFirestore.collection("book").document(id_book).get()
+            firebaseFirestore.collection("book").document(listBook.get(position).getBook_id()).get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -82,11 +83,12 @@ public class Album_NXB_Adapter extends RecyclerView.Adapter<Album_NXB_Adapter.Vi
             viewHolder.titleSach.setText(dsBookName.get(position));
         }
         if(dsHinhAnh.get(position).equals("a")) {
-            storageReference.child("images").child("books").child(id_book + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            storageReference.child("images").child("books").child(listBook.get(position).getBook_id() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     dsHinhAnh.set(position, uri.toString());
-                    Picasso.get().load(uri).into(viewHolder.imageSach, new Callback() {
+                    Log.d("kiemtrahinhanh", uri.toString());
+                    Picasso.get().load(dsHinhAnh.get(position)).into(viewHolder.imageSach, new Callback() {
                         @Override
                         public void onSuccess() {
                             viewHolder.progressBar.setVisibility(View.GONE);

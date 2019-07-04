@@ -157,11 +157,8 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
 
     @Override
     public void hienthidsSachmoi(final List<Marketing> dsSachMoi) {
-        List<String> dsHinhAnh = new ArrayList<>();
-        for (int i = 0; i < dsSachMoi.size(); i++) {
-            dsHinhAnh.add("a");
-        }
-        adapterSachMoi = new Album_NXB_Adapter(getActivity(),dsSachMoi,dsHinhAnh);
+
+        adapterSachMoi = new Album_NXB_Adapter(getActivity(),dsSachMoi);
         hienthiDSSachMoi.setAdapter(adapterSachMoi);
         hienthiDSSachMoi.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         hienthiDSSachMoi.setHasFixedSize(true);
@@ -171,12 +168,8 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
     @Override
     public void hienthidsSachKhuyenDoc(final List<Marketing> dsSachKhuyenDocs, DocumentSnapshot documentSnapshot) {
         dsKhuyenDoc.addAll(dsSachKhuyenDocs);
-         dsHinhAnhKhuyenDoc = new ArrayList<>();
-        for (int i = 0; i < dsKhuyenDoc.size(); i++) {
-            dsHinhAnhKhuyenDoc.add("a");
-        }
         documentCuoiCung = documentSnapshot;
-        adapterSachKhuyenDoc = new Album_NXB_Adapter(getContext(),dsKhuyenDoc,dsHinhAnhKhuyenDoc);
+        adapterSachKhuyenDoc = new Album_NXB_Adapter(getContext(),dsKhuyenDoc);
         hienthiDSSachKhuyenDoc.setAdapter(adapterSachKhuyenDoc);
         layoutManagerSachKhuyenDoc = new GridLayoutManager(getContext(), 3);
         hienthiDSSachKhuyenDoc.setLayoutManager(layoutManagerSachKhuyenDoc);
@@ -201,11 +194,7 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
 
     @Override
     public void hienthidsSachVanHocTrongNuoc( List<Marketing> dsSachVanHocTrongNuoc) {
-        List<String> hinhanhList = new ArrayList<>();
-        for (int i = 0; i <dsSachVanHocTrongNuoc.size() ; i++) {
-            hinhanhList.add("a");
-        }
-        adapterVanHocTrongNuoc = new Album_NXB_Adapter(getContext(), dsSachVanHocTrongNuoc, hinhanhList);
+        adapterVanHocTrongNuoc = new Album_NXB_Adapter(getContext(), dsSachVanHocTrongNuoc);
         hienthiDSSachVanHocTrongNuoc.setAdapter(adapterVanHocTrongNuoc);
         hienthiDSSachVanHocTrongNuoc.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
         hienthiDSSachVanHocTrongNuoc.setHasFixedSize(true);
@@ -247,13 +236,13 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         switch (v.getId()) {
             case R.id.xemtatca_sachmoi:
                 intent = new Intent(getActivity(), MarketingChiTiet.class);
-                intent.putExtra("Title", R.string.sach_moi);
+                intent.putExtra("Title","Sách Mới");
                 intent.putExtra("id","1HjY7wPuA7WM2hsmd8NE");
                 startActivity(intent);
                 break;
             case R.id.xemtatca_vanhoctrongnuoc:
                 intent = new Intent(getActivity(), MarketingChiTiet.class);
-                intent.putExtra("Title", R.string.van_hoc_trongnuoc);
+                intent.putExtra("Title", "Văn học trong nước");
                 intent.putExtra("id","nzqndZ3vpgLlJHz4mjy7");
                 startActivity(intent);
                 break;

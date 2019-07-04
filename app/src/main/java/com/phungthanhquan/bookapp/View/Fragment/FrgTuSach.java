@@ -25,7 +25,7 @@ import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewFragmentTuSach
 import java.util.ArrayList;
 import java.util.List;
 
-public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach, InterfaceLoadMore {
+public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach {
 
     private SwipeRefreshLayout swipeRefreshLayout;
     private RecyclerView recyclerView;
@@ -52,7 +52,7 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach, 
         recyclerView.setAdapter(tusach_adapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(),3);
         recyclerView.setLayoutManager(gridLayoutManager);
-        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,9);
+//        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,9);
         recyclerView.addOnScrollListener(loadMoreScroll);
         presenterLogicTuSach = new PresenterLogicTuSach(this);
         presenterLogicTuSach.xulihienthiDSCuaTuSach();
@@ -83,14 +83,14 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach, 
         });
     }
 
-    @Override
-    public void hienThiLoadMore(final int tongItem) {
-        recyclerView.setNestedScrollingEnabled(false);
-        progressBarLoadMore.setVisibility(View.VISIBLE);
-//        List<ItemBookCase> dsSachLayVe = presenterLogicTuSach.xuliLoadMore(tongItem,progressBarLoadMore,recyclerView);
-//        itemBookCaseList.addAll(dsSachLayVe);
-        tusach_adapter.notifyDataSetChanged();
-    }
+//    @Override
+//    public void hienThiLoadMore(final int tongItem) {
+//        recyclerView.setNestedScrollingEnabled(false);
+//        progressBarLoadMore.setVisibility(View.VISIBLE);
+////        List<ItemBookCase> dsSachLayVe = presenterLogicTuSach.xuliLoadMore(tongItem,progressBarLoadMore,recyclerView);
+////        itemBookCaseList.addAll(dsSachLayVe);
+//        tusach_adapter.notifyDataSetChanged();
+//    }
 
     @Override
     public void onResume() {

@@ -68,11 +68,7 @@ public class ListBookToChoice extends AppCompatActivity implements InterfaceView
 
     @Override
     public void hienThiDanhSach(List<Marketing> itemBookList) {
-        List<String> hinhAnh = new ArrayList<>();
-        for(int i =0;i<itemBookList.size();i++){
-            hinhAnh.add("a");
-        }
-        Album_NXB_Adapter adapter = new Album_NXB_Adapter(this,itemBookList,hinhAnh);
+        Album_NXB_Adapter adapter = new Album_NXB_Adapter(this,itemBookList);
         listBookToChoice.setAdapter(adapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
         listBookToChoice.setLayoutManager(gridLayoutManager);
