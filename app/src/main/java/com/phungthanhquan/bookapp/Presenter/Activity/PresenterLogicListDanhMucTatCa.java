@@ -1,10 +1,14 @@
 package com.phungthanhquan.bookapp.Presenter.Activity;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.phungthanhquan.bookapp.Model.Activity.ModelActivityListDanhMucTatCa;
+import com.phungthanhquan.bookapp.Object.Marketing;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityListBookDanhMucTatCa;
 
 import java.util.List;
@@ -19,17 +23,27 @@ public class PresenterLogicListDanhMucTatCa implements InPresenterListDanhMucTat
         modelActivityListDanhMucTatCa = new ModelActivityListDanhMucTatCa();
     }
 
+
     @Override
-    public void xuliHienThiChiTietDanhMuc() {
-//        List<ItemBook> ds = modelActivityListDanhMucTatCa.layDanhSachSach();
-//        if (ds.size()!=0){
-//            interfaceViewActivityListBookDanhMucTatCa.hienthiDanhSachChitiet(ds);
-//        }
+    public void xuliHienThiChiTietDanhMuc(String id, final SwipeRefreshLayout swipeRefreshLayout) {
+        modelActivityListDanhMucTatCa.getDanhSach(id, new ModelActivityListDanhMucTatCa.CallBackss() {
+            @Override
+            public void myCallBack(List<Marketing> marketingList, DocumentSnapshot documentSnapshot) {
+                if(marketingList.size()>0){
+                    interfaceViewActivityListBookDanhMucTatCa.hienthiDanhSachSach(marketingList,documentSnapshot);
+                    swipeRefreshLayout.setRefreshing(false);
+                }
+            }
+        });
     }
-//    public List<ItemBook> getLoadMore(int soluong, ProgressBar progressBar, RecyclerView recyclerView){
-//        List<ItemBook> itemBooks = modelActivityListDanhMucTatCa.layDanhSachSach();
-//        recyclerView.setNestedScrollingEnabled(true);
-//        progressBar.setVisibility(View.GONE);
-//        return itemBooks;
-//    }
+
+    @Override
+    public void xuliHienThiChiTietDanhMucLoadMore(String id, DocumentSnapshot documentSnapshot) {
+        modelActivityListDanhMucTatCa.getDanhSachLoadMore(id, documentSnapshot, new ModelActivityListDanhMucTatCa.CallBackss() {
+            @Override
+            public void myCallBack(List<Marketing> marketingList, DocumentSnapshot documentSnapshot) {
+                interfaceViewActivityListBookDanhMucTatCa.hienthiDanhSachSachLoadMore(marketingList,documentSnapshot);
+            }
+        });
+    }
 }

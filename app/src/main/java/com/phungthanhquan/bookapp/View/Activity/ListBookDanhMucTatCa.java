@@ -2,7 +2,7 @@ package com.phungthanhquan.bookapp.View.Activity;
 
 import android.content.Intent;
 import android.os.Build;
-import android.os.Handler;
+
 
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,9 +14,10 @@ import android.view.View;
 import android.widget.ProgressBar;
 
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.phungthanhquan.bookapp.Adapter.RecycleView_ItemBook_Adapter;
+import com.phungthanhquan.bookapp.Adapter.Album_NXB_Adapter;
 import com.phungthanhquan.bookapp.Model.LoadMore.InterfaceLoadMore;
 import com.phungthanhquan.bookapp.Model.LoadMore.LoadMoreScroll;
+import com.phungthanhquan.bookapp.Object.Marketing;
 import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLogicListDanhMucTatCa;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityListBookDanhMucTatCa;
@@ -27,13 +28,16 @@ import java.util.List;
 public class ListBookDanhMucTatCa extends AppCompatActivity implements InterfaceViewActivityListBookDanhMucTatCa, InterfaceLoadMore {
 
     private Toolbar toolbar;
-    private RecyclerView recyclerView_ds;
-    private RecycleView_ItemBook_Adapter recycleView_itemBook_adapter;
+    private RecyclerView recyclerView;
+    private Album_NXB_Adapter adapter;
     private SwipeRefreshLayout swipeRefreshLayout;
-//    private List<ItemBook> itemBookList;
+    private List<Marketing> itemBookList;
     private ProgressBar progressBar;
     private PresenterLogicListDanhMucTatCa presenterLogicListDanhMucTatCa;
     private LoadMoreScroll loadMoreScroll;
+    private DocumentSnapshot lastDocument;
+    String ID;
+    String NAME;
 
 
     @Override
@@ -48,10 +52,12 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
         Intent intent = getIntent();
         toolbar = findViewById(R.id.toolbar);
         progressBar = findViewById(R.id.progressDanhMucTatCa);
-        recyclerView_ds = findViewById(R.id.recycle_danhmucchitiet);
+        recyclerView = findViewById(R.id.recycle_danhmucchitiet);
         swipeRefreshLayout = findViewById(R.id.refresh_danhmuc);
-        String danhmuc = intent.getStringExtra("tenDanhMuc");
-         toolbar.setTitle(danhmuc);
+        NAME = intent.getStringExtra("tenDanhMuc");
+        ID = intent.getStringExtra("idDanhMuc");
+        lastDocument = null;
+         toolbar.setTitle(NAME);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             toolbar.setTitleTextColor(getColor(R.color.white));
@@ -59,22 +65,17 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-//        itemBookList = new ArrayList<>();
-//        recycleView_itemBook_adapter = new RecycleView_ItemBook_Adapter(this,itemBookList,0);
-        recyclerView_ds.setAdapter(recycleView_itemBook_adapter);
+        itemBookList = new ArrayList<>();
+        adapter = new Album_NXB_Adapter(this,itemBookList);
+        recyclerView.setAdapter(adapter);
         GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
-        recyclerView_ds.setLayoutManager(gridLayoutManager);
-//        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,12);
-        recyclerView_ds.addOnScrollListener(loadMoreScroll);
+        recyclerView.setLayoutManager(gridLayoutManager);
         presenterLogicListDanhMucTatCa = new PresenterLogicListDanhMucTatCa(this);
-        presenterLogicListDanhMucTatCa.xuliHienThiChiTietDanhMuc();
+        presenterLogicListDanhMucTatCa.xuliHienThiChiTietDanhMuc(ID, swipeRefreshLayout);
+        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,15,lastDocument);
+        recyclerView.addOnScrollListener(loadMoreScroll);
     }
 
-//    @Override
-//    public void hienthiDanhSachChitiet(List<ItemBook> itemBooks) {
-////        itemBookList.addAll(itemBooks);
-//        recycleView_itemBook_adapter.notifyDataSetChanged();
-//    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -89,14 +90,8 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
-                (new Handler()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-//                        itemBookList.clear();
-                        presenterLogicListDanhMucTatCa.xuliHienThiChiTietDanhMuc();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 2000);
+                itemBookList.clear();
+                presenterLogicListDanhMucTatCa.xuliHienThiChiTietDanhMuc(ID,swipeRefreshLayout);
             }
         });
     }
@@ -104,6 +99,26 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
 
     @Override
     public void hienThiLoadMore() {
+        presenterLogicListDanhMucTatCa.xuliHienThiChiTietDanhMucLoadMore(ID,lastDocument);
+    }
 
+
+    @Override
+    public void hienthiDanhSachSach(List<Marketing> itemBooks, DocumentSnapshot documentSnapshot) {
+        itemBookList.addAll(itemBooks);
+        adapter.addMoreImage();
+        adapter.notifyDataSetChanged();
+        lastDocument = documentSnapshot;
+    }
+
+    @Override
+    public void hienthiDanhSachSachLoadMore(List<Marketing> itemBooks, DocumentSnapshot documentSnapshot) {
+        if(itemBooks.size()<15){
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+        itemBookList.addAll(itemBooks);
+        adapter.addMoreImage();
+        adapter.notifyDataSetChanged();
+        lastDocument = documentSnapshot;
     }
 }

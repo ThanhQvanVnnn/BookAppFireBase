@@ -4,35 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context=".View.Activity.BookDetail">
 
-        <LinearLayout
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="wrap_content">
 
-            <com.google.android.material.appbar.AppBarLayout
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar_bookDetail"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="?attr/actionBarSize"
+                android:background="@drawable/bacground_toolbar_chitietsach"
+                android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
-                <androidx.appcompat.widget.Toolbar
-                    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-                    android:id="@+id/toolbar_bookDetail"
-                    android:layout_width="match_parent"
-                    android:layout_height="?attr/actionBarSize"
-                    android:background="@drawable/bacground_toolbar_chitietsach"
-                    >
+            </androidx.appcompat.widget.Toolbar>
+        </com.google.android.material.appbar.AppBarLayout>
 
-                </androidx.appcompat.widget.Toolbar>
-            </com.google.android.material.appbar.AppBarLayout>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refresh_ChiTietSach"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-                android:id="@+id/refresh_ChiTietSach"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                android:layout_height="match_parent">
+
                 <androidx.core.widget.NestedScrollView
                     android:id="@+id/nestedScroll"
                     android:layout_width="match_parent"
@@ -188,35 +190,6 @@
                                 app:layout_constraintTop_toBottomOf="@+id/texview_tentacgia"
                                 app:layout_constraintVertical_bias="0.0" />
 
-                            <TextView
-                                android:id="@+id/textView5"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="5dp"
-                                android:layout_marginTop="16dp"
-                                android:layout_marginEnd="8dp"
-                                android:layout_marginBottom="8dp"
-                                android:text="@string/ngay_phat_hanh"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.0"
-                                app:layout_constraintStart_toEndOf="@+id/cardView_imagebook"
-                                app:layout_constraintTop_toBottomOf="@+id/textView3"
-                                app:layout_constraintVertical_bias="0.0" />
-
-                            <TextView
-                                android:id="@+id/textview_ngayphathanh"
-                                android:layout_width="0dp"
-                                android:layout_height="20dp"
-                                android:layout_marginStart="2dp"
-                                android:layout_marginTop="14dp"
-                                android:layout_marginEnd="5dp"
-                                app:layout_constraintBottom_toBottomOf="parent"
-                                app:layout_constraintEnd_toEndOf="parent"
-                                app:layout_constraintHorizontal_bias="0.0"
-                                app:layout_constraintStart_toEndOf="@+id/textView5"
-                                app:layout_constraintTop_toBottomOf="@+id/textview_tenNXB"
-                                app:layout_constraintVertical_bias="0.0" />
 
                             <TextView
                                 android:id="@+id/textView7"
@@ -231,7 +204,7 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
                                 app:layout_constraintStart_toEndOf="@+id/cardView_imagebook"
-                                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                                app:layout_constraintTop_toBottomOf="@+id/textView3"
                                 app:layout_constraintVertical_bias="0.0" />
 
                             <TextView
@@ -245,7 +218,7 @@
                                 app:layout_constraintEnd_toEndOf="parent"
                                 app:layout_constraintHorizontal_bias="0.0"
                                 app:layout_constraintStart_toEndOf="@+id/textView7"
-                                app:layout_constraintTop_toBottomOf="@+id/textview_ngayphathanh"
+                                app:layout_constraintTop_toBottomOf="@+id/textview_tenNXB"
                                 app:layout_constraintVertical_bias="0.0" />
 
                             <TextView
@@ -338,20 +311,26 @@
                                 android:textStyle="bold" />
                         </com.ms.square.android.expandabletextview.ExpandableTextView>
 
-                        <Button
-                            android:id="@+id/button_chiasecamnhan"
-                            android:layout_width="240dp"
-                            android:layout_height="60dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/background_button_themdanhgia"
-                            android:shadowColor="#16041F"
-                            android:shadowDx="0"
-                            android:shadowDy="0"
-                            android:shadowRadius="5"
-                            android:text="@string/chia_se_cam_nhan"
-                            android:textColor="#FFFFFF" />
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_marginBottom="10dp"
+                            android:gravity="center"
+                            android:text="@string/sachtuongtu"
+                            android:textStyle="bold" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/sachcungtheloai"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp">
+
+                        </androidx.recyclerview.widget.RecyclerView>
+
 
                         <TextView
+                            android:id="@+id/binhluan"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="10dp"
@@ -362,59 +341,81 @@
                         <androidx.recyclerview.widget.RecyclerView
                             android:id="@+id/recycle_danhsachdanhgia"
                             android:layout_width="match_parent"
-                            android:layout_height="250dp"
-                            android:layout_marginBottom="5dp">
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="5dp"
+                            tools:itemCount="3">
 
                         </androidx.recyclerview.widget.RecyclerView>
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginRight="10dp"
-                            android:background="@color/colorPrimary"></View>
 
                         <LinearLayout
                             android:id="@+id/xemthemdanhgia"
                             android:layout_width="match_parent"
-                            android:layout_height="40dp"
-                            android:layout_marginLeft="5dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginRight="5dp"
-                            android:orientation="horizontal">
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
 
-                            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
+                            <View
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginRight="10dp"
+                                android:background="@color/colorPrimary"></View>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="40dp"
                                 android:layout_marginLeft="5dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginRight="5dp"
+                                android:orientation="horizontal">
 
-                                android:scaleType="centerCrop"
-                                android:src="@drawable/next_white_18"
-                                app:fabSize="mini" />
 
-                            <TextView
+                                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+
+                                    android:scaleType="centerCrop"
+                                    android:src="@drawable/next_white_18"
+                                    app:fabSize="mini" />
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="2"
+                                    android:gravity="left|center"
+                                    android:paddingLeft="20dp"
+                                    android:text="@string/xem_them_nhan_xet" />
+
+                                <ImageView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="7"
+                                    android:src="@drawable/next_black_18" />
+
+                            </LinearLayout>
+
+                            <View
                                 android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="2"
-                                android:gravity="left|center"
-                                android:paddingLeft="20dp"
-                                android:text="@string/xem_them_nhan_xet" />
-
-                            <ImageView
-                                android:layout_width="match_parent"
-                                android:layout_height="match_parent"
-                                android:layout_weight="7"
-                                android:src="@drawable/next_black_18" />
-
+                                android:layout_height="1dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="5dp"
+                                android:layout_marginRight="10dp"
+                                android:background="@color/colorPrimary"></View>
                         </LinearLayout>
 
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginRight="10dp"
-                            android:background="@color/colorPrimary"></View>
+                        <Button
+                            android:id="@+id/button_chiasecamnhan"
+                            android:layout_width="240dp"
+                            android:layout_height="60dp"
+                            android:layout_gravity="center"
+                            android:layout_marginTop="10dp"
+                            android:background="@drawable/background_button_themdanhgia"
+                            android:shadowColor="#16041F"
+                            android:shadowDx="0"
+                            android:shadowDy="0"
+                            android:shadowRadius="5"
+                            android:text="@string/chia_se_cam_nhan"
+                            android:textColor="#FFFFFF" />
 
                         <LinearLayout
                             android:layout_width="match_parent"
@@ -422,13 +423,14 @@
 
                     </LinearLayout>
                 </androidx.core.widget.NestedScrollView>
+
                 <androidx.constraintlayout.widget.ConstraintLayout
-                    android:visibility="gone"
                     android:id="@+id/layout_internet_disconnect"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:gravity="center"
                     android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
+                    android:visibility="gone">
 
                     <ImageView
                         android:id="@+id/imageView3"
@@ -446,9 +448,7 @@
                         app:layout_constraintVertical_bias="0.165" />
 
                     <TextView
-                        android:textColor="@color/colorPrimaryDark"
                         android:id="@+id/textView13"
-                        android:textSize="20sp"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
@@ -456,6 +456,8 @@
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
                         android:text="@string/internet"
+                        android:textColor="@color/colorPrimaryDark"
+                        android:textSize="20sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.496"
@@ -464,14 +466,14 @@
                         app:layout_constraintVertical_bias="0.058" />
 
                     <ImageButton
-                        android:background="@color/white"
-                        android:scaleType="fitCenter"
                         android:id="@+id/checkInternet"
                         android:layout_width="81dp"
                         android:layout_height="70dp"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
                         android:layout_marginBottom="8dp"
+                        android:background="@color/white"
+                        android:scaleType="fitCenter"
                         android:src="@drawable/ic_sync_black_24dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -481,10 +483,9 @@
                         app:layout_constraintVertical_bias="0.101" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </FrameLayout>
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        </LinearLayout>
-
+    </LinearLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

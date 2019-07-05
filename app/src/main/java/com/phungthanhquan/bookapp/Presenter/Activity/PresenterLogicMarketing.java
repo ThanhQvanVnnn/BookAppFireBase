@@ -1,6 +1,8 @@
 package com.phungthanhquan.bookapp.Presenter.Activity;
 
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -22,13 +24,14 @@ public class PresenterLogicMarketing implements InPresenterMarketing {
     }
 
     @Override
-    public void xuliHienThiChiTietMarketing() {
+    public void xuliHienThiChiTietMarketing(final SwipeRefreshLayout swipeRefreshLayout) {
 
         marketingModel.getBookList(new MarketingModel.CallBacks() {
             @Override
             public void GetListBook(List<Marketing> marketingList, DocumentSnapshot documentSnapshot) {
                 if(marketingList.size()>0){
                     interfaceViewActivityMarketing.hienThidulieu(marketingList,documentSnapshot);
+                    swipeRefreshLayout.setRefreshing(false);
                 }
             }
 

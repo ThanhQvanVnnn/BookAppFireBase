@@ -16,11 +16,12 @@ public class PresenterLogicXemThemDanhGia implements InPresenterXemThemDanhGia {
     }
 
     @Override
-    public void xuliHienThi() {
-        List<BinhLuan> binhLuanList = detailBookModel.getListBinhLuan();
-        if(binhLuanList.size()!=0){
-            interfaceViewActivityDanhSachDanhGia.hienThiDanhSach(binhLuanList);
-        }
-
+    public void xuliHienThi(String id) {
+        detailBookModel.layDanhSachBinhLuan(id, new DetailBookModel.CallBackLayBinhLuan() {
+            @Override
+            public void LayDSBinhLuan(List<BinhLuan> dsBinhLuan) {
+                interfaceViewActivityDanhSachDanhGia.hienThiDanhSach(dsBinhLuan);
+            }
+        });
     }
 }

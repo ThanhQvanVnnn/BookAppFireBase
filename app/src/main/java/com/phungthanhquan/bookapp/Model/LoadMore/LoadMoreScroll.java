@@ -34,7 +34,7 @@ public class LoadMoreScroll extends RecyclerView.OnScrollListener {
         }else if(layoutManager instanceof GridLayoutManager){
             itemDaLoad = ((GridLayoutManager) layoutManager).findFirstVisibleItemPosition();
         }
-        if(tongItem == (itemLoadTruoc+itemDaLoad)){
+        if(tongItem <= (itemLoadTruoc+itemDaLoad)){
             interfaceLoadMore.hienThiLoadMore();
             Log.d("loadmore",(itemLoadTruoc+itemDaLoad)+"");
         }

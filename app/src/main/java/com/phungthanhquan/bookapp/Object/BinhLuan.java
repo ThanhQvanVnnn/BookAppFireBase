@@ -1,67 +1,66 @@
 package com.phungthanhquan.bookapp.Object;
 
+
+
+import com.google.firebase.Timestamp;
+
+import java.util.Date;
+
 public class BinhLuan {
-    private String idNguoiBinhLuan ;
-    private String anhDaiDien;
-    private String tenNguoiBinhLuan;
-    private int numStart;
-    private String ngayBinhLuan;
-    private String noiDung;
+    private String book_id;
+    private String content;
+    private int star_number;
+    private String time;
+    private String user_id;
 
-    public BinhLuan(String idNguoiBinhLuan, String anhDaiDien, String tenNguoiBinhLuan, int numStart, String ngayBinhLuan, String noiDung) {
-        this.idNguoiBinhLuan = idNguoiBinhLuan;
-        this.anhDaiDien = anhDaiDien;
-        this.tenNguoiBinhLuan = tenNguoiBinhLuan;
-        this.numStart = numStart;
-        this.ngayBinhLuan = ngayBinhLuan;
-        this.noiDung = noiDung;
+    public BinhLuan(String book_id, String content, int star_number, String time, String user_id) {
+        this.book_id = book_id;
+        this.content = content;
+        this.star_number = star_number;
+        this.time = time;
+        this.user_id = user_id;
     }
 
-    public String getTenNguoiBinhLuan() {
-        return tenNguoiBinhLuan;
+    public BinhLuan() {
     }
 
-    public void setTenNguoiBinhLuan(String tenNguoiBinhLuan) {
-        this.tenNguoiBinhLuan = tenNguoiBinhLuan;
+    public String getBook_id() {
+        return book_id;
     }
 
-    public String getIdNguoiBinhLuan() {
-        return idNguoiBinhLuan;
+    public void setBook_id(String book_id) {
+        this.book_id = book_id;
     }
 
-    public void setIdNguoiBinhLuan(String idNguoiBinhLuan) {
-        this.idNguoiBinhLuan = idNguoiBinhLuan;
+    public String getContent() {
+        return content;
     }
 
-    public String getAnhDaiDien() {
-        return anhDaiDien;
+    public void setContent(String content) {
+        this.content = content;
     }
 
-    public void setAnhDaiDien(String anhDaiDien) {
-        this.anhDaiDien = anhDaiDien;
+    public int getStar_number() {
+        return star_number;
     }
 
-    public int getNumStart() {
-        return numStart;
+    public void setStar_number(int star_number) {
+        this.star_number = star_number;
     }
 
-    public void setNumStart(int numStart) {
-        this.numStart = numStart;
+    public String getTime() {
+        return time;
     }
 
-    public String getNgayBinhLuan() {
-        return ngayBinhLuan;
+    public void setTime(String time) {
+        this.time = time;
     }
 
-    public void setNgayBinhLuan(String ngayBinhLuan) {
-        this.ngayBinhLuan = ngayBinhLuan;
+    public String getUser_id() {
+        return user_id;
     }
 
-    public String getNoiDung() {
-        return noiDung;
-    }
-
-    public void setNoiDung(String noiDung) {
-        this.noiDung = noiDung;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 }

@@ -1,37 +1,69 @@
 package com.phungthanhquan.bookapp.Model.Activity;
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.phungthanhquan.bookapp.Model.Fragment.DanhMucModel;
+import com.phungthanhquan.bookapp.Object.Marketing;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class ModelActivityListDanhMucTatCa {
-//    private List<ItemBook> itemBookList;
-//
-//    public  List<ItemBook> layDanhSachSach(){
-//        itemBookList = new ArrayList<>();
-//        ItemBook itemBook1 = new ItemBook("Hoa vàng trên đồi cỏ",
-//                "https://webtruyen.com/public/images/toithayhoavangtrencoxanh1woCMXi6Ln.jpg",
-//                "15");
-//        ItemBook itemBook2 = new ItemBook("Nhà Giả Kim",
-//                "https://www.fahasa.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/8/9/8935235213746.jpg",
-//                "15");
-//        ItemBook itemBook3 = new ItemBook("Quảng gánh lo vui mà sống",
-//                "https://nhanvan.vn/images/detailed/8/8935086828410.jpg",
-//                "15");
-//        ItemBook itemBook4 = new ItemBook("Khi lỗi thuộc về những vì sao",
-//                "https://www.fahasa.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/k/h/khi-loi-thuoc-ve-nhung-vi-sao-b.jpg",
-//                "15");
-//        itemBookList.add(itemBook1);
-//        itemBookList.add(itemBook2);
-//        itemBookList.add(itemBook3);
-//        itemBookList.add(itemBook4);
-//        itemBookList.add(itemBook1);
-//        itemBookList.add(itemBook2);
-//        itemBookList.add(itemBook3);
-//        itemBookList.add(itemBook4);
-//        itemBookList.add(itemBook1);
-//        itemBookList.add(itemBook2);
-//        itemBookList.add(itemBook3);
-//        itemBookList.add(itemBook4);
-//        return itemBookList;
-//    }
+    FirebaseFirestore firebaseFirestore;
+
+    public ModelActivityListDanhMucTatCa() {
+        firebaseFirestore = FirebaseFirestore.getInstance();
+    }
+
+    public interface CallBackss{
+        void myCallBack(List<Marketing> marketingList, DocumentSnapshot documentSnapshot);
+    }
+    public void getDanhSach(String id, final CallBackss callBackss){
+        firebaseFirestore.collection("book").whereEqualTo("category_id",id).limit(15).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    List<Marketing> marketingList = new ArrayList<>();
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot queryDocumentSnapshot:task.getResult()){
+                                Marketing marketing = new Marketing();
+                                marketing.setBook_id(queryDocumentSnapshot.getId());
+                                marketing.setMarketing_id((String) queryDocumentSnapshot.get("category_id"));
+                                marketingList.add(marketing);
+                            }
+                            if(task.getResult().size()!=0) {
+                                DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                                callBackss.myCallBack(marketingList, documentSnapshot);
+                            }
+                        }
+                    }
+                });
+    }
+    public void getDanhSachLoadMore(String id,DocumentSnapshot documentSnapshot, final CallBackss callBackss){
+        firebaseFirestore.collection("book").whereEqualTo("category_id",id).limit(15).startAfter(documentSnapshot).get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    List<Marketing> marketingList = new ArrayList<>();
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if(task.isSuccessful()){
+                            for(QueryDocumentSnapshot queryDocumentSnapshot:task.getResult()){
+                                Marketing marketing = new Marketing();
+                                marketing.setBook_id(queryDocumentSnapshot.getId());
+                                marketing.setMarketing_id((String) queryDocumentSnapshot.get("category_id"));
+                                marketingList.add(marketing);
+                            }
+                            if(task.getResult().size()!=0) {
+                                DocumentSnapshot documentSnapshot = task.getResult().getDocuments().get(task.getResult().size() - 1);
+                                callBackss.myCallBack(marketingList, documentSnapshot);
+                            }
+                        }
+                    }
+                });
+    }
 }

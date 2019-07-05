@@ -1,120 +1,118 @@
 package com.phungthanhquan.bookapp.Object;
 
 public class Book {
-    private int id_sach;
-    private String hinhanh_sach;
-    private String ten_sach;
-    private String ten_tacgia;
-    private String NXB;
-    private int so_trang;
-    private String ngayphathanh;
-    private int giatien_sach;
-    private int sosao_danhgia;
-    private String noidung_sach;
-    private int soluong_danhgia;
+    private String id;
+    private String author_name;
+    private String category_id;
+    private String publisher_name;
+    private int comment_number;
+    private String introduce;
+    private String name;
+    private int page_number;
+    private Float price;
+    private String publisher_id;
+    private Float star_average;
+
+    public String getPublisher_name() {
+        return publisher_name;
+    }
+
+    public void setPublisher_name(String publisher_name) {
+        this.publisher_name = publisher_name;
+    }
 
     public Book() {
     }
 
-    public Book(int id_sach, String hinhanh_sach, String ten_sach, String ten_tacgia, String NXB, int so_trang, String ngayphathanh, int giatien_sach, int sosao_danhgia, String noidung_sach, int soluong_danhgia) {
-        this.id_sach = id_sach;
-        this.hinhanh_sach = hinhanh_sach;
-        this.ten_sach = ten_sach;
-        this.ten_tacgia = ten_tacgia;
-        this.NXB = NXB;
-        this.so_trang = so_trang;
-        this.ngayphathanh = ngayphathanh;
-        this.giatien_sach = giatien_sach;
-        this.sosao_danhgia = sosao_danhgia;
-        this.noidung_sach = noidung_sach;
-        this.soluong_danhgia = soluong_danhgia;
+    public Book(String author_name, String category_id, int comment_number, String introduce, String name, int page_number, Float price, String publisher_id, Float star_average) {
+        this.author_name = author_name;
+        this.category_id = category_id;
+        this.comment_number = comment_number;
+        this.introduce = introduce;
+        this.name = name;
+        this.page_number = page_number;
+        this.price = price;
+        this.publisher_id = publisher_id;
+        this.star_average = star_average;
     }
 
-    public String getTen_tacgia() {
-        return ten_tacgia;
+    public String getId() {
+        return id;
     }
 
-    public void setTen_tacgia(String ten_tacgia) {
-        this.ten_tacgia = ten_tacgia;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public String getNXB() {
-        return NXB;
+    public String getAuthor_name() {
+        return author_name;
     }
 
-    public void setNXB(String NXB) {
-        this.NXB = NXB;
+    public void setAuthor_name(String author_name) {
+        this.author_name = author_name;
     }
 
-    public int getSo_trang() {
-        return so_trang;
+    public String getCategory_id() {
+        return category_id;
     }
 
-    public void setSo_trang(int so_trang) {
-        this.so_trang = so_trang;
+    public void setCategory_id(String category_id) {
+        this.category_id = category_id;
     }
 
-    public String getNgayphathanh() {
-        return ngayphathanh;
+    public int getComment_number() {
+        return comment_number;
     }
 
-    public void setNgayphathanh(String ngayphathanh) {
-        this.ngayphathanh = ngayphathanh;
+    public void setComment_number(int comment_number) {
+        this.comment_number = comment_number;
     }
 
-    public int getId_sach() {
-        return id_sach;
+    public String getIntroduce() {
+        return introduce;
     }
 
-    public void setId_sach(int id_sach) {
-        this.id_sach = id_sach;
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
     }
 
-    public String getHinhanh_sach() {
-        return hinhanh_sach;
+    public String getName() {
+        return name;
     }
 
-    public void setHinhanh_sach(String hinhanh_sach) {
-        this.hinhanh_sach = hinhanh_sach;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public String getTen_sach() {
-        return ten_sach;
+    public int getPage_number() {
+        return page_number;
     }
 
-    public void setTen_sach(String ten_sach) {
-        this.ten_sach = ten_sach;
+    public void setPage_number(int page_number) {
+        this.page_number = page_number;
     }
 
-    public int getGiatien_sach() {
-        return giatien_sach;
+    public Float getPrice() {
+        return price;
     }
 
-    public void setGiatien_sach(int giatien_sach) {
-        this.giatien_sach = giatien_sach;
+    public void setPrice(Float price) {
+        this.price = price;
     }
 
-    public int getSosao_danhgia() {
-        return sosao_danhgia;
+    public String getPublisher_id() {
+        return publisher_id;
     }
 
-    public void setSosao_danhgia(int sosao_danhgia) {
-        this.sosao_danhgia = sosao_danhgia;
+    public void setPublisher_id(String publisher_id) {
+        this.publisher_id = publisher_id;
     }
 
-    public String getNoidung_sach() {
-        return noidung_sach;
+    public Float getStar_average() {
+        return star_average;
     }
 
-    public void setNoidung_sach(String noidung_sach) {
-        this.noidung_sach = noidung_sach;
-    }
-
-    public int getSoluong_danhgia() {
-        return soluong_danhgia;
-    }
-
-    public void setSoluong_danhgia(int soluong_danhgia) {
-        this.soluong_danhgia = soluong_danhgia;
+    public void setStar_average(Float star_average) {
+        this.star_average = star_average;
     }
 }

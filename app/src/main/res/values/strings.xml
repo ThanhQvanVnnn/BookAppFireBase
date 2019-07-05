@@ -102,4 +102,5 @@
     <string name="dangnhapthatbai">Đăng nhập thất bại!</string>
     <string name="resetpass">Vui lòng kiểm tra mail để đổi mật khẩu !</string>
     <string name ="dangtaidulieu">Đang tải dữ liệu !</string>
+    <string name="sachtuongtu">Sách cùng thể loại</string>
 </resources>

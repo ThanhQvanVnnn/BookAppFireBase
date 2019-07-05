@@ -18,6 +18,7 @@ import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLogicXemThemDanhGi
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityDanhSachDanhGia;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class XemThemDanhGia extends AppCompatActivity implements InterfaceViewActivityDanhSachDanhGia, View.OnClickListener {
@@ -28,18 +29,21 @@ public class XemThemDanhGia extends AppCompatActivity implements InterfaceViewAc
     RecycleView_noidungbinhluan_Adapter recycleView_noidungbinhluan_adapter;
     private Dialog dialogCamNhan;
     PresenterLogicXemThemDanhGia presenterLogicXemThemDanhGia;
+    String BOOK_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_xem_them_danh_gia);
+        BOOK_ID = getIntent().getStringExtra("book_id");
         initControls();
+        dsBinhLuan = new ArrayList<>();
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
-        presenterLogicXemThemDanhGia.xuliHienThi();
+        presenterLogicXemThemDanhGia.xuliHienThi(BOOK_ID);
         chiaSeCamNhan.setOnClickListener(this);
     }
 
@@ -58,8 +62,8 @@ public class XemThemDanhGia extends AppCompatActivity implements InterfaceViewAc
 
     @Override
     public void hienThiDanhSach(List<BinhLuan> binhLuanList) {
-        dsBinhLuan = binhLuanList;
-        recycleView_noidungbinhluan_adapter = new RecycleView_noidungbinhluan_Adapter(this,dsBinhLuan);
+        dsBinhLuan.addAll(binhLuanList);
+        recycleView_noidungbinhluan_adapter = new RecycleView_noidungbinhluan_Adapter(this,binhLuanList,true,BOOK_ID);
         recyclerView_danhGia.setAdapter(recycleView_noidungbinhluan_adapter);
         recyclerView_danhGia.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         recyclerView_danhGia.setHasFixedSize(false);

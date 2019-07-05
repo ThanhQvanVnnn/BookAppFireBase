@@ -59,7 +59,6 @@ public class MarketingChiTiet extends AppCompatActivity implements InterfaceView
         gridLayoutManager = new GridLayoutManager(this,3);
         String title = intent.getStringExtra("Title");
         ID_MARKETING = intent.getStringExtra("id");
-        Toast.makeText(this, ID_MARKETING, Toast.LENGTH_SHORT).show();
         lastDocument = null;
         toolbar.setTitle(title);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -71,7 +70,7 @@ public class MarketingChiTiet extends AppCompatActivity implements InterfaceView
         itemBooks = new ArrayList<>();
 
         presenterLogicMarketing = new PresenterLogicMarketing(this,ID_MARKETING);
-        presenterLogicMarketing.xuliHienThiChiTietMarketing();
+        presenterLogicMarketing.xuliHienThiChiTietMarketing(swipeRefreshLayout);
         loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,9,lastDocument);
         recyclerView.addOnScrollListener(loadMoreScroll);
 
@@ -115,13 +114,8 @@ public class MarketingChiTiet extends AppCompatActivity implements InterfaceView
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
-                (new Handler()).postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        presenterLogicMarketing.xuliHienThiChiTietMarketing();
-                        swipeRefreshLayout.setRefreshing(false);
-                    }
-                }, 2000);
+                itemBooks.clear();
+                presenterLogicMarketing.xuliHienThiChiTietMarketing(swipeRefreshLayout);
             }
         });
     }

@@ -3,6 +3,7 @@ package com.phungthanhquan.bookapp.Presenter.Activity;
 import com.phungthanhquan.bookapp.Model.Activity.DetailBookModel;
 import com.phungthanhquan.bookapp.Object.BinhLuan;
 import com.phungthanhquan.bookapp.Object.Book;
+import com.phungthanhquan.bookapp.Object.Marketing;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityDetailBook;
 
 import java.util.List;
@@ -19,16 +20,33 @@ public class PresenterBookDetail implements InPresenterBookDetail {
 
     @Override
     public void xuliHienThiSach(String id) {
-        Book book = detailBookModel.getBook();
-        if(book!=null)
-        interfaceViewActivityDetailBook.hienThiNoiDungSach(book);
+      detailBookModel.layChiTietSach(id, new DetailBookModel.CallBackChiTietSach() {
+          @Override
+          public void LayChiTietSach(Book book) {
+              interfaceViewActivityDetailBook.hienThiNoiDungSach(book);
+          }
+      });
     }
 
     @Override
     public void xuliHienThiDsDanhGia(String id) {
-        List<BinhLuan> binhLuans = detailBookModel.getListBinhLuan();
-        if(binhLuans.size()!=0){
-            interfaceViewActivityDetailBook.hienThiDsDanhGia(binhLuans);
-        }
+        detailBookModel.layDanhSachBinhLuan(id, new DetailBookModel.CallBackLayBinhLuan() {
+            @Override
+            public void LayDSBinhLuan(List<BinhLuan> dsBinhLuan) {
+                    interfaceViewActivityDetailBook.hienThiDsDanhGia(dsBinhLuan);
+            }
+        });
+    }
+
+    @Override
+    public void xuliHienThidsSachCungTheLoai(String category_id) {
+        detailBookModel.layDanhSachCungTheLoai(category_id, new DetailBookModel.CallBackLayCungTheLoai() {
+            @Override
+            public void LayDSSach(List<Marketing> marketingList) {
+                if(marketingList.size()>0) {
+                    interfaceViewActivityDetailBook.hienThiDsSachCungTheLoai(marketingList);
+                }
+            }
+        });
     }
 }

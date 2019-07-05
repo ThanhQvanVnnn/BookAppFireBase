@@ -13,8 +13,11 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import com.google.api.LogDescriptor;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.phungthanhquan.bookapp.Adapter.Album_NXB_Adapter;
 import com.phungthanhquan.bookapp.Adapter.RecycleView_ItemBook_Adapter;
+import com.phungthanhquan.bookapp.Model.LoadMore.InterfaceLoadMore;
+import com.phungthanhquan.bookapp.Model.LoadMore.LoadMoreScroll;
 import com.phungthanhquan.bookapp.Object.Album_BookCase;
 import com.phungthanhquan.bookapp.Object.Marketing;
 import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLogicListBookToChoice;
@@ -25,12 +28,18 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ListBookToChoice extends AppCompatActivity implements InterfaceViewActivityListBookToChoice {
+public class ListBookToChoice extends AppCompatActivity implements InterfaceViewActivityListBookToChoice, InterfaceLoadMore {
     private Toolbar toolbar;
     private RecyclerView listBookToChoice;
     private ImageView collapsingToolbarLayout;
     private ImageView image;
     private PresenterLogicListBookToChoice presenterLogicListBookToChoice;
+    private LoadMoreScroll loadMoreScroll;
+    private List<Marketing> dsMarketing;
+    private DocumentSnapshot lastDocument;
+    private Album_NXB_Adapter adapter;
+    Boolean album;
+    String id;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,18 +55,25 @@ public class ListBookToChoice extends AppCompatActivity implements InterfaceView
         image = findViewById(R.id.image_listbooktochoice);
         Intent intent =getIntent();
         String image_get =intent.getStringExtra("image");
-        String id = intent.getStringExtra("id");
+         id = intent.getStringExtra("id");
         String title = intent.getStringExtra("title");
-        Boolean album = intent.getBooleanExtra("album",false);
+        album = intent.getBooleanExtra("album",false);
         toolbar.setTitle(title);
         setSupportActionBar(toolbar);
         if(getSupportActionBar()!=null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }
-
+        lastDocument = null;
         Picasso.get().load(image_get).into(image);
         presenterLogicListBookToChoice = new PresenterLogicListBookToChoice(this);
         presenterLogicListBookToChoice.hienThiDanhSach(album,id);
+        dsMarketing = new ArrayList<>();
+        adapter = new Album_NXB_Adapter(this,dsMarketing);
+        listBookToChoice.setAdapter(adapter);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
+        listBookToChoice.setLayoutManager(gridLayoutManager);
+        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,15,lastDocument);
+        listBookToChoice.addOnScrollListener(loadMoreScroll);
     }
 
     @Override
@@ -67,10 +83,25 @@ public class ListBookToChoice extends AppCompatActivity implements InterfaceView
     }
 
     @Override
-    public void hienThiDanhSach(List<Marketing> itemBookList) {
-        Album_NXB_Adapter adapter = new Album_NXB_Adapter(this,itemBookList);
-        listBookToChoice.setAdapter(adapter);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
-        listBookToChoice.setLayoutManager(gridLayoutManager);
+    public void hienThiDanhSach(List<Marketing> itemBookList, DocumentSnapshot documentSnapshot) {
+       dsMarketing.addAll(itemBookList);
+       lastDocument = documentSnapshot;
+       adapter.addMoreImage();
+       adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void hienThiDanhSachLoadMore(List<Marketing> itemBookList, DocumentSnapshot documentSnapshot) {
+        if(itemBookList.size()!=0){
+            dsMarketing.addAll(itemBookList);
+            adapter.addMoreImage();
+            adapter.notifyDataSetChanged();
+            lastDocument = documentSnapshot;
+        }
+    }
+
+    @Override
+    public void hienThiLoadMore() {
+        presenterLogicListBookToChoice.hienThiDanhSachLoadMore(id,album,lastDocument);
     }
 }
