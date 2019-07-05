@@ -26,6 +26,7 @@ import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityMarketing;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MarketingChiTiet extends AppCompatActivity implements InterfaceViewActivityMarketing, InterfaceLoadMore {
@@ -71,7 +72,7 @@ public class MarketingChiTiet extends AppCompatActivity implements InterfaceView
 
         presenterLogicMarketing = new PresenterLogicMarketing(this,ID_MARKETING);
         presenterLogicMarketing.xuliHienThiChiTietMarketing();
-        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,6,lastDocument);
+        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,9,lastDocument);
         recyclerView.addOnScrollListener(loadMoreScroll);
 
     }
@@ -96,15 +97,14 @@ public class MarketingChiTiet extends AppCompatActivity implements InterfaceView
 
     @Override
     public void hienThiDuLieuLoadMore(List<Marketing> itemBookList, DocumentSnapshot documentSnapshot) {
-        if(itemBookList.size()!=0) {
             if (itemBookList.size() < 6) {
                 progressBar.setVisibility(View.INVISIBLE);
             }
+            lastDocument = documentSnapshot;
             itemBooks.addAll(itemBookList);
             adapter.addMoreImage();
             adapter.notifyDataSetChanged();
-            lastDocument = documentSnapshot;
-        }
+
     }
 
     public void refresh(){

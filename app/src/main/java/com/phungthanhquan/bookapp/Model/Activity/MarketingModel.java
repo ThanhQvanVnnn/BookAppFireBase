@@ -29,7 +29,7 @@ public class MarketingModel {
 
     public void getBookList(final CallBacks callBack){
         firebaseFirestore.collection("marketing_bookcase")
-                .whereEqualTo("marketing_id",this.id_marketing).limit(6).get()
+                .whereEqualTo("marketing_id",this.id_marketing).limit(15).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -50,7 +50,7 @@ public class MarketingModel {
     }
     public void getBookListLoadMore(DocumentSnapshot documentSnapshot, final CallBacks callBacks){
         firebaseFirestore.collection("marketing_bookcase") .whereEqualTo("marketing_id",this.id_marketing)
-                .startAfter(documentSnapshot).limit(6).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                .startAfter(documentSnapshot).limit(15).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 DocumentSnapshot documentSnapshot;

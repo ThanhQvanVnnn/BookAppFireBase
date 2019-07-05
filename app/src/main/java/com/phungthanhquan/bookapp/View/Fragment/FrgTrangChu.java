@@ -181,15 +181,13 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         if(dsSachKhuyenDoc.size()<6){
             progressBarLoadMoreKhuyenDoc.setVisibility(View.INVISIBLE);
             hienthiDSSachKhuyenDoc.setNestedScrollingEnabled(false);
-            documentCuoiCung = documentSnapshot;
         }
-        else {
             dsKhuyenDoc.addAll(dsSachKhuyenDoc);
             documentCuoiCung = documentSnapshot;
             adapterSachKhuyenDoc.addMoreImage();
             adapterSachKhuyenDoc.notifyDataSetChanged();
             hienthiDSSachKhuyenDoc.setNestedScrollingEnabled(true);
-        }
+
     }
 
     @Override

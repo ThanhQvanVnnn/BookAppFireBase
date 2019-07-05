@@ -31,6 +31,7 @@ import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Album_NXB_Adapter extends RecyclerView.Adapter<Album_NXB_Adapter.ViewHolder> {
@@ -46,6 +47,7 @@ public class Album_NXB_Adapter extends RecyclerView.Adapter<Album_NXB_Adapter.Vi
         this.listBook = dsSach;
         dsHinhAnh = new ArrayList<>();
         dsBookName = new ArrayList<>();
+        Collections.shuffle(listBook);
         for (int i = 0; i <dsSach.size(); i++) {
             dsBookName.add("a");
             dsHinhAnh.add("a");
@@ -65,47 +67,47 @@ public class Album_NXB_Adapter extends RecyclerView.Adapter<Album_NXB_Adapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull final Album_NXB_Adapter.ViewHolder viewHolder, final int position) {
-        if(dsBookName.get(position).equals("a")) {
+        if(dsBookName.get(position).equals("a")&&dsHinhAnh.get(position).equals("a")) {
             firebaseFirestore.collection("book").document(listBook.get(position).getBook_id()).get()
                     .addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                             if (task.isSuccessful()) {
                                 DocumentSnapshot document = task.getResult();
+
                                 if (document.exists()) {
                                     dsBookName.set(position,(String) document.get("name"));
-                                    viewHolder.titleSach.setText(dsBookName.get(position));
+                                    storageReference.child("images").child("books").child(listBook.get(position).getBook_id() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            dsHinhAnh.set(position, uri.toString());
+                                            Log.d("kiemtrahinhanh", uri.toString());
+                                            Picasso.get().load(dsHinhAnh.get(position)).into(viewHolder.imageSach, new Callback() {
+                                                @Override
+                                                public void onSuccess() {
+                                                    viewHolder.progressBar.setVisibility(View.GONE);
+                                                    viewHolder.titleSach.setText(dsBookName.get(position));
+                                                }
+
+                                                @Override
+                                                public void onError(Exception e) {
+
+                                                }
+                                            });
+                                        }
+                                    });
+
+
                                 }
                             }
                         }
                     });
-        }else {
-            viewHolder.titleSach.setText(dsBookName.get(position));
-        }
-        if(dsHinhAnh.get(position).equals("a")) {
-            storageReference.child("images").child("books").child(listBook.get(position).getBook_id() + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                @Override
-                public void onSuccess(Uri uri) {
-                    dsHinhAnh.set(position, uri.toString());
-                    Log.d("kiemtrahinhanh", uri.toString());
-                    Picasso.get().load(dsHinhAnh.get(position)).into(viewHolder.imageSach, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            viewHolder.progressBar.setVisibility(View.GONE);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-
-                        }
-                    });
-                }
-            });
-        }else {
+        } else {
             Picasso.get().load(dsHinhAnh.get(position)).into(viewHolder.imageSach, new Callback() {
                 @Override
                 public void onSuccess() {
                     viewHolder.progressBar.setVisibility(View.GONE);
+                    viewHolder.titleSach.setText(dsBookName.get(position));
                 }
 
                 @Override
