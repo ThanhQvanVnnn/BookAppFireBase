@@ -62,7 +62,7 @@ public class PlashScreen extends AppCompatActivity {
                                     ActivityOptions options = null;
                                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                                         options = (ActivityOptions) ActivityOptions.makeSceneTransitionAnimation(PlashScreen.this,
-                                                logo,"vanchuyenlogo");
+                                                logo,"-");
                                     }
                                     startActivity(intent, options.toBundle());
                                 }

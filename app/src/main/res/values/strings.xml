@@ -103,4 +103,6 @@
     <string name="resetpass">Vui lòng kiểm tra mail để đổi mật khẩu !</string>
     <string name ="dangtaidulieu">Đang tải dữ liệu !</string>
     <string name="sachtuongtu">Sách cùng thể loại</string>
+    <string name="vuilongnhapsosao">Vui lòng đánh giá số sao !</string>
+    <string name="binhluanthanhcong">Bình luận thành công</string>
 </resources>

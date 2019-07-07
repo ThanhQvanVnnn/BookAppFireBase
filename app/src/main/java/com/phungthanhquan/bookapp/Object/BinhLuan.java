@@ -4,6 +4,9 @@ package com.phungthanhquan.bookapp.Object;
 
 import com.google.firebase.Timestamp;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class BinhLuan {
@@ -63,4 +66,6 @@ public class BinhLuan {
     public void setUser_id(String user_id) {
         this.user_id = user_id;
     }
+
+
 }

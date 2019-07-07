@@ -81,7 +81,6 @@ public class Album_NXB_Adapter extends RecyclerView.Adapter<Album_NXB_Adapter.Vi
                                         @Override
                                         public void onSuccess(Uri uri) {
                                             dsHinhAnh.set(position, uri.toString());
-                                            Log.d("kiemtrahinhanh", uri.toString());
                                             Picasso.get().load(dsHinhAnh.get(position)).into(viewHolder.imageSach, new Callback() {
                                                 @Override
                                                 public void onSuccess() {

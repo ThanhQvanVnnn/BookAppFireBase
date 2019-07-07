@@ -36,6 +36,9 @@ public class DetailBookModel {
     public interface CallBackLayBinhLuan{
         void LayDSBinhLuan(List<BinhLuan> dsBinhLuan);
     }
+    public interface CallBackThemBinhLuan{
+        void ThemBinhLuan(Boolean bo);
+    }
 
     public void layChiTietSach(String id, final CallBackChiTietSach callBackChiTietSach){
         firebaseFirestore.collection("book").document(id).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -92,6 +95,15 @@ public class DetailBookModel {
             public void onFailure(@NonNull Exception e) {
                 List<BinhLuan> binhLuanList = new ArrayList<>();
                 callBackLayBinhLuan.LayDSBinhLuan(binhLuanList);
+            }
+        });
+    }
+
+    public void ThemBinhLuan(BinhLuan binhLuan, final CallBackThemBinhLuan callBackThemBinhLuan){
+        firebaseFirestore.collection("comment").document().set(binhLuan).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                callBackThemBinhLuan.ThemBinhLuan(true);
             }
         });
     }

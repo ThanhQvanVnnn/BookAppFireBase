@@ -36,7 +36,6 @@ public class LoadMoreScroll extends RecyclerView.OnScrollListener {
         }
         if(tongItem <= (itemLoadTruoc+itemDaLoad)){
             interfaceLoadMore.hienThiLoadMore();
-            Log.d("loadmore",(itemLoadTruoc+itemDaLoad)+"");
         }
 
     }

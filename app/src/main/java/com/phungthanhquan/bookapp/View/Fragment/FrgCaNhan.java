@@ -22,6 +22,7 @@ import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.firebase.auth.FirebaseAuth;
+import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
 import com.phungthanhquan.bookapp.Object.User;
 import com.phungthanhquan.bookapp.Presenter.Fragment.PresenterLogicCaNhan;
 import com.phungthanhquan.bookapp.R;
@@ -144,6 +145,8 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
                 intent = new Intent(getContext(), Login.class);
                 startActivity(intent);
                 String packetName = getActivity().getPackageName();
+                DbRoomAccess.getInstance(getContext()).userRentAccess().deleteAll();
+                DbRoomAccess.getInstance(getContext()).bookcaseAccess().deleteAll();
                 File f = new File(
                         "/data/data/" + packetName + "/shared_prefs/User_Info.xml");
                 f.delete();

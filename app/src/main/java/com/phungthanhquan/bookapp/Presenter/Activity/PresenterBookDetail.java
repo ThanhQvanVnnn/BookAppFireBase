@@ -1,5 +1,7 @@
 package com.phungthanhquan.bookapp.Presenter.Activity;
 
+import android.app.Dialog;
+
 import com.phungthanhquan.bookapp.Model.Activity.DetailBookModel;
 import com.phungthanhquan.bookapp.Object.BinhLuan;
 import com.phungthanhquan.bookapp.Object.Book;
@@ -45,6 +47,18 @@ public class PresenterBookDetail implements InPresenterBookDetail {
             public void LayDSSach(List<Marketing> marketingList) {
                 if(marketingList.size()>0) {
                     interfaceViewActivityDetailBook.hienThiDsSachCungTheLoai(marketingList);
+                }
+            }
+        });
+    }
+
+    @Override
+    public void xuliThemBinhLuan(BinhLuan binhLuan) {
+        detailBookModel.ThemBinhLuan(binhLuan, new DetailBookModel.CallBackThemBinhLuan() {
+            @Override
+            public void ThemBinhLuan(Boolean bo) {
+                if(bo){
+                    interfaceViewActivityDetailBook.hienThiThemBinhLuan();
                 }
             }
         });

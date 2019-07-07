@@ -10,4 +10,5 @@ public interface InterfaceViewActivityDetailBook {
     void hienThiNoiDungSach(Book book);
     void hienThiDsDanhGia(List<BinhLuan> dsDanhGia);
     void hienThiDsSachCungTheLoai(List<Marketing> dsSach);
+    void hienThiThemBinhLuan();
 }

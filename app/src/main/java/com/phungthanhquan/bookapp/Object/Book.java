@@ -1,5 +1,8 @@
 package com.phungthanhquan.bookapp.Object;
 
+
+import com.google.firebase.firestore.Exclude;
+
 public class Book {
     private String id;
     private String author_name;
@@ -9,9 +12,9 @@ public class Book {
     private String introduce;
     private String name;
     private int page_number;
-    private Float price;
+    private Double price;
     private String publisher_id;
-    private Float star_average;
+    private Double star_average;
 
     public String getPublisher_name() {
         return publisher_name;
@@ -24,7 +27,7 @@ public class Book {
     public Book() {
     }
 
-    public Book(String author_name, String category_id, int comment_number, String introduce, String name, int page_number, Float price, String publisher_id, Float star_average) {
+    public Book(String author_name, String category_id, int comment_number, String introduce, String name, int page_number, Double price, String publisher_id, Double star_average) {
         this.author_name = author_name;
         this.category_id = category_id;
         this.comment_number = comment_number;
@@ -36,12 +39,9 @@ public class Book {
         this.star_average = star_average;
     }
 
+    @Exclude
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getAuthor_name() {
@@ -92,11 +92,11 @@ public class Book {
         this.page_number = page_number;
     }
 
-    public Float getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(Float price) {
+    public void setPrice(Double price) {
         this.price = price;
     }
 
@@ -108,11 +108,11 @@ public class Book {
         this.publisher_id = publisher_id;
     }
 
-    public Float getStar_average() {
+    public Double getStar_average() {
         return star_average;
     }
 
-    public void setStar_average(Float star_average) {
+    public void setStar_average(Double star_average) {
         this.star_average = star_average;
     }
 }

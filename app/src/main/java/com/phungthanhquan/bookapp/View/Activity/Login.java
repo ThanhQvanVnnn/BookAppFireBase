@@ -1,6 +1,7 @@
 package com.phungthanhquan.bookapp.View.Activity;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -47,10 +48,15 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
+import com.phungthanhquan.bookapp.Object.BookCase;
 import com.phungthanhquan.bookapp.Object.User;
+import com.phungthanhquan.bookapp.Object.UserRent;
 import com.phungthanhquan.bookapp.R;
 
 import java.io.ByteArrayOutputStream;
@@ -58,7 +64,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import dmax.dialog.SpotsDialog;
 
@@ -104,7 +112,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
 
                     @Override
                     public void onError(FacebookException exception) {
-                        Log.d("facebook",exception.toString());
+                        Log.d("facebook", exception.toString());
                     }
                 });
         //google
@@ -144,20 +152,20 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-         finish();
+        finish();
     }
 
     @Override
     public void onClick(View v) {
         Intent intent;
-        if(MainActivity.isNetworkConnected(Login.this)) {
+        if (MainActivity.isNetworkConnected(Login.this)) {
             switch (v.getId()) {
                 case R.id.button_Login:
                     String userName = nhap_userName.getText().toString();
                     String password = nhap_passWord.getText().toString();
-                    if(userName.equals("") || password.equals("")){
-                       showAToast(getResources().getString(R.string.notempty));
-                    }else {
+                    if (userName.equals("") || password.equals("")) {
+                        showAToast(getResources().getString(R.string.notempty));
+                    } else {
                         loadingDialog.show();
                         mAuth.signInWithEmailAndPassword(userName, password)
                                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -166,7 +174,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                         if (!task.isSuccessful()) {
                                             // If sign in fails, display a message to the user.
                                             loadingDialog.dismiss();
-                                          showAToast(getString(R.string.dangnhapthatbai));
+                                            showAToast(getString(R.string.dangnhapthatbai));
                                         }
                                     }
                                 });
@@ -189,14 +197,14 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                     signIn();
                     break;
             }
-        }else {
+        } else {
             switch (v.getId()) {
                 case R.id.button_Login:
                 case R.id.texview_fogotPass:
                 case R.id.textview_register:
                 case R.id.facebook:
                 case R.id.google:
-                  showAToast(getResources().getString(R.string.openinternet));
+                    showAToast(getResources().getString(R.string.openinternet));
                     break;
             }
         }
@@ -241,7 +249,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                     .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         DocumentSnapshot document = task.getResult();
                                         if (document.exists()) {
                                             mAuth.addAuthStateListener(Login.this);
@@ -249,17 +257,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                             //
                                             final FirebaseUser user = mAuth.getCurrentUser();
                                             final String uid = mAuth.getUid();
-                                            User userInfo = new User(user.getEmail(),user.getDisplayName(),user.getPhoneNumber(), (float) 0);
+                                            User userInfo = new User(user.getEmail(), user.getDisplayName(), user.getPhoneNumber(), (float) 0);
                                             userInfo.setUser_id(uid);
                                             firebaseFirestore.collection("user").document(userInfo.getUser_id()).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(final Void aVoid) {
-                                                    final StorageReference imageUser = root.child("images").child("users").child(uid+".png");
-                                                    new AsyncTask<Void,Void,Bitmap>(){
+                                                    final StorageReference imageUser = root.child("images").child("users").child(uid + ".png");
+                                                    new AsyncTask<Void, Void, Bitmap>() {
 
                                                         @Override
                                                         protected Bitmap doInBackground(Void... voids) {
-                                                          Bitmap bitmap =  getBitmapFromURL(user.getPhotoUrl().toString());
+                                                            Bitmap bitmap = getBitmapFromURL(user.getPhotoUrl().toString());
                                                             return bitmap;
                                                         }
 
@@ -295,7 +303,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
 
                                             //
                                         }
-                                    }else {
+                                    } else {
                                         Log.d("document", "Failed with: ", task.getException());
                                     }
                                 }
@@ -304,7 +312,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                         } else {
                             // If sign in fails, display a message to the user.
 
-                            Log.d("loisai",task.getException().toString());
+                            Log.d("loisai", task.getException().toString());
                             showAToast(getString(R.string.dangnhapthatbai));
                         }
                     }
@@ -322,7 +330,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                     .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                                 @Override
                                 public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    if(task.isSuccessful()){
+                                    if (task.isSuccessful()) {
                                         DocumentSnapshot document = task.getResult();
                                         if (document.exists()) {
                                             mAuth.addAuthStateListener(Login.this);
@@ -330,17 +338,17 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                             //
                                             final FirebaseUser user = mAuth.getCurrentUser();
                                             final String uid = mAuth.getUid();
-                                            User userInfo = new User(user.getEmail(),user.getDisplayName(),user.getPhoneNumber(), (float) 0);
+                                            User userInfo = new User(user.getEmail(), user.getDisplayName(), user.getPhoneNumber(), (float) 0);
                                             userInfo.setUser_id(uid);
                                             firebaseFirestore.collection("user").document(userInfo.getUser_id()).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
                                                 public void onSuccess(final Void aVoid) {
-                                                    final StorageReference imageUser = root.child("images").child("users").child(uid+".png");
-                                                    new AsyncTask<Void,Void,Bitmap>(){
+                                                    final StorageReference imageUser = root.child("images").child("users").child(uid + ".png");
+                                                    new AsyncTask<Void, Void, Bitmap>() {
 
                                                         @Override
                                                         protected Bitmap doInBackground(Void... voids) {
-                                                            Bitmap bitmap =  getBitmapFromURL(user.getPhotoUrl().toString());
+                                                            Bitmap bitmap = getBitmapFromURL(user.getPhotoUrl().toString());
                                                             return bitmap;
                                                         }
 
@@ -377,7 +385,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
 
                                             //
                                         }
-                                    }else {
+                                    } else {
                                         Log.d("document", "Failed with: ", task.getException());
                                         loadingDialog.dismiss();
                                     }
@@ -394,7 +402,6 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                     }
                 });
     }
-
 
 
     @Override
@@ -414,25 +421,79 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
 
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-        FirebaseUser user = firebaseAuth.getCurrentUser();
-        if(user!=null) {
+        final FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
             SharedPreferences.Editor editor = getSharedPreferences("User_Info", MODE_PRIVATE).edit();
+            editor.putString("name",user.getDisplayName());
+            editor.putString("email",user.getEmail());
+            editor.putString("phone",user.getPhoneNumber());
+            editor.putString("id", user.getUid());
             editor.apply();
-            Intent intent = new Intent(Login.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-            showAToast(getString(R.string.dangnhapthanhcong));
+            final String user_id = user.getUid();
+            firebaseFirestore.collection("user_bookcase").whereEqualTo("user_id", user_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        List<BookCase> dsBookCase = new ArrayList<>();
+                        for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                            if (queryDocumentSnapshot.exists()) {
+                                BookCase bookCase = new BookCase();
+                                bookCase.setId(queryDocumentSnapshot.getId());
+                                bookCase.setBought(queryDocumentSnapshot.getBoolean("isBought"));
+                                bookCase.setUser_id((String) queryDocumentSnapshot.get("user_id"));
+                                bookCase.setBook_id((String) queryDocumentSnapshot.get("book_id"));
+                                dsBookCase.add(bookCase);
+                            }
+                        }
+
+                        for (BookCase bookCase : dsBookCase) {
+                            Log.d("bookcase", bookCase.toString());
+                            insertBookCaseTask(Login.this,bookCase);
+                        }
+                        firebaseFirestore.collection("user_rent").whereEqualTo("user_id",user_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                List<UserRent> userRentList = new ArrayList<>();
+                                if(task.isSuccessful()){
+                                    for(QueryDocumentSnapshot queryDocumentSnapshot1: task.getResult()){
+                                        if(queryDocumentSnapshot1.exists()){
+                                            UserRent userRent = new UserRent();
+                                            userRent.setId(queryDocumentSnapshot1.getId());
+                                            userRent.setRent_id(queryDocumentSnapshot1.getString("rent_id"));
+                                            userRent.setTime_rest(queryDocumentSnapshot1.getString("time_rest"));
+                                            userRent.setUser_id(user_id);
+                                            userRentList.add(userRent);
+                                        }
+                                    }
+                                    for(UserRent userRent: userRentList){
+                                        insertUserRentTask(Login.this,userRent);
+                                    }
+                                }
+                                Intent intent = new Intent(Login.this, MainActivity.class);
+                                startActivity(intent);
+                                loadingDialog.dismiss();
+                                finish();
+                                showAToast(getString(R.string.dangnhapthanhcong));
+                            }
+                        });
+                    }
+                }
+            });
+
         }
     }
-    public void showAToast (String st){ //"Toast toast" is declared in the class
-        try{ toast.getView().isShown();     // true if visible
+
+    public void showAToast(String st) { //"Toast toast" is declared in the class
+        try {
+            toast.getView().isShown();     // true if visible
             toast.setText(st);
         } catch (Exception e) {         // invisible if exception
-            toast = Toast.makeText(this, st,  Toast.LENGTH_SHORT);
+            toast = Toast.makeText(this, st, Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER, 0, 0);
         }
         toast.show();  //finally display it
     }
+
     public static Bitmap getBitmapFromURL(String src) {
         try {
             URL url = new URL(src);
@@ -446,5 +507,28 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
             // Log exception
             return null;
         }
+    }
+    public void insertBookCaseTask(final Context context, final BookCase note) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                DbRoomAccess.getInstance(context).bookcaseAccess().insert(note);
+                return null;
+            }
+        }.execute();
+    }
+    public void insertUserRentTask(final Context context, final UserRent note) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                DbRoomAccess.getInstance(context).userRentAccess().insert(note);
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+            }
+        }.execute();
     }
 }
