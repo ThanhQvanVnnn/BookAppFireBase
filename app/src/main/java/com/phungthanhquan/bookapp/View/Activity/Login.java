@@ -439,7 +439,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                             if (queryDocumentSnapshot.exists()) {
                                 BookCase bookCase = new BookCase();
                                 bookCase.setId(queryDocumentSnapshot.getId());
-                                bookCase.setBought(queryDocumentSnapshot.getBoolean("isBought"));
+                                bookCase.setBought(queryDocumentSnapshot.getBoolean("bought"));
                                 bookCase.setUser_id((String) queryDocumentSnapshot.get("user_id"));
                                 bookCase.setBook_id((String) queryDocumentSnapshot.get("book_id"));
                                 dsBookCase.add(bookCase);
@@ -447,8 +447,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                         }
 
                         for (BookCase bookCase : dsBookCase) {
-                            Log.d("bookcase", bookCase.toString());
-                            insertBookCaseTask(Login.this,bookCase);
+                            DbRoomAccess.getInstance(Login.this).insertBookCaseTask(Login.this,bookCase);
                         }
                         firebaseFirestore.collection("user_rent").whereEqualTo("user_id",user_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                             @Override
@@ -466,7 +465,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                         }
                                     }
                                     for(UserRent userRent: userRentList){
-                                        insertUserRentTask(Login.this,userRent);
+                                       DbRoomAccess.getInstance(Login.this).insertUserRentTask(Login.this,userRent);
                                     }
                                 }
                                 Intent intent = new Intent(Login.this, MainActivity.class);
@@ -508,27 +507,5 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
             return null;
         }
     }
-    public void insertBookCaseTask(final Context context, final BookCase note) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                DbRoomAccess.getInstance(context).bookcaseAccess().insert(note);
-                return null;
-            }
-        }.execute();
-    }
-    public void insertUserRentTask(final Context context, final UserRent note) {
-        new AsyncTask<Void, Void, Void>() {
-            @Override
-            protected Void doInBackground(Void... voids) {
-                DbRoomAccess.getInstance(context).userRentAccess().insert(note);
-                return null;
-            }
 
-            @Override
-            protected void onPostExecute(Void aVoid) {
-                super.onPostExecute(aVoid);
-            }
-        }.execute();
-    }
 }

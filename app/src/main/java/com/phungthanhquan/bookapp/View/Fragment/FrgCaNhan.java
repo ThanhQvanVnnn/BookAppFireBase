@@ -145,8 +145,8 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
                 intent = new Intent(getContext(), Login.class);
                 startActivity(intent);
                 String packetName = getActivity().getPackageName();
-                DbRoomAccess.getInstance(getContext()).userRentAccess().deleteAll();
-                DbRoomAccess.getInstance(getContext()).bookcaseAccess().deleteAll();
+                DbRoomAccess.getInstance(getContext()).deleteAllBookcaseTask(getContext());
+                DbRoomAccess.getInstance(getContext()).deleteAllUserRentTask(getContext());
                 File f = new File(
                         "/data/data/" + packetName + "/shared_prefs/User_Info.xml");
                 f.delete();

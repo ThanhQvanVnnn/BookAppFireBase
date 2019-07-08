@@ -105,4 +105,6 @@
     <string name="sachtuongtu">Sách cùng thể loại</string>
     <string name="vuilongnhapsosao">Vui lòng đánh giá số sao !</string>
     <string name="binhluanthanhcong">Bình luận thành công</string>
+    <string name="damua">Đã mua</string>
+    <string name="dathue">Đọc theo gói thuê</string>
 </resources>

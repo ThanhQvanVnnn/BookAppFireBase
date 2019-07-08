@@ -43,6 +43,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -53,9 +54,14 @@ import com.google.firebase.storage.StorageReference;
 import com.ms.square.android.expandabletextview.ExpandableTextView;
 import com.phungthanhquan.bookapp.Adapter.Album_NXB_Adapter;
 import com.phungthanhquan.bookapp.Adapter.RecycleView_noidungbinhluan_Adapter;
+import com.phungthanhquan.bookapp.Model.ConnectAPI.DownloadAPI;
+import com.phungthanhquan.bookapp.Model.ConnectAPI.DownloadMethodAPI;
+import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
 import com.phungthanhquan.bookapp.Object.BinhLuan;
 import com.phungthanhquan.bookapp.Object.Book;
+import com.phungthanhquan.bookapp.Object.BookCase;
 import com.phungthanhquan.bookapp.Object.Marketing;
+import com.phungthanhquan.bookapp.Object.UserRent;
 import com.phungthanhquan.bookapp.Presenter.Activity.PresenterBookDetail;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityDetailBook;
@@ -80,11 +86,15 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import javax.annotation.Nullable;
 
 import dmax.dialog.SpotsDialog;
 import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 
 public class BookDetail extends AppCompatActivity implements InterfaceViewActivityDetailBook, View.OnClickListener {
@@ -120,23 +130,38 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     private int lenghtFile;
     public AlertDialog loadingDialog;
     Toast toast;
-
     private final String FILENAME_BOOKSTORED = "book_dowload";
     private String BOOK_ID;
+    private String USER_ID;
     private String IMAGE ="";
     private int BINHLUANNUMBER;
     private Double AVERAGE;
     private int CHONSTAR;
+    private String book_link;
 
     private FirebaseFirestore firebaseFirestore;
     private StorageReference storageReference;
     private Book book;
+    private BookCase bookTuSach;
+    private UserRent userRent;
+    private SimpleDateFormat dateFormatter;
+    private Call<ResponseBody> call;
+    private Callback<ResponseBody> callback;
+    private DownloadMethodAPI downloadMethodAPI;
+    private DownloadBookFileTask downloadBookFileTask;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_book_detail);
-        InitControls();
+        try {
+            InitControls();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         RefreshTrang();
         docsach.setOnClickListener(this);
         chiaSeCamNhan.setOnClickListener(this);
@@ -150,10 +175,11 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
             nestedScrollView.setVisibility(View.GONE);
         }
         imageButtonInternet.setOnClickListener(this);
+
     }
 
 
-    private void InitControls() {
+    private void InitControls() throws ExecutionException, InterruptedException {
         detailbook_image = findViewById(R.id.image_detailbook);
         tenSach = findViewById(R.id.textview_tensach);
         ratingSach = findViewById(R.id.raiting_tong);
@@ -179,6 +205,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         imageButtonInternet = findViewById(R.id.checkInternet);
         loadingDialog = new SpotsDialog.Builder().setContext(this).build();
         loadingDialog.setMessage(getResources().getString(R.string.vuilongcho));
+        dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
         Intent intent = getIntent();
         BOOK_ID = intent.getStringExtra("book_id");
         IMAGE = getIntent().getStringExtra("image");
@@ -189,7 +216,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-
+        USER_ID = FirebaseAuth.getInstance().getCurrentUser().getUid();
         presenterBookDetail = new PresenterBookDetail(this);
         dsBinhLuan = new ArrayList<>();
         dsSachCungTheLoai = new ArrayList<>();
@@ -207,9 +234,11 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                 }
             });
         }
+        bookTuSach = DbRoomAccess.getInstance(this).getBookCaseByIDTask(this,BOOK_ID);
+        userRent = DbRoomAccess.getInstance(this).getUserRentByIDTask(this,USER_ID);
         presenterBookDetail.xuliHienThiSach(BOOK_ID);
         presenterBookDetail.xuliHienThiDsDanhGia(BOOK_ID);
-
+        downloadMethodAPI = DownloadAPI.getApiDownload();
     }
 
     @Override
@@ -245,26 +274,54 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     @Override
     public void hienThiNoiDungSach(Book boook) {
         book = boook;
-        if (book != null) {
-            tenSach.setText(book.getName());
-            noidungSach.setText(book.getIntroduce());
-            ratingSach.setRating(book.getStar_average().floatValue());
-            soluongdanhgia.setText(book.getComment_number() + " đánh giá");
-            tentacgia.setText(book.getAuthor_name());
-            nhaxuatban.setText(book.getPublisher_name());
-            sotrang.setText(book.getPage_number() + "");
-            BINHLUANNUMBER = book.getComment_number();
-            AVERAGE = book.getStar_average();
-            DecimalFormat df = new DecimalFormat("###,###.###");
-            df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ITALY));
-            String giatien_format = df.format(book.getPrice());
-            //nếu đã mua sách thì set giá tiền bằng đã mua, set chữ màu xanh lá cây........
 
-            //nếu chưa mua sách
-            giatien.setText(giatien_format + "");
-            menhgia.setPaintFlags(menhgia.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        }
-        presenterBookDetail.xuliHienThidsSachCungTheLoai(book.getCategory_id());
+            if (book != null) {
+                tenSach.setText(book.getName());
+                noidungSach.setText(book.getIntroduce());
+                ratingSach.setRating(book.getStar_average().floatValue());
+                soluongdanhgia.setText(book.getComment_number() + " đánh giá");
+                tentacgia.setText(book.getAuthor_name());
+                nhaxuatban.setText(book.getPublisher_name());
+                sotrang.setText(book.getPage_number() + "");
+                BINHLUANNUMBER = book.getComment_number();
+                AVERAGE = book.getStar_average();
+                DecimalFormat df = new DecimalFormat("###,###.###");
+                df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ITALY));
+                String giatien_format = df.format(book.getPrice());
+                if(bookTuSach==null ) /*chưa mua sách*/ {
+                    if(userRent==null) {
+                        //nếu chưa mua sách
+                        giatien.setText(giatien_format + "");
+                    }else {
+                        if(fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))==false) {
+                            giatien.setText(giatien_format + "");
+                        }else {
+                            giatien.setText(R.string.dathue);
+                            giatien.setTextColor(getResources().getColor(R.color.damuasach));
+                            menhgia.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                }else /*có thấy trong tủ sách*/{
+                    Log.d("bookcasetusach", bookTuSach.toString()+"");
+                    if(bookTuSach.getBought()){
+                        giatien.setText(R.string.damua);
+                        giatien.setTextColor(getResources().getColor(R.color.damuasach));
+                        menhgia.setVisibility(View.INVISIBLE);
+                    }else {
+                        if(fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))==false) {
+                            giatien.setText(giatien_format + "");
+                        }else {
+                            giatien.setText(R.string.dathue);
+                            giatien.setTextColor(getResources().getColor(R.color.damuasach));
+                            menhgia.setVisibility(View.INVISIBLE);
+                        }
+                    }
+                }
+                menhgia.setPaintFlags(menhgia.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            }
+            presenterBookDetail.xuliHienThidsSachCungTheLoai(book.getCategory_id());
+
+
     }
 
     @Override
@@ -417,10 +474,55 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                 }
                 break;
             case R.id.button_docsach:
-                if (MainActivity.isNetworkConnected(this)) {
+                if(MainActivity.isNetworkConnected(this)) {
+                        if(bookTuSach==null)/*không có sách*/{
+                            if(userRent == null) /*kiểm tra thuê - không có*/ {
+                                intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
+                                intent.putExtra("book_id", BOOK_ID);
+                                startActivity(intent);
+                            }else if(fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))==false) /*có thuê nhưng hết hạn*/ {
+                                intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
+                                intent.putExtra("book_id", BOOK_ID);
+                                startActivity(intent);
+                            }else if (fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))==true)/*còn hạn*/ {
+                                vaotrangdoc();
+                                final BookCase bookthue = new BookCase();
+                                bookthue.setBook_id(BOOK_ID);
+                                bookthue.setUser_id(USER_ID);
+                                bookthue.setBought(false);
+                                firebaseFirestore.collection("user_bookcase").add(bookthue).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                    @Override
+                                    public void onSuccess(DocumentReference documentReference) {
+                                        bookthue.setId(documentReference.getId());
+                                        DbRoomAccess.getInstance(BookDetail.this).insertBookCaseTask(BookDetail.this,bookthue);
+                                        try {
+                                            userRent = DbRoomAccess.getInstance(BookDetail.this).getUserRentByIDTask(BookDetail.this,USER_ID);
+                                            bookTuSach = DbRoomAccess.getInstance(BookDetail.this).getBookCaseByIDTask(BookDetail.this,BOOK_ID);
+                                        } catch (ExecutionException e) {
+                                            e.printStackTrace();
+                                        } catch (InterruptedException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
 
+                            }
+                        }else /*có sách này*/ {
+                            if(bookTuSach.getBought()) /*đã mua*/{
+                                vaotrangdoc();
+                            }else /*thuê hết hạn*/ {
+                                if(fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))==false)/*hết hạn*/{
+                                    intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
+                                    intent.putExtra("book_id", BOOK_ID);
+                                    startActivity(intent);
+                                }else /*còn hạn*/ {
+                                    vaotrangdoc();
+                                }
+                            }
+                        }
 
-                } else {
+                }
+                else {
                     //nếu chưa mua sách:
                     showAToast(getResources().getString(R.string.openinternet_readbook));
                 }
@@ -442,6 +544,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                 break;
         }
     }
+
 
     private void RefreshTrang() {
         refreshLayout.setColorSchemeColors(getResources().getColor(android.R.color.holo_blue_dark)
@@ -468,8 +571,159 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         });
     }
 
+    private class DownloadBookFileTask extends AsyncTask<ResponseBody, Pair<Integer, Long>, Boolean> {
+        private String bookID;
+        private ProgressDialog dialog;
+        public DownloadBookFileTask(String bookID,ProgressDialog progressDialog) {
+            this.bookID = bookID;
+            this.dialog = progressDialog;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            dialog.setMessage(getString(R.string.taisach));
+            dialog.show();
+
+        }
+
+        @Override
+        protected Boolean doInBackground(ResponseBody... urls) {
+            //Copy you logic to calculate progress and call
+            Boolean result = false;
+            saveToDisk(result,urls[0], bookID+".pdf");
+            return result;
+        }
+
+        protected void onProgressUpdate(Pair<Integer, Long>... progress) {
+
+            Log.d("API123", progress[0].second + " ");
+
+            if (progress[0].first == 100) {
+                showAToast(getResources().getString(R.string.taisachthanhcong));
+                Intent intent = new Intent(BookDetail.this, Read.class);
+                intent.putExtra("book_id", BOOK_ID);
+                startActivity(intent);
+            }
+
+            if (progress[0].second > 0) {
+                int currentProgress = (int) ((double) progress[0].first / (double) progress[0].second * 100);
+                dialog.setProgress(currentProgress);
+            }
+
+            if (progress[0].first == -1) {
+                showAToast(getResources().getString(R.string.taisachthatbai));
+            }
 
 
+        }
+
+        public void doProgress(Pair<Integer, Long> progressDetails) {
+            publishProgress(progressDetails);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            if (dialog.isShowing()) {
+                if (result == true) {
+                    Intent intent = new Intent(BookDetail.this, Read.class);
+                    intent.putExtra("idSach", bookID);
+                    startActivity(intent);
+                }
+                dialog.cancel();
+            }
+        }
+    }
+
+    private void saveToDisk(Boolean result,ResponseBody body, String filename) {
+        File pdfFile = null;
+        try {
+
+            File directory= null;
+            ContextWrapper cw = new ContextWrapper(BookDetail.this);
+            directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
+            pdfFile=new File(directory,filename);
+//            try{
+//                pdfFile.createNewFile();
+//            }catch (IOException e){
+//                e.printStackTrace();
+//            }
+            InputStream inputStream = null;
+            OutputStream outputStream = null;
+
+            try {
+
+                inputStream = body.byteStream();
+                outputStream = new FileOutputStream(pdfFile);
+                byte data[] = new byte[4096];
+                int count;
+                int progress = 0;
+                long fileSize = body.contentLength();
+                Log.d("kiemtra", "File Size=" + fileSize);
+                while ((count = inputStream.read(data)) != -1) {
+                    outputStream.write(data, 0, count);
+                    progress += count;
+                    Pair<Integer, Long> pairs = new Pair<>(progress, fileSize);
+                    downloadBookFileTask.doProgress(pairs);
+                    Log.d("kiemtra", "Progress: " + progress + "/" + fileSize + " >>>> " + (float) progress / fileSize);
+                }
+
+                outputStream.flush();
+
+                Log.d("kiemtra", pdfFile.getParent());
+                Pair<Integer, Long> pairs = new Pair<>(100, 100L);
+                downloadBookFileTask.doProgress(pairs);
+                result = true;
+                return;
+            } catch (IOException e) {
+                e.printStackTrace();
+                Pair<Integer, Long> pairs = new Pair<>(-1, Long.valueOf(-1));
+                downloadBookFileTask.doProgress(pairs);
+                pdfFile.delete();
+                Log.d("kiemtra", "Failed to save the file!");
+                call.cancel();
+                call = null;
+                result = false;
+                return;
+            } finally {
+                if (inputStream != null) inputStream.close();
+                if (outputStream != null) outputStream.close();
+            }
+        } catch (IOException e) {
+            result = false;
+            pdfFile.delete();
+            e.printStackTrace();
+            Log.d("kiemtra", "Failed to save the file!");
+            return;
+        }
+    }
+
+    private void downloadbookFile(final String bookID, final ProgressDialog progressDialog) {
+        call = null;
+        String urlBook = book_link;
+        call = downloadMethodAPI.downLoadBook(urlBook);
+        callback = new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                if (response.isSuccessful()) {
+                    Log.d("kiemtra", "Got the body for the file");
+                    downloadBookFileTask = new DownloadBookFileTask(bookID,progressDialog);
+                    downloadBookFileTask.execute(response.body());
+
+                } else {
+                    Log.d("kiemtra", "Connection failed " + response.errorBody());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                Log.e("kiemtra", "Lỗi retro:"+ t.getMessage());
+            }
+        };
+        call.enqueue(callback);
+    }
 
     public int checkBookSize(String urls) {
         int file_size = 0;
@@ -487,6 +741,10 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         return file_size;
     }
 
+
+
+
+
     public void showAToast(String st) { //"Toast toast" is declared in the class
         try {
             toast.getView().isShown();     // true if visible
@@ -496,5 +754,66 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
             toast.setGravity(Gravity.CENTER, 0, 0);
         }
         toast.show();  //finally display it
+    }
+
+    public Date fortmatStringtoDate(String date){
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        Date startDate = null;
+        try {
+            startDate = df.parse(date);
+           
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return startDate;
+    }
+    public void vaotrangdoc(){
+        storageReference.child("pdfs").child(BOOK_ID+".pdf").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+            @Override
+            public void onSuccess(Uri uri) {
+                book_link = uri.toString();
+                File directory;
+                ContextWrapper cw = new ContextWrapper(BookDetail.this);
+                directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
+                final File file = new File(directory, BOOK_ID + ".pdf");
+                final int file_size = (int) file.length();
+                new AsyncTask<String, Void, Void>() {
+
+                    Intent intent;
+
+                    @Override
+                    protected void onPreExecute() {
+                        loadingDialog.show();
+                        super.onPreExecute();
+                    }
+
+                    @Override
+                    protected Void doInBackground(String... strings) {
+                        lenghtFile = checkBookSize(strings[0]);
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Void aVoid) {
+                        super.onPostExecute(aVoid);
+                        loadingDialog.dismiss();
+                        if (file.exists() && (file_size == lenghtFile)) {
+                            intent = new Intent(BookDetail.this, Read.class);
+                            intent.putExtra("book_id", BOOK_ID);
+                            startActivity(intent);
+                        } else if (file.exists() && file_size != lenghtFile) {
+                            file.delete();
+                            downloadbookFile(BOOK_ID + "", progressDialog);
+                        } else {
+                            if (call == null) {
+                                downloadbookFile(BOOK_ID + "", progressDialog);
+                            } else {
+                                downloadbookFile(BOOK_ID + "", progressDialog);
+                            }
+                        }
+                    }
+                }.execute(book_link);
+            }
+        });
     }
 }

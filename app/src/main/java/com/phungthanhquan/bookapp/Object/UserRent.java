@@ -6,39 +6,25 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 @Entity
+@IgnoreExtraProperties
 public class UserRent {
     @PrimaryKey
     @NonNull
-    private String id;
+    @Exclude public String id;
     private String rent_id;
     private String time_rest;
     private String user_id;
 
-    @Ignore
-    public UserRent(String rent_id, String time_rest, String user_id) {
-        this.rent_id = rent_id;
-        this.time_rest = time_rest;
-        this.user_id = user_id;
-    }
-
-    @Ignore
     public UserRent() {
     }
 
-    public UserRent(String id, String rent_id, String time_rest, String user_id) {
-        this.id = id;
-        this.rent_id = rent_id;
-        this.time_rest = time_rest;
-        this.user_id = user_id;
-    }
-    @Exclude
-    public String getId() {
+    @Exclude public String getId() {
         return id;
     }
-
-    public void setId(String id) {
+    @Exclude public void setId(String id) {
         this.id = id;
     }
 

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
     tools:context=".View.Activity.ListBookDanhMucTatCa">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -34,6 +34,7 @@
         android:layout_height="match_parent">
 
         <androidx.recyclerview.widget.RecyclerView
+            android:background="@color/white"
             android:id="@+id/recycle_danhmucchitiet"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

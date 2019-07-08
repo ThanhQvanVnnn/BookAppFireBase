@@ -8,6 +8,7 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.IgnoreExtraProperties;
 
 import javax.annotation.Nonnull;
 
@@ -15,6 +16,7 @@ import javax.annotation.Nonnull;
 public class BookCase {
     @PrimaryKey(autoGenerate = false)
     @NonNull
+    @Exclude
     private String id;
 
     private String book_id;
@@ -26,10 +28,12 @@ public class BookCase {
     }
 
 
+    @Exclude
     public String getId() {
         return id;
     }
 
+    @Exclude
     public void setId(String id) {
         this.id = id;
     }

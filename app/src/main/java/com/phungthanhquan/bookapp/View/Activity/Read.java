@@ -58,6 +58,7 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
     private String chuongHienTai;
     private List<DauTrang> dauTrangList;
     private final String FILENAME_BOOKSTORED = "book_dowload";
+    private String BOOK_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,7 +70,7 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
         File directory;
         ContextWrapper cw = new ContextWrapper(this);
         directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
-        File file=new File(directory,bookRead.getId_sach()+".pdf");
+        File file=new File(directory,BOOK_ID+".pdf");
         pdfView.fromFile(file)
                 .enableSwipe(false) // allows to block changing pages using swipe
                 .swipeHorizontal(true)
@@ -157,6 +158,7 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
         trangHienTai = findViewById(R.id.trang);
         phanTramDoc = findViewById(R.id.phantram);
         dautrang = findViewById(R.id.dautrang);
+        BOOK_ID = getIntent().getStringExtra("book_id");
         isUp = false;
         isNightMode = false;
         IsVertical = false;
