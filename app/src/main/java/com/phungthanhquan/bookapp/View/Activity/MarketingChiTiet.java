@@ -2,9 +2,7 @@ package com.phungthanhquan.bookapp.View.Activity;
 
 import android.content.Intent;
 import android.os.Build;
-import android.os.Handler;
 
-import androidx.annotation.NonNull;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,11 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 import android.view.View;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.phungthanhquan.bookapp.Adapter.Album_NXB_Adapter;
-import com.phungthanhquan.bookapp.Adapter.RecycleView_ItemBook_Adapter;
 import com.phungthanhquan.bookapp.Model.LoadMore.InterfaceLoadMore;
 import com.phungthanhquan.bookapp.Model.LoadMore.LoadMoreScroll;
 import com.phungthanhquan.bookapp.Object.Marketing;
@@ -26,7 +22,6 @@ import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityMarketing;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class MarketingChiTiet extends AppCompatActivity implements InterfaceViewActivityMarketing, InterfaceLoadMore {

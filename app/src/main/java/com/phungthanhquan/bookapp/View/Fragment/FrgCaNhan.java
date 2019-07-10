@@ -21,7 +21,12 @@ import android.widget.Toast;
 import com.facebook.login.LoginManager;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
 import com.phungthanhquan.bookapp.Object.User;
 import com.phungthanhquan.bookapp.Presenter.Fragment.PresenterLogicCaNhan;
@@ -30,10 +35,13 @@ import com.phungthanhquan.bookapp.View.Activity.Login;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewFragmentCaNhan;
 import com.squareup.picasso.Picasso;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class FrgCaNhan extends Fragment implements View.OnClickListener, InterfaceViewFragmentCaNhan {
     private ImageView anhdaidienBackGround;
@@ -58,14 +66,21 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
     private final int SELECT_IMAGE = 100;
     private FirebaseAuth mAuth;
     Toast toast;
+    SharedPreferences shared;
+    StorageReference storageReference;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_canhan,container,false);
         initControls(view);
         setOnclickEvent();
+        shared = getContext().getSharedPreferences("User_Info", MODE_PRIVATE);
+        storageReference = FirebaseStorage.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         presenterLogicCaNhan.hienThiThongTinCaNhan();
+        Picasso.get().load(shared.getString("image", String.valueOf(R.drawable.user_icon_default))).into(anhdaidienBackGround);
+        Picasso.get().load(shared.getString("image","")).into(anhdaidien);
+        tenNguoidung.setText(shared.getString("name",""));
         return view;
     }
 
@@ -74,7 +89,6 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
         nguoitheodoi.setOnClickListener(this);
         nguoidangtheodoi.setOnClickListener(this);
         sachdadoc.setOnClickListener(this);
-        sachyeuthich.setOnClickListener(this);
         naptaikhoan.setOnClickListener(this);
         caidat.setOnClickListener(this);
         dangxuat.setOnClickListener(this);
@@ -103,10 +117,7 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
     }
     @Override
     public void hienThiThongTinCaNhan(User user) {
-//        Picasso.get().load(user.getAnhDaiDien()).into(anhdaidienBackGround);
-//        Picasso.get().load(user.getAnhDaiDien()).into(anhdaidien);
-//        tenNguoidung.setText(user.getTenUser());
-//        sotientrongTaiKhoan.setText(user.getTongSoTien()+"");
+
 //        tongsoSach.setText(user.getTongSoSach()+"");
 //        songuoitheodoi.setText(user.getSoNguoiTheoDoi()+"");
 //        songuoidangtheodoi.setText(user.getSoNguoiDangTheoDoi()+"");
@@ -168,9 +179,27 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
             if (resultCode == Activity.RESULT_OK) {
                 if (data != null) {
                     try {
-                        Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
+                        Bitmap a = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), data.getData());
+                        Bitmap bitmap = a.createScaledBitmap(a, 360, 360, true);
                         anhdaidien.setImageBitmap(bitmap);
                         anhdaidienBackGround.setImageBitmap(bitmap);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                        byte[] datas = baos.toByteArray();
+
+                        UploadTask uploadTask = storageReference.child("images").child("users").child(FirebaseAuth.getInstance().getUid()+".png").putBytes(datas);
+                        uploadTask.addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle unsuccessful uploads
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                // taskSnapshot.getMetadata() contains file metadata such as size, content-type, etc.
+                                // ...
+                            }
+                        });
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

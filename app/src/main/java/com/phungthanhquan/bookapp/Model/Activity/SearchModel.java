@@ -1,33 +1,48 @@
 package com.phungthanhquan.bookapp.Model.Activity;
 
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.phungthanhquan.bookapp.Model.Fragment.DanhMucModel;
+import com.phungthanhquan.bookapp.Object.Book;
+import com.phungthanhquan.bookapp.Object.Marketing;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class SearchModel {
 
-//    private List<ItemBook> itemBooks;
-//
-//    //tìm kiếm sách bằng từ khóa
-//    public List<ItemBook> getDataSearch(String kytu){
-//        itemBooks = new ArrayList<>();
-//        ItemBook itemBook1 = new ItemBook("Hoa vàng trên đồi cỏ",
-//                "https://webtruyen.com/public/images/toithayhoavangtrencoxanh1woCMXi6Ln.jpg",
-//                "15");
-//        ItemBook itemBook2 = new ItemBook("Nhà Giả Kim",
-//                "https://www.fahasa.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/8/9/8935235213746.jpg",
-//                "15");
-//        ItemBook itemBook3 = new ItemBook("Quảng gánh lo vui mà sống",
-//                "https://nhanvan.vn/images/detailed/8/8935086828410.jpg",
-//                "15");
-//        ItemBook itemBook4 = new ItemBook("Khi lỗi thuộc về những vì sao",
-//                "https://www.fahasa.com/media/catalog/product/cache/1/image/9df78eab33525d08d6e5fb8d27136e95/k/h/khi-loi-thuoc-ve-nhung-vi-sao-b.jpg",
-//                "15");
-//        itemBooks.add(itemBook1);
-//        itemBooks.add(itemBook2);
-//        itemBooks.add(itemBook3);
-//        itemBooks.add(itemBook4);
-//        return itemBooks;
-//    }
+    private FirebaseFirestore firebaseFirestore;
+
+    public SearchModel() {
+        this.firebaseFirestore = FirebaseFirestore.getInstance();
+    }
+
+    public interface Callback {
+        void myCallBack(List<Marketing> marketingList);
+    }
+
+    public void getDataSearch(String kitu, final Callback callback) {
+        firebaseFirestore.collection("book").orderBy("name").whereGreaterThanOrEqualTo("name",kitu).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if(task.isSuccessful()){
+                    List<Marketing> bookList = new ArrayList<>();
+                    for(QueryDocumentSnapshot queryDocumentSnapshot: task.getResult()){
+                        if(queryDocumentSnapshot.exists()) {
+                            Marketing book = new Marketing();
+                            book.setBook_id(queryDocumentSnapshot.getId());
+                            bookList.add(book);
+                        }
+                    }
+                    callback.myCallBack(bookList);
+                }
+            }
+        });
+    }
 }

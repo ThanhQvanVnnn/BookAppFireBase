@@ -104,6 +104,7 @@ public class FrgTrangChu extends Fragment implements InterfaceViewFragmentTrangC
         } else {
             nestedScrollView.setVisibility(View.GONE);
             layoutInternetDisconnect.setVisibility(View.VISIBLE);
+            loadingDialog.dismiss();
         }
     }
 

@@ -7,10 +7,12 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
+import com.phungthanhquan.bookapp.Model.Fragment.TuSachModel;
 import com.phungthanhquan.bookapp.Object.Book;
 import com.phungthanhquan.bookapp.Object.BookCase;
 import com.phungthanhquan.bookapp.Object.UserRent;
 
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 @Database(entities = {BookCase.class, UserRent.class},version = 1,exportSchema = false)
@@ -100,6 +102,38 @@ public abstract class DbRoomAccess extends RoomDatabase {
             }
         }.execute();
     }
+
+    public void getAllBookcaseTask(final Context context, final TuSachModel.TuSachCallback tuSachModel){
+        new AsyncTask<Void, Void, List<BookCase>>() {
+            @Override
+            protected List<BookCase> doInBackground(Void... voids) {
+                List<BookCase> ds = DbRoomAccess.getInstance(context).bookcaseAccess().getALl();
+                return ds;
+            }
+
+            @Override
+            protected void onPostExecute(List<BookCase> bookCases) {
+                super.onPostExecute(bookCases);
+                tuSachModel.myCallBack(bookCases);
+            }
+        }.execute();
+    }
+    public void getAllUserRentTask(final Context context, final TuSachModel.UserRentCallback UserRentModel){
+        new AsyncTask<Void, Void, List<UserRent>>() {
+            @Override
+            protected List<UserRent> doInBackground(Void... voids) {
+                List<UserRent> ds = DbRoomAccess.getInstance(context).userRentAccess().getALl();
+                return ds;
+            }
+
+            @Override
+            protected void onPostExecute(List<UserRent> userRentList) {
+                super.onPostExecute(userRentList);
+                UserRentModel.myCallBack(userRentList);
+            }
+        }.execute();
+    }
+
     public void deleteAllUserRentTask(final Context context){
         new AsyncTask<Void, Void, Void>() {
             @Override

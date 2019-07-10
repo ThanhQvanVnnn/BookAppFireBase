@@ -293,7 +293,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                         //nếu chưa mua sách
                         giatien.setText(giatien_format + "");
                     }else {
-                        if(fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))==false) {
+                        if((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==false) {
                             giatien.setText(giatien_format + "");
                         }else {
                             giatien.setText(R.string.dathue);
@@ -308,7 +308,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                         giatien.setTextColor(getResources().getColor(R.color.damuasach));
                         menhgia.setVisibility(View.INVISIBLE);
                     }else {
-                        if(fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))==false) {
+                        if((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==false) {
                             giatien.setText(giatien_format + "");
                         }else {
                             giatien.setText(R.string.dathue);
@@ -480,11 +480,11 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                                 intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
                                 intent.putExtra("book_id", BOOK_ID);
                                 startActivity(intent);
-                            }else if(fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))==false) /*có thuê nhưng hết hạn*/ {
+                            }else if((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==false) /*có thuê nhưng hết hạn*/ {
                                 intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
                                 intent.putExtra("book_id", BOOK_ID);
                                 startActivity(intent);
-                            }else if (fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))==true)/*còn hạn*/ {
+                            }else if ((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==true)/*còn hạn*/ {
                                 vaotrangdoc();
                                 final BookCase bookthue = new BookCase();
                                 bookthue.setBook_id(BOOK_ID);
@@ -494,6 +494,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                                     @Override
                                     public void onSuccess(DocumentReference documentReference) {
                                         bookthue.setId(documentReference.getId());
+                                       bookthue.setBook_image(IMAGE);
                                         DbRoomAccess.getInstance(BookDetail.this).insertBookCaseTask(BookDetail.this,bookthue);
                                         try {
                                             userRent = DbRoomAccess.getInstance(BookDetail.this).getUserRentByIDTask(BookDetail.this,USER_ID);
@@ -511,7 +512,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                             if(bookTuSach.getBought()) /*đã mua*/{
                                 vaotrangdoc();
                             }else /*thuê hết hạn*/ {
-                                if(fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))==false)/*hết hạn*/{
+                                if((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==false)/*hết hạn*/{
                                     intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
                                     intent.putExtra("book_id", BOOK_ID);
                                     startActivity(intent);

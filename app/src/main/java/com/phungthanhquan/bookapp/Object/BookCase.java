@@ -18,15 +18,43 @@ public class BookCase {
     @NonNull
     @Exclude
     private String id;
-
     private String book_id;
     private String user_id;
     private Boolean isBought;
+    @Exclude
+    private int last_time;
+    @Exclude
+    private String book_image;
 
 
     public BookCase() {
     }
 
+    public BookCase(String book_id, String user_id, Boolean isBought) {
+        this.book_id = book_id;
+        this.user_id = user_id;
+        this.isBought = isBought;
+    }
+
+    @Exclude
+    public int getLast_time() {
+        return last_time;
+    }
+
+    @Exclude
+    public void setLast_time(int last_time) {
+        this.last_time = last_time;
+    }
+
+    @Exclude
+    public String getBook_image() {
+        return book_image;
+    }
+
+    @Exclude
+    public void setBook_image(String book_image) {
+        this.book_image = book_image;
+    }
 
     @Exclude
     public String getId() {

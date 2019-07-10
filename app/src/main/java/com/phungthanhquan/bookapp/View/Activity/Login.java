@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
@@ -267,7 +268,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
 
                                                         @Override
                                                         protected Bitmap doInBackground(Void... voids) {
-                                                            Bitmap bitmap = getBitmapFromURL(user.getPhotoUrl().toString());
+                                                            Bitmap bitmap = getBitmapFromURL(user.getPhotoUrl().toString()+"?sz=300");
                                                             return bitmap;
                                                         }
 
@@ -348,7 +349,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
 
                                                         @Override
                                                         protected Bitmap doInBackground(Void... voids) {
-                                                            Bitmap bitmap = getBitmapFromURL(user.getPhotoUrl().toString());
+                                                            Bitmap bitmap = getBitmapFromURL("https://graph.facebook.com/" + user.getProviderData().get(1).getUid() + "/picture?type=large");
                                                             return bitmap;
                                                         }
 
@@ -423,61 +424,76 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         final FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {
-            SharedPreferences.Editor editor = getSharedPreferences("User_Info", MODE_PRIVATE).edit();
-            editor.putString("name",user.getDisplayName());
-            editor.putString("email",user.getEmail());
-            editor.putString("phone",user.getPhoneNumber());
-            editor.putString("id", user.getUid());
-            editor.apply();
-            final String user_id = user.getUid();
-            firebaseFirestore.collection("user_bookcase").whereEqualTo("user_id", user_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                    if (task.isSuccessful()) {
-                        List<BookCase> dsBookCase = new ArrayList<>();
-                        for (QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
-                            if (queryDocumentSnapshot.exists()) {
-                                BookCase bookCase = new BookCase();
-                                bookCase.setId(queryDocumentSnapshot.getId());
-                                bookCase.setBought(queryDocumentSnapshot.getBoolean("bought"));
-                                bookCase.setUser_id((String) queryDocumentSnapshot.get("user_id"));
-                                bookCase.setBook_id((String) queryDocumentSnapshot.get("book_id"));
-                                dsBookCase.add(bookCase);
-                            }
-                        }
+            final SharedPreferences.Editor editor = getSharedPreferences("User_Info", MODE_PRIVATE).edit();
 
-                        for (BookCase bookCase : dsBookCase) {
-                            DbRoomAccess.getInstance(Login.this).insertBookCaseTask(Login.this,bookCase);
-                        }
-                        firebaseFirestore.collection("user_rent").whereEqualTo("user_id",user_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                List<UserRent> userRentList = new ArrayList<>();
-                                if(task.isSuccessful()){
-                                    for(QueryDocumentSnapshot queryDocumentSnapshot1: task.getResult()){
-                                        if(queryDocumentSnapshot1.exists()){
-                                            UserRent userRent = new UserRent();
-                                            userRent.setId(queryDocumentSnapshot1.getId());
-                                            userRent.setRent_id(queryDocumentSnapshot1.getString("rent_id"));
-                                            userRent.setTime_rest(queryDocumentSnapshot1.getString("time_rest"));
-                                            userRent.setUser_id(user_id);
-                                            userRentList.add(userRent);
-                                        }
+            root.child("images").child("users").child(user.getUid()+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri uri) {
+                    editor.putString("name",user.getDisplayName());
+                    editor.putString("email",user.getEmail());
+                    editor.putString("phone",user.getPhoneNumber());
+                    editor.putString("id", user.getUid());
+                    editor.putString("image",uri.toString());
+                    editor.apply();
+                    final String user_id = user.getUid();
+                    firebaseFirestore.collection("user_bookcase").whereEqualTo("user_id", user_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                for (final QueryDocumentSnapshot queryDocumentSnapshot : task.getResult()) {
+                                    if (queryDocumentSnapshot.exists()) {
+                                        root.child("images").child("books").child(queryDocumentSnapshot.get("book_id")+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                            @Override
+                                            public void onSuccess(Uri uri) {
+                                                BookCase bookCase = new BookCase();
+                                                bookCase.setBook_image(uri.toString());
+                                                bookCase.setId(queryDocumentSnapshot.getId());
+                                                bookCase.setBought(queryDocumentSnapshot.getBoolean("bought"));
+                                                bookCase.setUser_id((String) queryDocumentSnapshot.get("user_id"));
+                                                bookCase.setBook_id((String) queryDocumentSnapshot.get("book_id"));
+                                                DbRoomAccess.getInstance(Login.this).insertBookCaseTask(Login.this,bookCase);
+                                            }
+
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                            }
+                                        });
                                     }
-                                    for(UserRent userRent: userRentList){
-                                       DbRoomAccess.getInstance(Login.this).insertUserRentTask(Login.this,userRent);
-                                    }
+
                                 }
-                                Intent intent = new Intent(Login.this, MainActivity.class);
-                                startActivity(intent);
-                                loadingDialog.dismiss();
-                                finish();
-                                showAToast(getString(R.string.dangnhapthanhcong));
+                                firebaseFirestore.collection("user_rent").whereEqualTo("user_id",user_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        List<UserRent> userRentList = new ArrayList<>();
+                                        if(task.isSuccessful()){
+                                            for(QueryDocumentSnapshot queryDocumentSnapshot1: task.getResult()){
+                                                if(queryDocumentSnapshot1.exists()){
+                                                    UserRent userRent = new UserRent();
+                                                    userRent.setId(queryDocumentSnapshot1.getId());
+                                                    userRent.setRent_id(queryDocumentSnapshot1.getString("rent_id"));
+                                                    userRent.setTime_rest(queryDocumentSnapshot1.getString("time_rest"));
+                                                    userRent.setUser_id(user_id);
+                                                    userRentList.add(userRent);
+                                                }
+                                            }
+                                            for(UserRent userRent: userRentList){
+                                                DbRoomAccess.getInstance(Login.this).insertUserRentTask(Login.this,userRent);
+                                            }
+                                        }
+                                        Intent intent = new Intent(Login.this, MainActivity.class);
+                                        startActivity(intent);
+                                        loadingDialog.dismiss();
+                                        finish();
+                                        showAToast(getString(R.string.dangnhapthanhcong));
+                                    }
+                                });
                             }
-                        });
-                    }
+                        }
+                    });
                 }
             });
+
 
         }
     }
