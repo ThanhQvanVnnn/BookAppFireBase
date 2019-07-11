@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/BookApp.iml" filepath="$PROJECT_DIR$/BookApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/BookAppFireBase.iml" filepath="$PROJECT_DIR$/BookAppFireBase.iml" />
       <module fileurl="file://$PROJECT_DIR$/PDFView/PDF.iml" filepath="$PROJECT_DIR$/PDFView/PDF.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>

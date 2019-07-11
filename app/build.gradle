@@ -9,6 +9,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -51,7 +52,7 @@ dependencies {
     annotationProcessor 'androidx.lifecycle:lifecycle-compiler:2.0.0'
     //spotdialog
     implementation 'com.github.d-max:spots-dialog:1.1@aar'
-
+    implementation 'com.android.support:multidex:1.0.3'
     //firebase
     implementation 'com.google.firebase:firebase-core:16.0.9'
     implementation 'com.google.firebase:firebase-auth:18.0.0'
@@ -60,4 +61,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage:18.0.0'
     apply plugin: 'com.google.gms.google-services'
     implementation project(':PDF')
+    implementation 'com.paypal.sdk:paypal-android-sdk:2.15.3'
 }

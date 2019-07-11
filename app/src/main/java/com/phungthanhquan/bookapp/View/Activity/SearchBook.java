@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
+
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -20,6 +22,7 @@ import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLogicSearch;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivitySearch;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import dmax.dialog.SpotsDialog;
@@ -45,6 +48,7 @@ public class SearchBook extends AppCompatActivity implements InterfaceViewActivi
         toolbar = findViewById(R.id.toolbar_search);
         recyclerViewTimKiem = findViewById(R.id.recycle_searchbook);
         toolbar.setTitle("");
+        dsSachTimKiem = new ArrayList<>();
         setSupportActionBar(toolbar);
         loadingDialog = new SpotsDialog.Builder().setContext(this).build();
         loadingDialog.setMessage(getResources().getString(R.string.dangtaidulieu));
@@ -67,25 +71,30 @@ public class SearchBook extends AppCompatActivity implements InterfaceViewActivi
 
     @Override
     public void searchSuccess(List<Marketing> dsSachs) {
-        dsSachTimKiem = dsSachs;
+        Log.d("kiemtra", dsSachs.size()+"");
+        dsSachTimKiem.clear();
+        dsSachTimKiem.addAll(dsSachs);
         recycleViewItemBookAdapter = new Album_NXB_Adapter(this,dsSachTimKiem) ;
         RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,3);
         recyclerViewTimKiem.setAdapter(recycleViewItemBookAdapter);
         recyclerViewTimKiem.setLayoutManager(layoutManager);
-        recycleViewItemBookAdapter.notifyDataSetChanged();
         loadingDialog.dismiss();
     }
 
     @Override
     public void searchFail() {
-
+        dsSachTimKiem.clear();
+        recycleViewItemBookAdapter = new Album_NXB_Adapter(this,dsSachTimKiem) ;
+        RecyclerView.LayoutManager layoutManager = new GridLayoutManager(this,3);
+        recyclerViewTimKiem.setAdapter(recycleViewItemBookAdapter);
+        recyclerViewTimKiem.setLayoutManager(layoutManager);
+        loadingDialog.dismiss();
     }
 
     @Override
     public boolean onQueryTextSubmit(String s) {
         if(MainActivity.isNetworkConnected(this)) {
             presenterLogicSearch.handlerSearch(s);
-            searchView.onActionViewCollapsed();
             loadingDialog.show();
         }else {
             showAToast(getResources().getString(R.string.openinternet));

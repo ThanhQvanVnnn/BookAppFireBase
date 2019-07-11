@@ -16,6 +16,11 @@ public class Book {
     private String publisher_id;
     private Double star_average;
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+
     public String getPublisher_name() {
         return publisher_name;
     }
