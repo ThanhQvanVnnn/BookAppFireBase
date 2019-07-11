@@ -231,6 +231,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                 @Override
                 public void onSuccess(Uri uri) {
                     Picasso.get().load(uri).resize(150, 200).into(detailbook_image);
+                    IMAGE = uri.toString();
                 }
             });
         }
@@ -312,7 +313,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                             giatien.setText(giatien_format + "");
                         }else {
                             giatien.setText(R.string.dathue);
-                            giatien.setTextColor(getResources().getColor(R.color.damuasach));
+                            giatien.setTextColor(getResources().getColor(R.color.colorPrimary));
                             menhgia.setVisibility(View.INVISIBLE);
                         }
                     }
@@ -478,10 +479,16 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                         if(bookTuSach==null)/*không có sách*/{
                             if(userRent == null) /*kiểm tra thuê - không có*/ {
                                 intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
+                                intent.putExtra("name",book.getName());
+                                intent.putExtra("image",IMAGE);
+                                intent.putExtra("price",book.getPrice());
                                 intent.putExtra("book_id", BOOK_ID);
                                 startActivity(intent);
                             }else if((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==false) /*có thuê nhưng hết hạn*/ {
                                 intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
+                                intent.putExtra("name",book.getName());
+                                intent.putExtra("image",IMAGE);
+                                intent.putExtra("price",book.getPrice());
                                 intent.putExtra("book_id", BOOK_ID);
                                 startActivity(intent);
                             }else if ((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==true)/*còn hạn*/ {
@@ -514,6 +521,9 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                             }else /*thuê hết hạn*/ {
                                 if((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==false)/*hết hạn*/{
                                     intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
+                                    intent.putExtra("name",book.getName());
+                                    intent.putExtra("image",IMAGE);
+                                    intent.putExtra("price",book.getPrice());
                                     intent.putExtra("book_id", BOOK_ID);
                                     startActivity(intent);
                                 }else /*còn hạn*/ {
