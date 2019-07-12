@@ -263,7 +263,9 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
 
                 } else {
                     try {
+                        userRent = DbRoomAccess.getInstance(BookDetail.this).getUserRentByIDTask(BookDetail.this, USER_ID);
                         bookTuSach = DbRoomAccess.getInstance(BookDetail.this).getBookCaseByIDTask(BookDetail.this, BOOK_ID);
+                        presenterBookDetail.xuliHienThiSach(BOOK_ID);
                     } catch (ExecutionException e1) {
                         e1.printStackTrace();
                     } catch (InterruptedException e1) {
@@ -282,11 +284,6 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         });
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        presenterBookDetail.xuliHienThiSach(BOOK_ID);
-    }
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -320,7 +317,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                         giatien.setText(giatien_format + "");
                     } else {
                         giatien.setText(R.string.dathue);
-                        giatien.setTextColor(getResources().getColor(R.color.damuasach));
+                        giatien.setTextColor(getResources().getColor(R.color.colorPrimary));
                         menhgia.setVisibility(View.INVISIBLE);
                     }
                 }

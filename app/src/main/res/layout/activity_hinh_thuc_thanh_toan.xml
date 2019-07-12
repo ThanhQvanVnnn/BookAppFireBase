@@ -154,17 +154,17 @@
             android:text="@string/tai_khoan_co" />
 
         <TextView
-            android:textColor="@color/red"
+            android:textStyle="bold"
             android:layout_marginLeft="10dp"
             android:id="@+id/budget"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <TextView
+            android:id="@+id/vnd"
             android:layout_marginLeft="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/viet_nam_dong"
-            android:textColor="@color/red"
             android:textSize="15sp"
             android:textStyle="bold" />
     </LinearLayout>

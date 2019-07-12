@@ -58,6 +58,7 @@ public class GoiThue_Adapter extends RecyclerView.Adapter<GoiThue_Adapter.ViewHo
                 intent.putExtra("rent_name",rentList.get(position).getName());
                 intent.putExtra("rent_price",rentList.get(position).getPrice());
                 intent.putExtra("ren_time",rentList.get(position).getMonth());
+                intent.putExtra("rent_id",rentList.get(position).getId());
                 ((Activity) context).startActivityForResult(intent,11);
             }
         });

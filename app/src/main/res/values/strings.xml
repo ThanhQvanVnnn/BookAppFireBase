@@ -43,6 +43,7 @@
     <string name="thoi_han">Thời hạn:</string>
     <string name="gia_tien">Giá tiền:</string>
     <string name="so_du">Số dư:</string>
+    <string name="tinh_trang">Tình trạng:</string>
     <string name="say_yes">Đồng ý</string>
     <string name="say_no">Hủy</string>
     <string name="chon_goi_mua_sach">Chọn gói mua</string>
@@ -52,6 +53,9 @@
     <string name="thanh_toan_bang_xu">Thanh toán bằng ví</string>
     <string name="thanh_toan_bang_momo">Thanh toán qua PayPal</string>
     <string name="thanh_toan_qua_the_cao">Thanh toán bằng thẻ cào</string>
+    <string name="thanh_toan_huy">Hủy thanh toán</string>
+    <string name="thanh_toan_that_bai">Thanh toán thất bại</string>
+    <string name="thanh_toan_thanh_cong">Thanh toán thành công</string>
     <string name="vinh_vien">Vĩnh viễn</string>
     <string name="so_du_taikhoan">Số Dư</string>
     <string name="sach">Sách</string>

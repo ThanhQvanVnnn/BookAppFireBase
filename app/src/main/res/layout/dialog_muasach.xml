@@ -93,6 +93,7 @@
                         <TextView
                             android:layout_marginLeft="10dp"
                             android:id="@+id/textview_giatien"
+                            android:textStyle="bold"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content" />
                         <TextView
@@ -100,7 +101,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/viet_nam_dong"
-                            android:textColor="@color/red"
                             android:textSize="15sp"
                             android:textStyle="bold" />
                     </LinearLayout>
@@ -114,7 +114,7 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/so_du" />
+                            android:text="@string/tinh_trang" />
 
                         <TextView
                             android:layout_marginLeft="10dp"
