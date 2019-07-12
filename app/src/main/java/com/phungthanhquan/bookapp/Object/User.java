@@ -5,13 +5,16 @@ public class User {
     private String email;
     private String name;
     private String phone;
-    private Float budget;
+    private Double budget;
 
-    public User(String email, String name, String phone,Float budget ) {
+    public User(String email, String name, String phone,Double budget ) {
         this.email = email;
         this.name = name;
         this.phone = phone;
         this.budget = budget;
+    }
+
+    public User() {
     }
 
     public String getUser_id() {
@@ -46,11 +49,11 @@ public class User {
         this.phone = phone;
     }
 
-    public Float getBudget() {
+    public Double getBudget() {
         return budget;
     }
 
-    public void setBudget(Float budget) {
+    public void setBudget(Double budget) {
         this.budget = budget;
     }
 }

@@ -30,6 +30,7 @@ public class BookCase {
     public BookCase() {
     }
 
+
     public BookCase(String book_id, String user_id, Boolean isBought) {
         this.book_id = book_id;
         this.user_id = user_id;

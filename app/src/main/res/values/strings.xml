@@ -49,9 +49,8 @@
     <string name="xac_nhan">Xác nhận mua sách</string>
     <string name="tai_khoan_co">Tài khoản có:</string>
     <string name="thanh_toan_cho_time">Thanh toán cho:</string>
-    <string name="thanh_toan_bang_xu">Thanh toán bằng xu</string>
-    <string name="thanh_toan_bang_momo">Thanh toán qua ví momo</string>
-    <string name="thanh_toan_bang_visa">Thanh toán bằng thẻ quốc tế</string>
+    <string name="thanh_toan_bang_xu">Thanh toán bằng ví</string>
+    <string name="thanh_toan_bang_momo">Thanh toán qua PayPal</string>
     <string name="thanh_toan_qua_the_cao">Thanh toán bằng thẻ cào</string>
     <string name="vinh_vien">Vĩnh viễn</string>
     <string name="so_du_taikhoan">Số Dư</string>
@@ -107,4 +106,6 @@
     <string name="binhluanthanhcong">Bình luận thành công</string>
     <string name="damua">Đã mua</string>
     <string name="dathue">Đọc theo gói thuê</string>
+    <string name="khongdutaikhoan">Không thể thanh toán</string>
+    <string name="cothethanhtoan">Có thể thanh toán</string>
 </resources>

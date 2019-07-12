@@ -1,8 +1,15 @@
 package com.phungthanhquan.bookapp.View.Activity;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -10,69 +17,286 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
+import com.phungthanhquan.bookapp.Object.BookCase;
+import com.phungthanhquan.bookapp.Object.Rent;
+import com.phungthanhquan.bookapp.Object.User;
+import com.phungthanhquan.bookapp.Object.UserRent;
 import com.phungthanhquan.bookapp.R;
+import com.squareup.picasso.Picasso;
+
+import java.text.DateFormat;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
+
+import dmax.dialog.SpotsDialog;
 
 public class HinhThucThanhToan extends AppCompatActivity implements View.OnClickListener {
-    private LinearLayout taiKhoanChinh;
-    private LinearLayout moMo;
-    private LinearLayout viSa;
-    private LinearLayout napThe;
+    private LinearLayout taiKhoanChinh, taikhoanpaypal;
     private Dialog dialog;
-    private TextView Textexit;
+    private TextView Textexit, price_textview, budget_textview, book_name, time_textview;
+    private ImageView book_image;
+    private FirebaseFirestore firebaseFirestore;
+    String BOOK_ID, BOOK_NAME, IMAGE, RENT_NAME, RENT_ID;
+    int RENT_TIME;
+    Double RENT_PRICE;
+    private User user;
+    DecimalFormat df;
+    private SimpleDateFormat dateFormatter;
+    public AlertDialog loadingDialog;
+    Calendar cal;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hinh_thuc_thanh_toan);
         initControls();
+        getdata();
         taiKhoanChinh.setOnClickListener(this);
-        moMo.setOnClickListener(this);
-        viSa.setOnClickListener(this);
-        napThe.setOnClickListener(this);
         Textexit.setOnClickListener(this);
+    }
+
+    private void getdata() {
+        firebaseFirestore.collection("user").document(FirebaseAuth.getInstance().getUid()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    user.setBudget(documentSnapshot.getDouble("budget"));
+                    user.setEmail(documentSnapshot.getString("email"));
+                    user.setName(documentSnapshot.getString("name"));
+                    user.setUser_id(documentSnapshot.getId());
+                    user.setPhone(documentSnapshot.getString("phone"));
+                }
+                showData();
+            }
+        });
+    }
+
+    private void showData() {
+        price_textview.setText(df.format(RENT_PRICE) + "");
+        book_name.setText(BOOK_NAME);
+        Picasso.get().load(IMAGE).into(book_image);
+        if (RENT_NAME.equals("v")) {
+            time_textview.setText(getString(R.string.vinh_vien));
+            time_textview.setTextColor(getResources().getColor(R.color.damuasach));
+        } else {
+            time_textview.setText(RENT_NAME);
+            time_textview.setTextColor(getResources().getColor(R.color.colorPrimary));
+        }
+        budget_textview.setText(df.format(user.getBudget()) + "");
+        if (user.getBudget() >= RENT_PRICE) {
+            budget_textview.setTextColor(getResources().getColor(R.color.damuasach));
+        } else {
+            budget_textview.setTextColor(getResources().getColor(R.color.search_background));
+        }
     }
 
     private void initControls() {
         taiKhoanChinh = findViewById(R.id.thanhtoanquataikhoanchinh);
-        moMo = findViewById(R.id.thanhtoanquavidientuMoMo);
-        viSa = findViewById(R.id.thanhtoanquaVisa);
-        napThe = findViewById(R.id.thanhtoanbangthecao);
+        taikhoanpaypal = findViewById(R.id.thanhtoanquapaypal);
         Textexit = findViewById(R.id.exit_thanhtoan);
+        price_textview = findViewById(R.id.book_price);
+        budget_textview = findViewById(R.id.budget);
+        book_image = findViewById(R.id.image_book);
+        book_name = findViewById(R.id.book_name);
+        time_textview = findViewById(R.id.thoihan);
+        loadingDialog = new SpotsDialog.Builder().setContext(this).build();
+        loadingDialog.setMessage(getResources().getString(R.string.vuilongcho));
+        user = new User();
+        cal = null;
+        df = new DecimalFormat("###,###.###");
+        dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+        df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ITALY));
+        Intent intent = getIntent();
+        BOOK_ID = intent.getStringExtra("book_id");
+        BOOK_NAME = intent.getStringExtra("book_name");
+        IMAGE = intent.getStringExtra("book_image");
+        RENT_NAME = intent.getStringExtra("rent_name");
+        RENT_PRICE = intent.getDoubleExtra("rent_price", 0);
+        RENT_ID = intent.getStringExtra("rent_id");
+        RENT_TIME = intent.getIntExtra("ren_time", 0);
+        firebaseFirestore = FirebaseFirestore.getInstance();
     }
 
     @Override
     public void onClick(View v) {
-        dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_muasach);
-        dialog.setCanceledOnTouchOutside(false);
-        TextView thoihan = dialog.findViewById(R.id.textview_thoihanthue);
-        TextView giatien = dialog.findViewById(R.id.textview_giatien);
-        TextView sodu = dialog.findViewById(R.id.textview_sodutrongtaikhoan);
-        TextView tinhtrang = dialog.findViewById(R.id.textview_tinhtrang);
-        ImageView anhsach = dialog.findViewById(R.id.image_sach);
-        Button mua = dialog.findViewById(R.id.button_mua);
-        Button huy = dialog.findViewById(R.id.button_huy);
-        huy.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.thanhtoanquataikhoanchinh:
+                dialog = new Dialog(this);
+                dialog.setContentView(R.layout.dialog_muasach);
+                dialog.setCanceledOnTouchOutside(false);
+                TextView thoihan = dialog.findViewById(R.id.textview_thoihanthue);
+                TextView giatien = dialog.findViewById(R.id.textview_giatien);
+                TextView sodu = dialog.findViewById(R.id.textview_sodutrongtaikhoan);
+                ImageView anhsach = dialog.findViewById(R.id.image_sach);
+                Button mua = dialog.findViewById(R.id.button_mua);
+                Button huy = dialog.findViewById(R.id.button_huy);
+                Picasso.get().load(IMAGE).into(anhsach);
+                Log.d("rentprice", df.format(RENT_PRICE) + "");
+                giatien.setText(df.format(RENT_PRICE) + "");
+                if (user.getBudget() >= RENT_PRICE) {
+                    sodu.setText(getString(R.string.cothethanhtoan));
+                    sodu.setTextColor(getResources().getColor(R.color.damuasach));
+                    mua.setEnabled(true);
+                    huy.setEnabled(true);
+                } else {
+                    sodu.setText(getString(R.string.khongdutaikhoan));
+                    sodu.setTextColor(getResources().getColor(R.color.search_background));
+                    mua.setEnabled(false);
+                    huy.setEnabled(true);
+                }
+
+                if (RENT_NAME.equals("v")) {
+                    thoihan.setText(getString(R.string.vinh_vien));
+                    thoihan.setTextColor(getResources().getColor(R.color.damuasach));
+                } else {
+                    cal = Calendar.getInstance();
+                    cal.add(Calendar.MONTH, RENT_TIME);
+                    thoihan.setText(dateFormatter.format(cal.getTime()));
+                    time_textview.setTextColor(getResources().getColor(R.color.colorPrimary));
+                }
+                huy.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+                mua.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        loadingDialog.show();
+                        Double sodu = user.getBudget() - RENT_PRICE;
+                        user.setBudget(sodu);
+                        firebaseFirestore.collection("user").document(user.getUser_id()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                if (RENT_NAME.equals("v")) {
+                                    final BookCase bookCase = new BookCase();
+                                    bookCase.setBook_id(BOOK_ID);
+                                    bookCase.setBought(true);
+                                    bookCase.setBook_image(IMAGE);
+                                    bookCase.setUser_id(user.getUser_id());
+                                    firebaseFirestore.collection("user_bookcase").add(bookCase).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            bookCase.setId(documentReference.getId());
+                                            DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                            dialog.dismiss();
+                                            Intent data = new Intent();
+                                            String text = "Result to be returned....";
+                                            data.setData(Uri.parse(text));
+                                            setResult(RESULT_OK, data);
+                                            finish();
+                                            loadingDialog.dismiss();
+                                        }
+                                    });
+                                } else {
+                                    final BookCase bookCase = new BookCase();
+                                    bookCase.setBook_id(BOOK_ID);
+                                    bookCase.setBought(false);
+                                    bookCase.setBook_image(IMAGE);
+                                    bookCase.setUser_id(user.getUser_id());
+                                    firebaseFirestore.collection("user_bookcase").add(bookCase).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(final DocumentReference documentReference) {
+                                            bookCase.setBook_id(BOOK_ID);
+                                            bookCase.setId(documentReference.getId());
+                                            final UserRent userrent = new UserRent();
+                                            userrent.setRent_id(RENT_ID);
+                                            userrent.setUser_id(user.getUser_id());
+                                            userrent.setTime_rest((dateFormatter.format(cal.getTime())));
+
+                                            firebaseFirestore.collection("user_rent").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                    boolean dathue = false;
+                                                    String id="";
+                                                    for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+                                                        if (queryDocumentSnapshot.exists()) {
+                                                            if (queryDocumentSnapshot.get("user_id").equals(user.getUser_id())) {
+                                                                id = queryDocumentSnapshot.getId();
+                                                                dathue = true;
+                                                                break;
+                                                            }
+                                                        }
+                                                    }
+                                                    if(dathue) {
+                                                        firebaseFirestore.collection("user_rent").document(id).set(userrent).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
+                                                                dialog.dismiss();
+                                                                Intent data = new Intent();
+                                                                String text = "Result to be returned....";
+                                                                data.setData(Uri.parse(text));
+                                                                setResult(RESULT_OK, data);
+                                                                finish();
+                                                                loadingDialog.dismiss();
+                                                            }
+                                                        });
+                                                    }else {
+                                                        firebaseFirestore.collection("user_rent").add(userrent).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                            @Override
+                                                            public void onSuccess(DocumentReference documentReference1) {
+                                                                userrent.setId(documentReference.getId());
+                                                                userrent.setRent_id(documentReference.getId());
+                                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
+                                                                dialog.dismiss();
+                                                                Intent data = new Intent();
+                                                                String text = "Result to be returned....";
+                                                                data.setData(Uri.parse(text));
+                                                                setResult(RESULT_OK, data);
+                                                                finish();
+                                                                loadingDialog.dismiss();
+                                                            }
+                                                        });
+                                                    }
+                                                }
+                                            });
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+
+                });
+
                 dialog.show();
                 break;
-            case R.id.thanhtoanquavidientuMoMo:
-                Toast.makeText(this, "Momo", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.thanhtoanquaVisa:
-                Toast.makeText(this, "Visa", Toast.LENGTH_SHORT).show();
-                break;
-            case R.id.thanhtoanbangthecao:
-                Toast.makeText(this, "Thẻ cào", Toast.LENGTH_SHORT).show();
+            case R.id.thanhtoanquapaypal:
                 break;
             case R.id.exit_thanhtoan:
                 finish();
                 break;
         }
+    }
+
+    public Date fortmatStringtoDate(String date) {
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        Date startDate = null;
+        try {
+            startDate = df.parse(date);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return startDate;
     }
 }

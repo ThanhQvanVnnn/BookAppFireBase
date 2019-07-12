@@ -3,6 +3,7 @@ package com.phungthanhquan.bookapp.View.Activity;
 import android.content.Intent;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -26,9 +27,13 @@ import com.phungthanhquan.bookapp.Object.Rent;
 import com.phungthanhquan.bookapp.R;
 import com.squareup.picasso.Picasso;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -109,12 +114,24 @@ public class ChonGoiMuaSach extends AppCompatActivity implements View.OnClickLis
                 intent.putExtra("book_name",BOOK_NAME);
                 intent.putExtra("book_image",IMAGE);
                 intent.putExtra("rent_name","v");
+                intent.putExtra("rent_id","");
                 intent.putExtra("rent_price",BOOK_PRICE);
-                startActivity(intent);
+                intent.putExtra("rent_time",-1);
+                startActivityForResult(intent ,11);
                 break;
             case R.id.exit:
                 finish();
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode == 11){
+            if(resultCode == RESULT_OK){
+                finish();
+            }
         }
     }
 }

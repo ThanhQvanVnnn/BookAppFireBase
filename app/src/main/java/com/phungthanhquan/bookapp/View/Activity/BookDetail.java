@@ -48,6 +48,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
@@ -133,7 +134,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     private final String FILENAME_BOOKSTORED = "book_dowload";
     private String BOOK_ID;
     private String USER_ID;
-    private String IMAGE ="";
+    private String IMAGE = "";
     private int BINHLUANNUMBER;
     private Double AVERAGE;
     private int CHONSTAR;
@@ -220,14 +221,14 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         presenterBookDetail = new PresenterBookDetail(this);
         dsBinhLuan = new ArrayList<>();
         dsSachCungTheLoai = new ArrayList<>();
-        adapter_sachcungtheloai = new Album_NXB_Adapter(this,dsSachCungTheLoai);
+        adapter_sachcungtheloai = new Album_NXB_Adapter(this, dsSachCungTheLoai);
         getRecycle_SachCungTheLoai.setAdapter(adapter_sachcungtheloai);
-        getRecycle_SachCungTheLoai.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        getRecycle_SachCungTheLoai.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
 
-        if(!IMAGE.equals("") ) {
+        if (!IMAGE.equals("")) {
             Picasso.get().load(IMAGE).resize(150, 200).into(detailbook_image);
-        }else {
-            storageReference.child("images").child("books").child(BOOK_ID+".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+        } else {
+            storageReference.child("images").child("books").child(BOOK_ID + ".png").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                 @Override
                 public void onSuccess(Uri uri) {
                     Picasso.get().load(uri).resize(150, 200).into(detailbook_image);
@@ -235,8 +236,8 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                 }
             });
         }
-        bookTuSach = DbRoomAccess.getInstance(this).getBookCaseByIDTask(this,BOOK_ID);
-        userRent = DbRoomAccess.getInstance(this).getUserRentByIDTask(this,USER_ID);
+        bookTuSach = DbRoomAccess.getInstance(this).getBookCaseByIDTask(this, BOOK_ID);
+        userRent = DbRoomAccess.getInstance(this).getUserRentByIDTask(this, USER_ID);
         presenterBookDetail.xuliHienThiSach(BOOK_ID);
         presenterBookDetail.xuliHienThiDsDanhGia(BOOK_ID);
         downloadMethodAPI = DownloadAPI.getApiDownload();
@@ -248,22 +249,43 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         firebaseFirestore.collection("book").document(BOOK_ID).addSnapshotListener(new EventListener<DocumentSnapshot>() {
             @Override
             public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
-                if(e!=null){
+                if (e != null) {
 
-                }else {
-                    AVERAGE = Double.parseDouble(documentSnapshot.get("star_average").toString()) ;
-                    BINHLUANNUMBER =  ((Long)documentSnapshot.getLong("comment_number")).intValue();
-                    ratingSach.setRating(AVERAGE.floatValue());
-                    soluongdanhgia.setText(BINHLUANNUMBER + " đánh giá");
+                } else {
+                    presenterBookDetail.xuliHienThiSach(BOOK_ID);
                 }
             }
         });
-        firebaseFirestore.collection("comment").whereEqualTo("book_id",BOOK_ID).addSnapshotListener(new EventListener<QuerySnapshot>() {
+        firebaseFirestore.collection("user_bookcase").whereEqualTo("user_id", USER_ID).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+
+                } else {
+                    try {
+                        bookTuSach = DbRoomAccess.getInstance(BookDetail.this).getBookCaseByIDTask(BookDetail.this, BOOK_ID);
+                    } catch (ExecutionException e1) {
+                        e1.printStackTrace();
+                    } catch (InterruptedException e1) {
+                        e1.printStackTrace();
+                    }
+
+
+                }
+            }
+        });
+        firebaseFirestore.collection("comment").whereEqualTo("book_id", BOOK_ID).addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
                 presenterBookDetail.xuliHienThiDsDanhGia(BOOK_ID);
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        presenterBookDetail.xuliHienThiSach(BOOK_ID);
     }
 
     @Override
@@ -276,51 +298,51 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     public void hienThiNoiDungSach(Book boook) {
         book = boook;
 
-            if (book != null) {
-                tenSach.setText(book.getName());
-                noidungSach.setText(book.getIntroduce());
-                ratingSach.setRating(book.getStar_average().floatValue());
-                soluongdanhgia.setText(book.getComment_number() + " đánh giá");
-                tentacgia.setText(book.getAuthor_name());
-                nhaxuatban.setText(book.getPublisher_name());
-                sotrang.setText(book.getPage_number() + "");
-                BINHLUANNUMBER = book.getComment_number();
-                AVERAGE = book.getStar_average();
-                DecimalFormat df = new DecimalFormat("###,###.###");
-                df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ITALY));
-                String giatien_format = df.format(book.getPrice());
-                if(bookTuSach==null ) /*chưa mua sách*/ {
-                    if(userRent==null) {
-                        //nếu chưa mua sách
+        if (book != null) {
+            tenSach.setText(book.getName());
+            noidungSach.setText(book.getIntroduce());
+            ratingSach.setRating(book.getStar_average().floatValue());
+            soluongdanhgia.setText(book.getComment_number() + " đánh giá");
+            tentacgia.setText(book.getAuthor_name());
+            nhaxuatban.setText(book.getPublisher_name());
+            sotrang.setText(book.getPage_number() + "");
+            BINHLUANNUMBER = book.getComment_number();
+            AVERAGE = book.getStar_average();
+            DecimalFormat df = new DecimalFormat("###,###.###");
+            df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ITALY));
+            String giatien_format = df.format(book.getPrice());
+            if (bookTuSach == null) /*chưa mua sách*/ {
+                if (userRent == null) {
+                    //nếu chưa mua sách
+                    giatien.setText(giatien_format + "");
+                } else {
+                    if ((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date()))) || fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date())))) == false) {
                         giatien.setText(giatien_format + "");
-                    }else {
-                        if((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==false) {
-                            giatien.setText(giatien_format + "");
-                        }else {
-                            giatien.setText(R.string.dathue);
-                            giatien.setTextColor(getResources().getColor(R.color.damuasach));
-                            menhgia.setVisibility(View.INVISIBLE);
-                        }
-                    }
-                }else /*có thấy trong tủ sách*/{
-                    Log.d("bookcasetusach", bookTuSach.toString()+"");
-                    if(bookTuSach.getBought()){
-                        giatien.setText(R.string.damua);
+                    } else {
+                        giatien.setText(R.string.dathue);
                         giatien.setTextColor(getResources().getColor(R.color.damuasach));
                         menhgia.setVisibility(View.INVISIBLE);
-                    }else {
-                        if((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==false) {
-                            giatien.setText(giatien_format + "");
-                        }else {
-                            giatien.setText(R.string.dathue);
-                            giatien.setTextColor(getResources().getColor(R.color.colorPrimary));
-                            menhgia.setVisibility(View.INVISIBLE);
-                        }
                     }
                 }
-                menhgia.setPaintFlags(menhgia.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+            } else /*có thấy trong tủ sách*/ {
+                Log.d("bookcasetusach", bookTuSach.toString() + "");
+                if (bookTuSach.getBought()) {
+                    giatien.setText(R.string.damua);
+                    giatien.setTextColor(getResources().getColor(R.color.damuasach));
+                    menhgia.setVisibility(View.INVISIBLE);
+                } else {
+                    if ((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date()))) || fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date())))) == false) {
+                        giatien.setText(giatien_format + "");
+                    } else {
+                        giatien.setText(R.string.dathue);
+                        giatien.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        menhgia.setVisibility(View.INVISIBLE);
+                    }
+                }
             }
-            presenterBookDetail.xuliHienThidsSachCungTheLoai(book.getCategory_id());
+            menhgia.setPaintFlags(menhgia.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        }
+        presenterBookDetail.xuliHienThidsSachCungTheLoai(book.getCategory_id());
 
 
     }
@@ -328,19 +350,19 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     @Override
     public void hienThiDsDanhGia(List<BinhLuan> dsDanhGia) {
         dsBinhLuan = new ArrayList<>();
-        if(dsDanhGia.size()>0) {
-            if(dsDanhGia.size()<=3){
+        if (dsDanhGia.size() > 0) {
+            if (dsDanhGia.size() <= 3) {
                 dsBinhLuan.addAll(dsDanhGia);
                 xemThemDanhGia.setVisibility(View.GONE);
                 binhluantext.setVisibility(View.VISIBLE);
                 recycle_DsDanhGia.setVisibility(View.VISIBLE);
-            }else {
+            } else {
                 dsBinhLuan.addAll(dsDanhGia);
                 xemThemDanhGia.setVisibility(View.VISIBLE);
                 binhluantext.setVisibility(View.VISIBLE);
                 recycle_DsDanhGia.setVisibility(View.VISIBLE);
             }
-        }else {
+        } else {
             binhluantext.setVisibility(View.GONE);
             xemThemDanhGia.setVisibility(View.GONE);
             recycle_DsDanhGia.setVisibility(View.GONE);
@@ -352,8 +374,8 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                 Date date1 = null;
                 Date date2 = null;
                 try {
-                     date1 = df.parse(o1.getTime());
-                     date2 = df.parse(o2.getTime());
+                    date1 = df.parse(o1.getTime());
+                    date2 = df.parse(o2.getTime());
                     return df.parse(o1.getTime()).compareTo(df.parse(o2.getTime()));
                 } catch (ParseException e) {
                     e.printStackTrace();
@@ -361,7 +383,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                 return date1.compareTo(date2);
             }
         });
-        recycleView_noidungbinhluan_adapter = new RecycleView_noidungbinhluan_Adapter(this, dsBinhLuan,false,BOOK_ID);
+        recycleView_noidungbinhluan_adapter = new RecycleView_noidungbinhluan_Adapter(this, dsBinhLuan, false, BOOK_ID);
         recycle_DsDanhGia.setAdapter(recycleView_noidungbinhluan_adapter);
         LinearLayoutManager linearLayout = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         linearLayout.setReverseLayout(true);
@@ -373,10 +395,10 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     @Override
     public void hienThiDsSachCungTheLoai(List<Marketing> dsSach) {
         dsSachCungTheLoai.clear();
-        if(dsSach.size()!=0) {
+        if (dsSach.size() != 0) {
             dsSachCungTheLoai.addAll(dsSach);
-            for(int i = 0;i<dsSach.size();i++){
-                if(dsSach.get(i).getBook_id().equals(BOOK_ID)) {
+            for (int i = 0; i < dsSach.size(); i++) {
+                if (dsSach.get(i).getBook_id().equals(BOOK_ID)) {
                     dsSachCungTheLoai.remove(i);
                 }
             }
@@ -390,8 +412,8 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     public void hienThiThemBinhLuan() {
         presenterBookDetail.xuliHienThiDsDanhGia(BOOK_ID);
         int binhluan = BINHLUANNUMBER;
-        BINHLUANNUMBER +=1;
-        AVERAGE = ((binhluan*AVERAGE)+CHONSTAR)/BINHLUANNUMBER;
+        BINHLUANNUMBER += 1;
+        AVERAGE = ((binhluan * AVERAGE) + CHONSTAR) / BINHLUANNUMBER;
         ratingSach.setRating(AVERAGE.floatValue());
         soluongdanhgia.setText(BINHLUANNUMBER + " đánh giá");
         book.setComment_number(BINHLUANNUMBER);
@@ -429,13 +451,13 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                         public void onClick(View v) {
                             CHONSTAR = (int) sosao.getRating();
                             String content = noidung.getText().toString();
-                            if(CHONSTAR ==0){
+                            if (CHONSTAR == 0) {
                                 showAToast(getString(R.string.vuilongnhapsosao));
                             }
-                            if(content.equals("")){
+                            if (content.equals("")) {
                                 showAToast(getString(R.string.notempty));
                             }
-                            if(CHONSTAR !=0 && !content.equals("")){
+                            if (CHONSTAR != 0 && !content.equals("")) {
                                 BinhLuan binhLuan = new BinhLuan();
                                 binhLuan.setBook_id(BOOK_ID);
                                 binhLuan.setContent(content);
@@ -461,9 +483,9 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
             case R.id.xemthemdanhgia:
                 if (MainActivity.isNetworkConnected(this)) {
                     intent = new Intent(this, XemThemDanhGia.class);
-                    intent.putExtra("book_id",BOOK_ID);
-                    intent.putExtra("book_name",book.getName());
-                    intent.putExtra("book_image",IMAGE);
+                    intent.putExtra("book_id", BOOK_ID);
+                    intent.putExtra("book_name", book.getName());
+                    intent.putExtra("book_image", IMAGE);
                     ActivityOptions options = null;
                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
                         options = ActivityOptions.makeSceneTransitionAnimation(this,
@@ -475,65 +497,64 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                 }
                 break;
             case R.id.button_docsach:
-                if(MainActivity.isNetworkConnected(this)) {
-                        if(bookTuSach==null)/*không có sách*/{
-                            if(userRent == null) /*kiểm tra thuê - không có*/ {
-                                intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
-                                intent.putExtra("name",book.getName());
-                                intent.putExtra("image",IMAGE);
-                                intent.putExtra("price",book.getPrice());
-                                intent.putExtra("book_id", BOOK_ID);
-                                startActivity(intent);
-                            }else if((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==false) /*có thuê nhưng hết hạn*/ {
-                                intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
-                                intent.putExtra("name",book.getName());
-                                intent.putExtra("image",IMAGE);
-                                intent.putExtra("price",book.getPrice());
-                                intent.putExtra("book_id", BOOK_ID);
-                                startActivity(intent);
-                            }else if ((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==true)/*còn hạn*/ {
-                                vaotrangdoc();
-                                final BookCase bookthue = new BookCase();
-                                bookthue.setBook_id(BOOK_ID);
-                                bookthue.setUser_id(USER_ID);
-                                bookthue.setBought(false);
-                                firebaseFirestore.collection("user_bookcase").add(bookthue).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                    @Override
-                                    public void onSuccess(DocumentReference documentReference) {
-                                        bookthue.setId(documentReference.getId());
-                                       bookthue.setBook_image(IMAGE);
-                                        DbRoomAccess.getInstance(BookDetail.this).insertBookCaseTask(BookDetail.this,bookthue);
-                                        try {
-                                            userRent = DbRoomAccess.getInstance(BookDetail.this).getUserRentByIDTask(BookDetail.this,USER_ID);
-                                            bookTuSach = DbRoomAccess.getInstance(BookDetail.this).getBookCaseByIDTask(BookDetail.this,BOOK_ID);
-                                        } catch (ExecutionException e) {
-                                            e.printStackTrace();
-                                        } catch (InterruptedException e) {
-                                            e.printStackTrace();
-                                        }
+                if (MainActivity.isNetworkConnected(this)) {
+                    if (bookTuSach == null)/*không có sách*/ {
+                        if (userRent == null) /*kiểm tra thuê - không có*/ {
+                            intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
+                            intent.putExtra("name", book.getName());
+                            intent.putExtra("image", IMAGE);
+                            intent.putExtra("price", book.getPrice());
+                            intent.putExtra("book_id", BOOK_ID);
+                            startActivity(intent);
+                        } else if ((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date()))) || fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date())))) == false) /*có thuê nhưng hết hạn*/ {
+                            intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
+                            intent.putExtra("name", book.getName());
+                            intent.putExtra("image", IMAGE);
+                            intent.putExtra("price", book.getPrice());
+                            intent.putExtra("book_id", BOOK_ID);
+                            startActivity(intent);
+                        } else if ((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date()))) || fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date())))) == true)/*còn hạn*/ {
+                            vaotrangdoc();
+                            final BookCase bookthue = new BookCase();
+                            bookthue.setBook_id(BOOK_ID);
+                            bookthue.setUser_id(USER_ID);
+                            bookthue.setBought(false);
+                            firebaseFirestore.collection("user_bookcase").add(bookthue).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    bookthue.setId(documentReference.getId());
+                                    bookthue.setBook_image(IMAGE);
+                                    DbRoomAccess.getInstance(BookDetail.this).insertBookCaseTask(BookDetail.this, bookthue);
+                                    try {
+                                        userRent = DbRoomAccess.getInstance(BookDetail.this).getUserRentByIDTask(BookDetail.this, USER_ID);
+                                        bookTuSach = DbRoomAccess.getInstance(BookDetail.this).getBookCaseByIDTask(BookDetail.this, BOOK_ID);
+                                    } catch (ExecutionException e) {
+                                        e.printStackTrace();
+                                    } catch (InterruptedException e) {
+                                        e.printStackTrace();
                                     }
-                                });
-
-                            }
-                        }else /*có sách này*/ {
-                            if(bookTuSach.getBought()) /*đã mua*/{
-                                vaotrangdoc();
-                            }else /*thuê hết hạn*/ {
-                                if((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date())))|| fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date()))))==false)/*hết hạn*/{
-                                    intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
-                                    intent.putExtra("name",book.getName());
-                                    intent.putExtra("image",IMAGE);
-                                    intent.putExtra("price",book.getPrice());
-                                    intent.putExtra("book_id", BOOK_ID);
-                                    startActivity(intent);
-                                }else /*còn hạn*/ {
-                                    vaotrangdoc();
                                 }
+                            });
+
+                        }
+                    } else /*có sách này*/ {
+                        if (bookTuSach.getBought()) /*đã mua*/ {
+                            vaotrangdoc();
+                        } else /*thuê hết hạn*/ {
+                            if ((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date()))) || fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date())))) == false)/*hết hạn*/ {
+                                intent = new Intent(BookDetail.this, ChonGoiMuaSach.class);
+                                intent.putExtra("name", book.getName());
+                                intent.putExtra("image", IMAGE);
+                                intent.putExtra("price", book.getPrice());
+                                intent.putExtra("book_id", BOOK_ID);
+                                startActivity(intent);
+                            } else /*còn hạn*/ {
+                                vaotrangdoc();
                             }
                         }
+                    }
 
-                }
-                else {
+                } else {
                     //nếu chưa mua sách:
                     showAToast(getResources().getString(R.string.openinternet_readbook));
                 }
@@ -585,7 +606,8 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     private class DownloadBookFileTask extends AsyncTask<ResponseBody, Pair<Integer, Long>, Boolean> {
         private String bookID;
         private ProgressDialog dialog;
-        public DownloadBookFileTask(String bookID,ProgressDialog progressDialog) {
+
+        public DownloadBookFileTask(String bookID, ProgressDialog progressDialog) {
             this.bookID = bookID;
             this.dialog = progressDialog;
 
@@ -603,7 +625,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         protected Boolean doInBackground(ResponseBody... urls) {
             //Copy you logic to calculate progress and call
             Boolean result = false;
-            saveToDisk(result,urls[0], bookID+".pdf");
+            saveToDisk(result, urls[0], bookID + ".pdf");
             return result;
         }
 
@@ -647,14 +669,14 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         }
     }
 
-    private void saveToDisk(Boolean result,ResponseBody body, String filename) {
+    private void saveToDisk(Boolean result, ResponseBody body, String filename) {
         File pdfFile = null;
         try {
 
-            File directory= null;
+            File directory = null;
             ContextWrapper cw = new ContextWrapper(BookDetail.this);
             directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
-            pdfFile=new File(directory,filename);
+            pdfFile = new File(directory, filename);
 //            try{
 //                pdfFile.createNewFile();
 //            }catch (IOException e){
@@ -719,7 +741,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 if (response.isSuccessful()) {
                     Log.d("kiemtra", "Got the body for the file");
-                    downloadBookFileTask = new DownloadBookFileTask(bookID,progressDialog);
+                    downloadBookFileTask = new DownloadBookFileTask(bookID, progressDialog);
                     downloadBookFileTask.execute(response.body());
 
                 } else {
@@ -730,7 +752,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 t.printStackTrace();
-                Log.e("kiemtra", "Lỗi retro:"+ t.getMessage());
+                Log.e("kiemtra", "Lỗi retro:" + t.getMessage());
             }
         };
         call.enqueue(callback);
@@ -753,9 +775,6 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     }
 
 
-
-
-
     public void showAToast(String st) { //"Toast toast" is declared in the class
         try {
             toast.getView().isShown();     // true if visible
@@ -767,19 +786,20 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         toast.show();  //finally display it
     }
 
-    public Date fortmatStringtoDate(String date){
+    public Date fortmatStringtoDate(String date) {
         DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
         Date startDate = null;
         try {
             startDate = df.parse(date);
-           
+
         } catch (ParseException e) {
             e.printStackTrace();
         }
         return startDate;
     }
-    public void vaotrangdoc(){
-        storageReference.child("pdfs").child(BOOK_ID+".pdf").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+
+    public void vaotrangdoc() {
+        storageReference.child("pdfs").child(BOOK_ID + ".pdf").getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
             @Override
             public void onSuccess(Uri uri) {
                 book_link = uri.toString();

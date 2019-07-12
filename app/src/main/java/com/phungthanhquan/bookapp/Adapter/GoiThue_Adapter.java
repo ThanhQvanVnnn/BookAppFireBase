@@ -1,5 +1,6 @@
 package com.phungthanhquan.bookapp.Adapter;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.view.LayoutInflater;
@@ -56,7 +57,8 @@ public class GoiThue_Adapter extends RecyclerView.Adapter<GoiThue_Adapter.ViewHo
                 intent.putExtra("book_image",IMAGE);
                 intent.putExtra("rent_name",rentList.get(position).getName());
                 intent.putExtra("rent_price",rentList.get(position).getPrice());
-                context.startActivity(intent);
+                intent.putExtra("ren_time",rentList.get(position).getMonth());
+                ((Activity) context).startActivityForResult(intent,11);
             }
         });
     }

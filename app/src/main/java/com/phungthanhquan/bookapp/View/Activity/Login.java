@@ -258,7 +258,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                             //
                                             final FirebaseUser user = mAuth.getCurrentUser();
                                             final String uid = mAuth.getUid();
-                                            User userInfo = new User(user.getEmail(), user.getDisplayName(), user.getPhoneNumber(), (float) 0);
+                                            User userInfo = new User(user.getEmail(), user.getDisplayName(), user.getPhoneNumber(), (double) 0);
                                             userInfo.setUser_id(uid);
                                             firebaseFirestore.collection("user").document(userInfo.getUser_id()).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
@@ -339,7 +339,7 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                             //
                                             final FirebaseUser user = mAuth.getCurrentUser();
                                             final String uid = mAuth.getUid();
-                                            User userInfo = new User(user.getEmail(), user.getDisplayName(), user.getPhoneNumber(), (float) 0);
+                                            User userInfo = new User(user.getEmail(), user.getDisplayName(), user.getPhoneNumber(), (double) 0);
                                             userInfo.setUser_id(uid);
                                             firebaseFirestore.collection("user").document(userInfo.getUser_id()).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
