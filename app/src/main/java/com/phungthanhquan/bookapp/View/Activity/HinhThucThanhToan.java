@@ -52,6 +52,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.concurrent.ExecutionException;
 
 import dmax.dialog.SpotsDialog;
 
@@ -213,100 +214,202 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                         firebaseFirestore.collection("user").document(user.getUser_id()).set(user).addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void aVoid) {
+                                BookCase bookCasegetfromDB = null;
+                                try {
+                                    /* kiểm tra sách có tồn tại trong tủ sách chưa*/   bookCasegetfromDB = DbRoomAccess.getInstance(HinhThucThanhToan.this).getBookCaseByIDTask(HinhThucThanhToan.this,BOOK_ID);
+                                } catch (ExecutionException e) {
+                                    e.printStackTrace();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                }
                                 if (RENT_NAME.equals("v")) {
                                     final BookCase bookCase = new BookCase();
                                     bookCase.setBook_id(BOOK_ID);
                                     bookCase.setBought(true);
                                     bookCase.setBook_image(IMAGE);
                                     bookCase.setUser_id(user.getUser_id());
-                                    firebaseFirestore.collection("user_bookcase").add(bookCase).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                        @Override
-                                        public void onSuccess(DocumentReference documentReference) {
-                                            bookCase.setId(documentReference.getId());
-                                            DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                            dialog.dismiss();
-                                            Intent data = new Intent();
-                                            String text = "Result to be returned....";
-                                            data.setData(Uri.parse(text));
-                                            setResult(RESULT_OK, data);
-                                            finish();
-                                            loadingDialog.dismiss();
-                                        }
-                                    });
+                                    if(bookCasegetfromDB!=null) /*có tồn tại trong tủ sách*/{
+                                        final BookCase finalBookCasegetfromDB = bookCasegetfromDB;
+                                        firebaseFirestore.collection("user_bookcase").document(bookCasegetfromDB.getId()).set(bookCase).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                            @Override
+                                            public void onSuccess(Void documentReference) {
+                                                bookCase.setId(finalBookCasegetfromDB.getId());
+                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).updateBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                                dialog.dismiss();
+                                                Intent data = new Intent();
+                                                String text = "Result to be returned....";
+                                                data.setData(Uri.parse(text));
+                                                setResult(RESULT_OK, data);
+                                                finish();
+                                                loadingDialog.dismiss();
+                                            }
+                                        });
+
+                                    }else /*chưa tồn tại trong tủ sách*/ {
+                                        firebaseFirestore.collection("user_bookcase").add(bookCase).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(DocumentReference documentReference) {
+                                                bookCase.setId(documentReference.getId());
+                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                                dialog.dismiss();
+                                                Intent data = new Intent();
+                                                String text = "Result to be returned....";
+                                                data.setData(Uri.parse(text));
+                                                setResult(RESULT_OK, data);
+                                                finish();
+                                                loadingDialog.dismiss();
+                                            }
+                                        });
+                                    }
                                 } else {
                                     final BookCase bookCase = new BookCase();
                                     bookCase.setBook_id(BOOK_ID);
                                     bookCase.setBought(false);
                                     bookCase.setBook_image(IMAGE);
                                     bookCase.setUser_id(user.getUser_id());
-                                    firebaseFirestore.collection("user_bookcase").add(bookCase).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                        @Override
-                                        public void onSuccess(final DocumentReference documentReference) {
-                                            bookCase.setId(documentReference.getId());
-                                            final UserRent userrent = new UserRent();
-                                            userrent.setRent_id(RENT_ID);
-                                            userrent.setUser_id(user.getUser_id());
-                                            userrent.setTime_rest((dateFormatter.format(cal.getTime())));
+                                    if(bookCasegetfromDB==null) /*chưa tồn tại trong tủ sách*/ {
+                                        firebaseFirestore.collection("user_bookcase").add(bookCase).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(final DocumentReference documentReference) {
+                                                bookCase.setId(documentReference.getId());
+                                                final UserRent userrent = new UserRent();
+                                                userrent.setRent_id(RENT_ID);
+                                                userrent.setUser_id(user.getUser_id());
+                                                userrent.setTime_rest((dateFormatter.format(cal.getTime())));
 
-                                            firebaseFirestore.collection("user_rent").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                                @Override
-                                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                                    boolean dathue = false;
-                                                    String id="";
-                                                    for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-                                                        if (queryDocumentSnapshot.exists()) {
-                                                            if (queryDocumentSnapshot.get("user_id").equals(user.getUser_id())) {
-                                                                id = queryDocumentSnapshot.getId();
-                                                                dathue = true;
-                                                                break;
+                                                firebaseFirestore.collection("user_rent").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                                    @Override
+                                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                        boolean dathue = false;
+                                                        String id = "";
+                                                        for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+                                                            if (queryDocumentSnapshot.exists()) {
+                                                                if (queryDocumentSnapshot.get("user_id").equals(user.getUser_id())) {
+                                                                    id = queryDocumentSnapshot.getId();
+                                                                    dathue = true;
+                                                                    break;
+                                                                }
                                                             }
                                                         }
+                                                        if (dathue) {
+                                                            final String finalId = id;
+                                                            firebaseFirestore.collection("user_rent").document(id).set(userrent).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void aVoid) {
+                                                                    userrent.setId(finalId);
+                                                                    DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                                                    DbRoomAccess.getInstance(HinhThucThanhToan.this).updateUserRentTask(HinhThucThanhToan.this, userrent);
+                                                                    dialog.dismiss();
+                                                                    Intent data = new Intent();
+                                                                    String text = "Result to be returned....";
+                                                                    data.setData(Uri.parse(text));
+                                                                    setResult(RESULT_OK, data);
+                                                                    finish();
+                                                                    loadingDialog.dismiss();
+                                                                }
+                                                            });
+                                                        } else {
+                                                            firebaseFirestore.collection("user_rent").add(userrent).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                @Override
+                                                                public void onSuccess(DocumentReference documentReference1) {
+                                                                    userrent.setId(documentReference1.getId());
+                                                                    DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                                                    DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
+                                                                    dialog.dismiss();
+                                                                    Intent data = new Intent();
+                                                                    String text = "Result to be returned....";
+                                                                    data.setData(Uri.parse(text));
+                                                                    setResult(RESULT_OK, data);
+                                                                    finish();
+                                                                    loadingDialog.dismiss();
+                                                                }
+                                                            });
+                                                        }
                                                     }
-                                                    if(dathue) {
-                                                        firebaseFirestore.collection("user_rent").document(id).set(userrent).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
-                                                                dialog.dismiss();
-                                                                Intent data = new Intent();
-                                                                String text = "Result to be returned....";
-                                                                data.setData(Uri.parse(text));
-                                                                setResult(RESULT_OK, data);
-                                                                finish();
-                                                                loadingDialog.dismiss();
-                                                            }
-                                                        });
-                                                    }else {
-                                                        firebaseFirestore.collection("user_rent").add(userrent).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                            @Override
-                                                            public void onSuccess(DocumentReference documentReference1) {
-                                                                userrent.setId(documentReference1.getId());
-                                                                userrent.setRent_id(documentReference1.getId());
-                                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
-                                                                dialog.dismiss();
-                                                                Intent data = new Intent();
-                                                                String text = "Result to be returned....";
-                                                                data.setData(Uri.parse(text));
-                                                                setResult(RESULT_OK, data);
-                                                                finish();
-                                                                loadingDialog.dismiss();
-                                                            }
-                                                        });
+                                                });
+                                            }
+                                        });
+                                    }else /*đã tồn tại trong tủ sách*/{
+                                        final BookCase finalBookCasegetfromDB = bookCasegetfromDB;
+                                        firebaseFirestore.collection("user_bookcase").document(bookCasegetfromDB.getId()).set(bookCase).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                            @Override
+                                            public void onSuccess(Void documentReference) {
+                                                bookCase.setId(finalBookCasegetfromDB.getId());
+                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).updateBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                                dialog.dismiss();
+                                                Intent data = new Intent();
+                                                String text = "Result to be returned....";
+                                                data.setData(Uri.parse(text));
+                                                setResult(RESULT_OK, data);
+                                                finish();
+                                                loadingDialog.dismiss();
+                                            }
+                                        });
+
+                                        firebaseFirestore.collection("user_rent").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                            @Override
+                                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                                boolean dathue = false;
+                                                String id = "";
+                                                for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+                                                    if (queryDocumentSnapshot.exists()) {
+                                                        if (queryDocumentSnapshot.get("user_id").equals(user.getUser_id())) {
+                                                            id = queryDocumentSnapshot.getId();
+                                                            dathue = true;
+                                                            break;
+                                                        }
                                                     }
                                                 }
-                                            });
-                                        }
-                                    });
+                                                final UserRent userrent = new UserRent();
+                                                userrent.setRent_id(RENT_ID);
+                                                userrent.setUser_id(user.getUser_id());
+                                                userrent.setTime_rest((dateFormatter.format(cal.getTime())));
+                                                if (dathue) {
+                                                    final String finalId = id;
+                                                    firebaseFirestore.collection("user_rent").document(id).set(userrent).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                        @Override
+                                                        public void onSuccess(Void aVoid) {
+                                                            userrent.setId(finalId);
+                                                            DbRoomAccess.getInstance(HinhThucThanhToan.this).updateUserRentTask(HinhThucThanhToan.this, userrent);
+                                                            dialog.dismiss();
+                                                            Intent data = new Intent();
+                                                            String text = "Result to be returned....";
+                                                            data.setData(Uri.parse(text));
+                                                            setResult(RESULT_OK, data);
+                                                            finish();
+                                                            loadingDialog.dismiss();
+                                                        }
+                                                    });
+                                                } else {
+                                                    firebaseFirestore.collection("user_rent").add(userrent).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                        @Override
+                                                        public void onSuccess(DocumentReference documentReference1) {
+                                                            userrent.setId(documentReference1.getId());
+                                                            DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
+                                                            dialog.dismiss();
+                                                            Intent data = new Intent();
+                                                            String text = "Result to be returned....";
+                                                            data.setData(Uri.parse(text));
+                                                            setResult(RESULT_OK, data);
+                                                            finish();
+                                                            loadingDialog.dismiss();
+                                                        }
+                                                    });
+                                                }
+                                            }
+                                        });
+
+                                    }
                                 }
+                                showAToast(getString(R.string.thanh_toan_thanh_cong));
                             }
                         });
                     }
 
                 });
 
-                dialog.show();
                 break;
             case R.id.thanhtoanquapaypal:
                 processPayPall();
@@ -327,110 +430,199 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
         startActivityForResult(intent,PAYPAL_REQUEST_CODE);
     }
 
-    public Date fortmatStringtoDate(String date) {
-        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-        Date startDate = null;
-        try {
-            startDate = df.parse(date);
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return startDate;
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == PAYPAL_REQUEST_CODE){
             if(resultCode == RESULT_OK){
                 PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
                 if(confirmation !=null){
-                    showAToast(getString(R.string.thanh_toan_thanh_cong));
+                    BookCase bookCasegetfromDB = null;
+                    try {
+                        /* kiểm tra sách có tồn tại trong tủ sách chưa*/   bookCasegetfromDB = DbRoomAccess.getInstance(HinhThucThanhToan.this).getBookCaseByIDTask(HinhThucThanhToan.this,BOOK_ID);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                     if (RENT_NAME.equals("v")) {
                         final BookCase bookCase = new BookCase();
                         bookCase.setBook_id(BOOK_ID);
                         bookCase.setBought(true);
                         bookCase.setBook_image(IMAGE);
                         bookCase.setUser_id(user.getUser_id());
-                        firebaseFirestore.collection("user_bookcase").add(bookCase).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                bookCase.setId(documentReference.getId());
-                                DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                Intent data = new Intent();
-                                String text = "Result to be returned....";
-                                data.setData(Uri.parse(text));
-                                setResult(RESULT_OK, data);
-                                finish();
-                                loadingDialog.dismiss();
-                            }
-                        });
-                    }else {
+                        if(bookCasegetfromDB!=null) /*có tồn tại trong tủ sách*/{
+                            final BookCase finalBookCasegetfromDB = bookCasegetfromDB;
+                            firebaseFirestore.collection("user_bookcase").document(bookCasegetfromDB.getId()).set(bookCase).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                @Override
+                                public void onSuccess(Void documentReference) {
+                                    bookCase.setId(finalBookCasegetfromDB.getId());
+                                    DbRoomAccess.getInstance(HinhThucThanhToan.this).updateBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                    Intent data = new Intent();
+                                    String text = "Result to be returned....";
+                                    data.setData(Uri.parse(text));
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                    loadingDialog.dismiss();
+                                }
+                            });
+
+                        }else /*chưa tồn tại trong tủ sách*/ {
+                            firebaseFirestore.collection("user_bookcase").add(bookCase).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+                                    bookCase.setId(documentReference.getId());
+                                    DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                    Intent data = new Intent();
+                                    String text = "Result to be returned....";
+                                    data.setData(Uri.parse(text));
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                    loadingDialog.dismiss();
+                                }
+                            });
+                        }
+                    } else {
                         final BookCase bookCase = new BookCase();
                         bookCase.setBook_id(BOOK_ID);
                         bookCase.setBought(false);
                         bookCase.setBook_image(IMAGE);
                         bookCase.setUser_id(user.getUser_id());
-                        firebaseFirestore.collection("user_bookcase").add(bookCase).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(final DocumentReference documentReference) {
-                                bookCase.setId(documentReference.getId());
-                                final UserRent userrent = new UserRent();
-                                userrent.setRent_id(RENT_ID);
-                                userrent.setUser_id(user.getUser_id());
-                                userrent.setTime_rest((dateFormatter.format(cal.getTime())));
+                        if(bookCasegetfromDB==null) /*chưa tồn tại trong tủ sách*/ {
+                            firebaseFirestore.collection("user_bookcase").add(bookCase).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(final DocumentReference documentReference) {
+                                    bookCase.setId(documentReference.getId());
+                                    final UserRent userrent = new UserRent();
+                                    userrent.setRent_id(RENT_ID);
+                                    userrent.setUser_id(user.getUser_id());
+                                    userrent.setTime_rest((dateFormatter.format(cal.getTime())));
 
-                                firebaseFirestore.collection("user_rent").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                                        boolean dathue = false;
-                                        String id="";
-                                        for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
-                                            if (queryDocumentSnapshot.exists()) {
-                                                if (queryDocumentSnapshot.get("user_id").equals(user.getUser_id())) {
-                                                    id = queryDocumentSnapshot.getId();
-                                                    dathue = true;
-                                                    break;
+                                    firebaseFirestore.collection("user_rent").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            boolean dathue = false;
+                                            String id = "";
+                                            for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+                                                if (queryDocumentSnapshot.exists()) {
+                                                    if (queryDocumentSnapshot.get("user_id").equals(user.getUser_id())) {
+                                                        id = queryDocumentSnapshot.getId();
+                                                        dathue = true;
+                                                        break;
+                                                    }
                                                 }
                                             }
+                                            if (dathue) {
+                                                final String finalId = id;
+                                                firebaseFirestore.collection("user_rent").document(id).set(userrent).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                    @Override
+                                                    public void onSuccess(Void aVoid) {
+                                                        userrent.setId(finalId);
+                                                        DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                                        DbRoomAccess.getInstance(HinhThucThanhToan.this).updateUserRentTask(HinhThucThanhToan.this, userrent);
+                                                        Intent data = new Intent();
+                                                        String text = "Result to be returned....";
+                                                        data.setData(Uri.parse(text));
+                                                        setResult(RESULT_OK, data);
+                                                        finish();
+                                                        loadingDialog.dismiss();
+                                                    }
+                                                });
+                                            } else {
+                                                firebaseFirestore.collection("user_rent").add(userrent).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentReference documentReference1) {
+                                                        userrent.setId(documentReference1.getId());
+                                                        DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                                        DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
+                                                        Intent data = new Intent();
+                                                        String text = "Result to be returned....";
+                                                        data.setData(Uri.parse(text));
+                                                        setResult(RESULT_OK, data);
+                                                        finish();
+                                                        loadingDialog.dismiss();
+                                                    }
+                                                });
+                                            }
                                         }
-                                        if(dathue) {
-                                            firebaseFirestore.collection("user_rent").document(id).set(userrent).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                @Override
-                                                public void onSuccess(Void aVoid) {
-                                                    DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                                    DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
-                                                    Intent data = new Intent();
-                                                    String text = "Result to be returned....";
-                                                    data.setData(Uri.parse(text));
-                                                    setResult(RESULT_OK, data);
-                                                    finish();
-                                                    loadingDialog.dismiss();
-                                                }
-                                            });
-                                        }else {
-                                            firebaseFirestore.collection("user_rent").add(userrent).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                                @Override
-                                                public void onSuccess(DocumentReference documentReference1) {
-                                                    userrent.setId(documentReference1.getId());
-                                                    userrent.setRent_id(documentReference1.getId());
-                                                    DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                                    DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
-                                                    Intent data = new Intent();
-                                                    String text = "Result to be returned....";
-                                                    data.setData(Uri.parse(text));
-                                                    setResult(RESULT_OK, data);
-                                                    finish();
-                                                    loadingDialog.dismiss();
-                                                }
-                                            });
+                                    });
+                                }
+                            });
+                        }else /*đã tồn tại trong tủ sách*/{
+                            final BookCase finalBookCasegetfromDB = bookCasegetfromDB;
+                            firebaseFirestore.collection("user_bookcase").document(bookCasegetfromDB.getId()).set(bookCase).addOnSuccessListener(new OnSuccessListener<Void>() {
+
+                                @Override
+                                public void onSuccess(Void documentReference) {
+                                    bookCase.setId(finalBookCasegetfromDB.getId());
+                                    DbRoomAccess.getInstance(HinhThucThanhToan.this).updateBookCaseTask(HinhThucThanhToan.this, bookCase);
+                                    dialog.dismiss();
+                                    Intent data = new Intent();
+                                    String text = "Result to be returned....";
+                                    data.setData(Uri.parse(text));
+                                    setResult(RESULT_OK, data);
+                                    finish();
+                                    loadingDialog.dismiss();
+                                }
+                            });
+
+                            firebaseFirestore.collection("user_rent").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                @Override
+                                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                    boolean dathue = false;
+                                    String id = "";
+                                    for (QueryDocumentSnapshot queryDocumentSnapshot : queryDocumentSnapshots) {
+                                        if (queryDocumentSnapshot.exists()) {
+                                            if (queryDocumentSnapshot.get("user_id").equals(user.getUser_id())) {
+                                                id = queryDocumentSnapshot.getId();
+                                                dathue = true;
+                                                break;
+                                            }
                                         }
                                     }
-                                });
-                            }
-                        });
+                                    final UserRent userrent = new UserRent();
+                                    userrent.setRent_id(RENT_ID);
+                                    userrent.setUser_id(user.getUser_id());
+                                    userrent.setTime_rest((dateFormatter.format(cal.getTime())));
+                                    if (dathue) {
+                                        final String finalId = id;
+                                        firebaseFirestore.collection("user_rent").document(id).set(userrent).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                            @Override
+                                            public void onSuccess(Void aVoid) {
+                                                userrent.setId(finalId);
+                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).updateUserRentTask(HinhThucThanhToan.this, userrent);
+                                                dialog.dismiss();
+                                                Intent data = new Intent();
+                                                String text = "Result to be returned....";
+                                                data.setData(Uri.parse(text));
+                                                setResult(RESULT_OK, data);
+                                                finish();
+                                                loadingDialog.dismiss();
+                                            }
+                                        });
+                                    } else {
+                                        firebaseFirestore.collection("user_rent").add(userrent).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(DocumentReference documentReference1) {
+                                                userrent.setId(documentReference1.getId());
+                                                DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
+                                                dialog.dismiss();
+                                                Intent data = new Intent();
+                                                String text = "Result to be returned....";
+                                                data.setData(Uri.parse(text));
+                                                setResult(RESULT_OK, data);
+                                                finish();
+                                                loadingDialog.dismiss();
+                                            }
+                                        });
+                                    }
+                                }
+                            });
+
+                        }
                     }
                 }
+                showAToast(getString(R.string.thanh_toan_thanh_cong));
             }else if(resultCode == Activity.RESULT_CANCELED){
                 showAToast(getString(R.string.thanh_toan_huy));
             }

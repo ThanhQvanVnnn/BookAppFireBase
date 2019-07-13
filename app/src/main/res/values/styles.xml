@@ -33,7 +33,17 @@
         <attr name="useStrike" format="boolean" />
         <attr name="useValidate" format="boolean" />
     </declare-styleable>
-    <style name="MySeekBarTheme" parent="Widget.AppCompat.SeekBar" >
+
+    <style name="MySeekBarTheme" parent="Widget.AppCompat.SeekBar">
         <item name="colorAccent">@color/white</item>
     </style>
+
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>

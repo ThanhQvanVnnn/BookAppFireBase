@@ -4,6 +4,7 @@ import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.phungthanhquan.bookapp.Object.Book;
 import com.phungthanhquan.bookapp.Object.BookCase;
@@ -26,6 +27,9 @@ public interface BookCaseDao {
 
     @Delete
     void delete(BookCase book);
+
+    @Update
+    void update(BookCase bookCase);
 
     @Query("DELETE FROM bookcase")
     public void deleteAll();

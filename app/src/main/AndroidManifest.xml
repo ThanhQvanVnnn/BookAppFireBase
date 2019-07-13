@@ -9,7 +9,6 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher_round"
@@ -17,29 +16,32 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".View.Activity.ChuongSachRead"></activity>
-        <activity android:name=".View.Activity.Read"></activity>
+        <activity
+            android:name=".View.Activity.NapTaiKhoan"
+            android:label="@string/title_activity_nap_tai_khoan"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity android:name=".View.Activity.ChuongSachRead" />
+        <activity android:name=".View.Activity.Read" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id"/>
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
 
-        <activity android:name="com.facebook.FacebookActivity"
-            android:configChanges=
-                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+        <activity
+            android:name="com.facebook.FacebookActivity"
+            android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|orientation"
             android:label="@string/app_name" />
         <activity
             android:name="com.facebook.CustomTabActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
-
-
-
         <activity android:name=".View.Activity.ForGotPass" />
         <activity android:name=".View.Activity.Register" />
         <activity android:name=".View.Activity.Login" />
@@ -55,12 +57,10 @@
         <activity android:name=".View.Activity.HinhThucThanhToan" />
         <activity android:name=".View.Activity.ChonGoiMuaSach" />
         <activity android:name=".View.Activity.XemThemDanhGia" />
-        <activity android:name=".View.Activity.SearchBook"  />
-        <activity android:name=".View.Activity.BookDetail"  />
+        <activity android:name=".View.Activity.SearchBook" />
+        <activity android:name=".View.Activity.BookDetail" />
         <activity android:name=".View.Activity.MainActivity" />
         <activity android:name=".View.Activity.ListBookToChoice" />
-
-
     </application>
 
 </manifest>

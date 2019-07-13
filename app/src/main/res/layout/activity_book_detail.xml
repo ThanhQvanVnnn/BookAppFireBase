@@ -273,6 +273,18 @@
                             android:shadowRadius="5"
                             android:text="@string/doc_sach"
                             android:textColor="#FFFAF0" />
+                        <Button
+                            android:paddingLeft="5dp"
+                            android:paddingRight="5dp"
+                            android:visibility="gone"
+                            android:background="@drawable/background_button_muangay"
+                            android:text="@string/mua_ngay"
+                            android:textColor="@color/white"
+                            android:id="@+id/muasaukhithue"
+                            android:layout_marginTop="10dp"
+                            android:layout_gravity="center"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" />
 
 
                         <TextView

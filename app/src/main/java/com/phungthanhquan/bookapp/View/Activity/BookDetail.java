@@ -110,7 +110,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
     private TextView sotrang;
     private TextView giatien;
     private TextView menhgia;
-    private Button docsach;
+    private Button docsach,muasaukhithue;
     private ExpandableTextView noidungSach;
     private Button chiaSeCamNhan;
     private PresenterBookDetail presenterBookDetail;
@@ -176,7 +176,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
             nestedScrollView.setVisibility(View.GONE);
         }
         imageButtonInternet.setOnClickListener(this);
-
+        muasaukhithue.setOnClickListener(this);
     }
 
 
@@ -193,6 +193,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         sotrang = findViewById(R.id.textview_sotrang);
         giatien = findViewById(R.id.textview_giatien);
         menhgia = findViewById(R.id.textview_menhgia);
+        muasaukhithue = findViewById(R.id.muasaukhithue);
         chiaSeCamNhan = findViewById(R.id.button_chiasecamnhan);
         recycle_DsDanhGia = findViewById(R.id.recycle_danhsachdanhgia);
         getRecycle_SachCungTheLoai = findViewById(R.id.sachcungtheloai);
@@ -302,12 +303,14 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
             soluongdanhgia.setText(book.getComment_number() + " đánh giá");
             tentacgia.setText(book.getAuthor_name());
             nhaxuatban.setText(book.getPublisher_name());
-            sotrang.setText(book.getPage_number() + "");
-            BINHLUANNUMBER = book.getComment_number();
-            AVERAGE = book.getStar_average();
             DecimalFormat df = new DecimalFormat("###,###.###");
             df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ITALY));
             String giatien_format = df.format(book.getPrice());
+            sotrang.setText(book.getPage_number() + "");
+            muasaukhithue.setText(getString(R.string.mua_ngay) + " " + giatien_format + " Đ");
+            BINHLUANNUMBER = book.getComment_number();
+            AVERAGE = book.getStar_average();
+
             if (bookTuSach == null) /*chưa mua sách*/ {
                 if (userRent == null) {
                     //nếu chưa mua sách
@@ -315,10 +318,12 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                 } else {
                     if ((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date()))) || fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date())))) == false) {
                         giatien.setText(giatien_format + "");
+
                     } else {
                         giatien.setText(R.string.dathue);
                         giatien.setTextColor(getResources().getColor(R.color.colorPrimary));
                         menhgia.setVisibility(View.INVISIBLE);
+                        muasaukhithue.setVisibility(View.VISIBLE);
                     }
                 }
             } else /*có thấy trong tủ sách*/ {
@@ -327,6 +332,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                     giatien.setText(R.string.damua);
                     giatien.setTextColor(getResources().getColor(R.color.damuasach));
                     menhgia.setVisibility(View.INVISIBLE);
+                    muasaukhithue.setVisibility(View.GONE);
                 } else {
                     if ((fortmatStringtoDate(userRent.getTime_rest()).after(fortmatStringtoDate(dateFormatter.format(new Date()))) || fortmatStringtoDate(userRent.getTime_rest()).equals(fortmatStringtoDate(dateFormatter.format(new Date())))) == false) {
                         giatien.setText(giatien_format + "");
@@ -334,6 +340,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                         giatien.setText(R.string.dathue);
                         giatien.setTextColor(getResources().getColor(R.color.colorPrimary));
                         menhgia.setVisibility(View.INVISIBLE);
+                        muasaukhithue.setVisibility(View.VISIBLE);
                     }
                 }
             }
@@ -570,6 +577,17 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                     constraintLayoutInternet.setVisibility(View.VISIBLE);
                     nestedScrollView.setVisibility(View.GONE);
                 }
+                break;
+            case R.id.muasaukhithue:
+                intent = new Intent(this,HinhThucThanhToan.class);
+                intent.putExtra("book_id",BOOK_ID);
+                intent.putExtra("book_name",book.getName());
+                intent.putExtra("book_image",IMAGE);
+                intent.putExtra("rent_name","v");
+                intent.putExtra("rent_id","");
+                intent.putExtra("rent_price",book.getPrice());
+                intent.putExtra("rent_time",-1);
+                startActivity(intent);
                 break;
         }
     }

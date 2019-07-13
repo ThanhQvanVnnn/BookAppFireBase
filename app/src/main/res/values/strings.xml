@@ -104,7 +104,7 @@
     <string name="dangnhapthanhcong">Đăng nhập thành công!</string>
     <string name="dangnhapthatbai">Đăng nhập thất bại!</string>
     <string name="resetpass">Vui lòng kiểm tra mail để đổi mật khẩu !</string>
-    <string name ="dangtaidulieu">Đang tải dữ liệu !</string>
+    <string name="dangtaidulieu">Đang tải dữ liệu !</string>
     <string name="sachtuongtu">Sách cùng thể loại</string>
     <string name="vuilongnhapsosao">Vui lòng đánh giá số sao !</string>
     <string name="binhluanthanhcong">Bình luận thành công</string>
@@ -112,4 +112,12 @@
     <string name="dathue">Đọc theo gói thuê</string>
     <string name="khongdutaikhoan">Không thể thanh toán</string>
     <string name="cothethanhtoan">Có thể thanh toán</string>
+    <string name="title_activity_nap_tai_khoan">NapTaiKhoan</string>
+    <string name="nhap_tien">Nhập số tiền muốn nạp</string>
+    <string name="nap_qua_paypal">Nạp tài khoản qua PayPal</string>
+    <string name="nap_cho_tai_khoan">Nạp tiền vào tài khoản: </string>
+    <string name="thong_tin_thanh_toan">Thông tin thanh toán</string>
+    <string name="id_paypal">Mã Thanh Toán</string>
+    <string name="trang_thai">Trạng thái thanh toán: </string>
+    <string name="so_tien_da_nap">Số tiền thanh toán</string>
 </resources>

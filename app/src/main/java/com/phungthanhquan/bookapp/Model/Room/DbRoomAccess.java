@@ -75,6 +75,26 @@ public abstract class DbRoomAccess extends RoomDatabase {
         }.execute();
     }
 
+    public void updateBookCaseTask(final Context context, final BookCase note) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                DbRoomAccess.getInstance(context).bookcaseAccess().update(note);
+                return null;
+            }
+        }.execute();
+    }
+
+    public void updateUserRentTask(final Context context, final UserRent note) {
+        new AsyncTask<Void, Void, Void>() {
+            @Override
+            protected Void doInBackground(Void... voids) {
+                DbRoomAccess.getInstance(context).userRentAccess().update(note);
+                return null;
+            }
+        }.execute();
+    }
+
     public BookCase getBookCaseByIDTask(final Context context, final String id) throws ExecutionException, InterruptedException {
         return new AsyncTask<Void, Void, BookCase>() {
             @Override
