@@ -409,7 +409,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                     }
 
                 });
-
+                dialog.show();
                 break;
             case R.id.thanhtoanquapaypal:
                 processPayPall();

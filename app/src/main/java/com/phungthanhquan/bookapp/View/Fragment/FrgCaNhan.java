@@ -24,20 +24,29 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
+import com.phungthanhquan.bookapp.Object.Book;
+import com.phungthanhquan.bookapp.Object.BookCase;
 import com.phungthanhquan.bookapp.Object.User;
 import com.phungthanhquan.bookapp.Presenter.Fragment.PresenterLogicCaNhan;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.Activity.Login;
+import com.phungthanhquan.bookapp.View.Activity.NapTaiKhoan;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewFragmentCaNhan;
 import com.squareup.picasso.Picasso;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -53,14 +62,12 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
     private LinearLayout nguoitheodoi;
     private LinearLayout nguoidangtheodoi;
     private LinearLayout sachdadoc;
-    private LinearLayout sachyeuthich;
     private LinearLayout naptaikhoan;
     private LinearLayout caidat;
     private LinearLayout dangxuat;
     private TextView songuoitheodoi;
     private TextView songuoidangtheodoi;
     private TextView sosachdadoc;
-    private TextView sosachyeuthich;
 
     private PresenterLogicCaNhan presenterLogicCaNhan;
     private final int SELECT_IMAGE = 100;
@@ -68,6 +75,8 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
     Toast toast;
     SharedPreferences shared;
     StorageReference storageReference;
+    User user;
+    DecimalFormat df;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -76,11 +85,10 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
         setOnclickEvent();
         shared = getContext().getSharedPreferences("User_Info", MODE_PRIVATE);
         storageReference = FirebaseStorage.getInstance().getReference();
+        user = new User();
+
         mAuth = FirebaseAuth.getInstance();
         presenterLogicCaNhan.hienThiThongTinCaNhan();
-        Picasso.get().load(shared.getString("image", String.valueOf(R.drawable.user_icon_default))).into(anhdaidienBackGround);
-        Picasso.get().load(shared.getString("image","")).into(anhdaidien);
-        tenNguoidung.setText(shared.getString("name",""));
         return view;
     }
 
@@ -104,26 +112,40 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
         nguoitheodoi = view.findViewById(R.id.nguoitheodoi);
         nguoidangtheodoi = view.findViewById(R.id.nguoidangtheodoi);
         sachdadoc = view.findViewById(R.id.sachdadoc);
-        sachyeuthich = view.findViewById(R.id.sachyeuthich);
         naptaikhoan = view.findViewById(R.id.naptaikhoan);
         caidat = view.findViewById(R.id.caidat);
         dangxuat = view.findViewById(R.id.dangxuat);
         songuoitheodoi = view.findViewById(R.id.soluong_nguoitheodoi);
         songuoidangtheodoi = view.findViewById(R.id.soluong_nguoidangtheodoi);
         sosachdadoc = view.findViewById(R.id.soluong_sachdadoc);
-        sosachyeuthich = view.findViewById(R.id.soluong_sachyeuthich);
+         df = new DecimalFormat("###,###.###");
+        df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ITALY));
         presenterLogicCaNhan = new PresenterLogicCaNhan(this);
-
+        presenterLogicCaNhan.LayTuSach(getContext());
     }
     @Override
     public void hienThiThongTinCaNhan(User user) {
-
-//        tongsoSach.setText(user.getTongSoSach()+"");
-//        songuoitheodoi.setText(user.getSoNguoiTheoDoi()+"");
-//        songuoidangtheodoi.setText(user.getSoNguoiDangTheoDoi()+"");
-//        sosachdadoc.setText(user.getSoSachDaDoc()+"");
-//        sosachyeuthich.setText(user.getSoSachYeuThich()+"");
+        Picasso.get().load(shared.getString("image", String.valueOf(R.drawable.user_icon_default))).into(anhdaidienBackGround);
+        Picasso.get().load(shared.getString("image",String.valueOf(R.drawable.user_icon_default))).into(anhdaidien);
+        tenNguoidung.setText(user.getName());
+        sotientrongTaiKhoan.setText(df.format(user.getBudget()) + " VND");
     }
+
+    @Override
+    public void hienthithongtintusach(List<BookCase> bookCaseList) {
+        int sachdamua = 0;
+        int sachdathue = 0;
+        sosachdadoc.setText(bookCaseList.size()+"");
+        for(BookCase bookCase:bookCaseList){
+            if(bookCase.getBought()){
+                sachdamua++;
+            }else {
+                sachdathue++;
+            }
+        }
+        tongsoSach.setText(sachdamua+"");
+    }
+
     @Override
     public void onClick(View v) {
         Intent intent;
@@ -143,11 +165,9 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
             case R.id.sachdadoc:
 
                 break;
-            case R.id.sachyeuthich:
-
-                break;
             case R.id.naptaikhoan:
-
+                intent = new Intent(getContext(), NapTaiKhoan.class);
+                startActivity(intent);
                 break;
             case R.id.caidat:
 

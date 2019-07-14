@@ -862,4 +862,5 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
             }
         });
     }
+
 }

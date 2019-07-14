@@ -58,13 +58,13 @@
     <string name="thanh_toan_thanh_cong">Thanh toán thành công</string>
     <string name="vinh_vien">Vĩnh viễn</string>
     <string name="so_du_taikhoan">Số Dư</string>
-    <string name="sach">Sách</string>
+    <string name="sach">Sách đã mua</string>
     <string name="nguoi_theo_doi">Người theo dõi</string>
     <string name="nguoi_dang_theo_doi">Người đang theo dõi</string>
     <string name="nap_tai_khoan">Nạp tài khoản</string>
     <string name="sach_da_doc">Sách đã đọc</string>
     <string name="sach_yeu_thich">Sách yêu thích</string>
-    <string name="cai_dat">Cài đặt</string>
+    <string name="lich_su_giao_dich">Lịch sử giao dịch</string>
     <string name="dang_xuat">Đăng xuất</string>
     <string name="user_name">Tên đăng nhập</string>
     <string name="user_name_register">Tên đăng nhập (*)</string>
@@ -117,7 +117,7 @@
     <string name="nap_qua_paypal">Nạp tài khoản qua PayPal</string>
     <string name="nap_cho_tai_khoan">Nạp tiền vào tài khoản: </string>
     <string name="thong_tin_thanh_toan">Thông tin thanh toán</string>
-    <string name="id_paypal">Mã Thanh Toán</string>
+    <string name="id_paypal">Mã thanh toán: </string>
     <string name="trang_thai">Trạng thái thanh toán: </string>
-    <string name="so_tien_da_nap">Số tiền thanh toán</string>
+    <string name="so_tien_da_nap">Số tiền thanh toán: </string>
 </resources>

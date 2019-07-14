@@ -106,7 +106,7 @@
                             android:background="@color/colorPrimary"></View>
 
                         <TextView
-                            android:textColor="@color/colorPrimary"
+                            android:textColor="@color/damuasach"
                             android:id="@+id/sotientrongtaikhoan"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -140,7 +140,7 @@
                             android:background="@color/colorPrimary"></View>
 
                         <TextView
-                            android:textColor="@color/colorPrimary"
+                            android:textColor="@color/damuasach"
                             android:id="@+id/tongsosach"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
@@ -332,55 +332,6 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
                 android:background="@color/colorPrimary"></View>
-
-            <LinearLayout
-                android:id="@+id/sachyeuthich"
-                android:layout_width="match_parent"
-                android:layout_height="40dp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="5dp"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="30dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/traitim_black_24" />
-
-                <TextView
-                    android:textColor="@color/colorPrimary"
-                    android:id="@+id/soluong_sachyeuthich"
-                    android:layout_width="50dp"
-                    android:textAlignment="center"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    android:paddingLeft="10dp"
-                    android:text="100" />
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="2"
-                    android:gravity="left|center"
-                    android:paddingLeft="10dp"
-                    android:text="@string/sach_yeu_thich" />
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="6"
-                    android:src="@drawable/next_black_18" />
-
-            </LinearLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginRight="10dp"
-                android:background="@color/colorPrimary"></View>
             <LinearLayout
                 android:id="@+id/naptaikhoan"
                 android:layout_width="match_parent"
@@ -434,11 +385,12 @@
                 android:orientation="horizontal">
 
                 <ImageView
+                    android:layout_gravity="center"
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:scaleType="fitCenter"
-                    android:src="@drawable/caidat_black_24" />
+                    android:src="@drawable/ic_history_black_24dp" />
 
                 <TextView
                     android:layout_width="match_parent"
@@ -446,7 +398,7 @@
                     android:layout_weight="2"
                     android:gravity="left|center"
                     android:paddingLeft="10dp"
-                    android:text="@string/cai_dat" />
+                    android:text="@string/lich_su_giao_dich" />
 
                 <View
                     android:layout_width="50dp"
@@ -509,6 +461,11 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginRight="10dp"
                 android:background="@color/colorPrimary"></View>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp">
+
         </LinearLayout>
 
     </LinearLayout>
