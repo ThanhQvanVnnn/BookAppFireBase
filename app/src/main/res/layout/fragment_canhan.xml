@@ -376,7 +376,7 @@
                 android:background="@color/colorPrimary"></View>
 
             <LinearLayout
-                android:id="@+id/caidat"
+                android:id="@+id/lichsugiaodich"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
                 android:layout_marginLeft="5dp"

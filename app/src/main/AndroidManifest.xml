@@ -16,10 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".View.Activity.LichSuGiaoDich"></activity>
+        <activity android:name=".View.Activity.TuSach_CaNhanClick" />
         <activity
             android:name=".View.Activity.NapTaiKhoan"
             android:label="@string/title_activity_nap_tai_khoan"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".View.Activity.ChuongSachRead" />
         <activity android:name=".View.Activity.Read" />
 

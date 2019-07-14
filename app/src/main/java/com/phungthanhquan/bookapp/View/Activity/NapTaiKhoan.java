@@ -2,6 +2,7 @@ package com.phungthanhquan.bookapp.View.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -21,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.gson.JsonObject;
@@ -30,6 +32,7 @@ import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.phungthanhquan.bookapp.Model.ConfigPaypal;
+import com.phungthanhquan.bookapp.Object.LichSuGiaoDich;
 import com.phungthanhquan.bookapp.Object.User;
 import com.phungthanhquan.bookapp.R;
 
@@ -39,6 +42,8 @@ import org.json.JSONObject;
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 public class NapTaiKhoan extends AppCompatActivity implements View.OnClickListener {
@@ -166,6 +171,25 @@ public class NapTaiKhoan extends AppCompatActivity implements View.OnClickListen
                         id = jsonObject.getString("id");
                         state = jsonObject.getString("state");
                         moneyreturn = df.format(money) + " VND";
+                        //thêm lịch sử giao dịch
+                        LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                        lichSuGiaoDich.setFrom_budget("paypal");
+                        lichSuGiaoDich.setMoney(money);
+                        lichSuGiaoDich.setTransaction_category("n");
+                        lichSuGiaoDich.setUser_id(user.getUser_id());
+                        lichSuGiaoDich.setEntity_id(id);
+                        Date now = new Date();
+                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                        String time = simpleDateFormat.format(now);
+                        Log.d("Timehientai", time);
+                        lichSuGiaoDich.setTime(time);
+                        firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+
+                            }
+                        });
+                        //kết thúc thêm lịch sử giao dịch
 
                     } catch (JSONException e) {
                         e.printStackTrace();

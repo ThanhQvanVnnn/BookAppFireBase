@@ -37,6 +37,7 @@ import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.phungthanhquan.bookapp.Model.ConfigPaypal;
 import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
 import com.phungthanhquan.bookapp.Object.BookCase;
+import com.phungthanhquan.bookapp.Object.LichSuGiaoDich;
 import com.phungthanhquan.bookapp.Object.Rent;
 import com.phungthanhquan.bookapp.Object.User;
 import com.phungthanhquan.bookapp.Object.UserRent;
@@ -49,6 +50,7 @@ import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
@@ -236,13 +238,33 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                             public void onSuccess(Void documentReference) {
                                                 bookCase.setId(finalBookCasegetfromDB.getId());
                                                 DbRoomAccess.getInstance(HinhThucThanhToan.this).updateBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                                dialog.dismiss();
-                                                Intent data = new Intent();
-                                                String text = "Result to be returned....";
-                                                data.setData(Uri.parse(text));
-                                                setResult(RESULT_OK, data);
-                                                finish();
-                                                loadingDialog.dismiss();
+                                                //thêm lịch sử giao dịch
+                                                LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                                lichSuGiaoDich.setFrom_budget("budget");
+                                                lichSuGiaoDich.setMoney(RENT_PRICE);
+                                                lichSuGiaoDich.setTransaction_category("v");
+                                                lichSuGiaoDich.setUser_id(user.getUser_id());
+                                                lichSuGiaoDich.setRent_time("Vĩnh viễn");
+                                                lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                Date now = new Date();
+                                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                                String time = simpleDateFormat.format(now);
+                                                Log.d("Timehientai", time);
+                                                lichSuGiaoDich.setTime(time);
+                                                firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentReference documentReference) {
+                                                        dialog.dismiss();
+                                                        Intent data = new Intent();
+                                                        String text = "Result to be returned....";
+                                                        data.setData(Uri.parse(text));
+                                                        setResult(RESULT_OK, data);
+                                                        finish();
+                                                        loadingDialog.dismiss();
+                                                    }
+                                                });
+                                                //kết thúc thêm lịch sử giao dịch
+
                                             }
                                         });
 
@@ -252,13 +274,32 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                             public void onSuccess(DocumentReference documentReference) {
                                                 bookCase.setId(documentReference.getId());
                                                 DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                                dialog.dismiss();
-                                                Intent data = new Intent();
-                                                String text = "Result to be returned....";
-                                                data.setData(Uri.parse(text));
-                                                setResult(RESULT_OK, data);
-                                                finish();
-                                                loadingDialog.dismiss();
+                                                //thêm lịch sử giao dịch
+                                                LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                                lichSuGiaoDich.setFrom_budget("budget");
+                                                lichSuGiaoDich.setMoney(RENT_PRICE);
+                                                lichSuGiaoDich.setTransaction_category("v");
+                                                lichSuGiaoDich.setUser_id(user.getUser_id());
+                                                lichSuGiaoDich.setRent_time("Vĩnh viễn");
+                                                lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                Date now = new Date();
+                                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                                String time = simpleDateFormat.format(now);
+                                                Log.d("Timehientai", time);
+                                                lichSuGiaoDich.setTime(time);
+                                                firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentReference documentReference) {
+                                                        dialog.dismiss();
+                                                        Intent data = new Intent();
+                                                        String text = "Result to be returned....";
+                                                        data.setData(Uri.parse(text));
+                                                        setResult(RESULT_OK, data);
+                                                        finish();
+                                                        loadingDialog.dismiss();
+                                                    }
+                                                });
+                                                //kết thúc thêm lịch sử giao dịch
                                             }
                                         });
                                     }
@@ -300,13 +341,32 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                                     userrent.setId(finalId);
                                                                     DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
                                                                     DbRoomAccess.getInstance(HinhThucThanhToan.this).updateUserRentTask(HinhThucThanhToan.this, userrent);
-                                                                    dialog.dismiss();
-                                                                    Intent data = new Intent();
-                                                                    String text = "Result to be returned....";
-                                                                    data.setData(Uri.parse(text));
-                                                                    setResult(RESULT_OK, data);
-                                                                    finish();
-                                                                    loadingDialog.dismiss();
+                                                                    //thêm lịch sử giao dịch
+                                                                    LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                                                    lichSuGiaoDich.setFrom_budget("budget");
+                                                                    lichSuGiaoDich.setMoney(RENT_PRICE);
+                                                                    lichSuGiaoDich.setTransaction_category("t");
+                                                                    lichSuGiaoDich.setUser_id(user.getUser_id());
+                                                                    lichSuGiaoDich.setRent_time(RENT_NAME);
+                                                                    lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                                    Date now = new Date();
+                                                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                                                    String time = simpleDateFormat.format(now);
+                                                                    Log.d("Timehientai", time);
+                                                                    lichSuGiaoDich.setTime(time);
+                                                                    firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                        @Override
+                                                                        public void onSuccess(DocumentReference documentReference) {
+                                                                            dialog.dismiss();
+                                                                            Intent data = new Intent();
+                                                                            String text = "Result to be returned....";
+                                                                            data.setData(Uri.parse(text));
+                                                                            setResult(RESULT_OK, data);
+                                                                            finish();
+                                                                            loadingDialog.dismiss();
+                                                                        }
+                                                                    });
+                                                                    //kết thúc thêm lịch sử giao dịch
                                                                 }
                                                             });
                                                         } else {
@@ -316,13 +376,32 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                                     userrent.setId(documentReference1.getId());
                                                                     DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
                                                                     DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
-                                                                    dialog.dismiss();
-                                                                    Intent data = new Intent();
-                                                                    String text = "Result to be returned....";
-                                                                    data.setData(Uri.parse(text));
-                                                                    setResult(RESULT_OK, data);
-                                                                    finish();
-                                                                    loadingDialog.dismiss();
+                                                                    //thêm lịch sử giao dịch
+                                                                    LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                                                    lichSuGiaoDich.setFrom_budget("budget");
+                                                                    lichSuGiaoDich.setMoney(RENT_PRICE);
+                                                                    lichSuGiaoDich.setTransaction_category("t");
+                                                                    lichSuGiaoDich.setUser_id(user.getUser_id());
+                                                                    lichSuGiaoDich.setRent_time(RENT_NAME);
+                                                                    lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                                    Date now = new Date();
+                                                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                                                    String time = simpleDateFormat.format(now);
+                                                                    Log.d("Timehientai", time);
+                                                                    lichSuGiaoDich.setTime(time);
+                                                                    firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                        @Override
+                                                                        public void onSuccess(DocumentReference documentReference) {
+                                                                            dialog.dismiss();
+                                                                            Intent data = new Intent();
+                                                                            String text = "Result to be returned....";
+                                                                            data.setData(Uri.parse(text));
+                                                                            setResult(RESULT_OK, data);
+                                                                            finish();
+                                                                            loadingDialog.dismiss();
+                                                                        }
+                                                                    });
+                                                                    //kết thúc thêm lịch sử giao dịch
                                                                 }
                                                             });
                                                         }
@@ -338,13 +417,32 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                             public void onSuccess(Void documentReference) {
                                                 bookCase.setId(finalBookCasegetfromDB.getId());
                                                 DbRoomAccess.getInstance(HinhThucThanhToan.this).updateBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                                dialog.dismiss();
-                                                Intent data = new Intent();
-                                                String text = "Result to be returned....";
-                                                data.setData(Uri.parse(text));
-                                                setResult(RESULT_OK, data);
-                                                finish();
-                                                loadingDialog.dismiss();
+                                                //thêm lịch sử giao dịch
+                                                LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                                lichSuGiaoDich.setFrom_budget("budget");
+                                                lichSuGiaoDich.setMoney(RENT_PRICE);
+                                                lichSuGiaoDich.setTransaction_category("t");
+                                                lichSuGiaoDich.setUser_id(user.getUser_id());
+                                                lichSuGiaoDich.setRent_time(RENT_NAME);
+                                                lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                Date now = new Date();
+                                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                                String time = simpleDateFormat.format(now);
+                                                Log.d("Timehientai", time);
+                                                lichSuGiaoDich.setTime(time);
+                                                firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentReference documentReference) {
+                                                        dialog.dismiss();
+                                                        Intent data = new Intent();
+                                                        String text = "Result to be returned....";
+                                                        data.setData(Uri.parse(text));
+                                                        setResult(RESULT_OK, data);
+                                                        finish();
+                                                        loadingDialog.dismiss();
+                                                    }
+                                                });
+                                                //kết thúc thêm lịch sử giao dịch
                                             }
                                         });
 
@@ -373,13 +471,32 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                         public void onSuccess(Void aVoid) {
                                                             userrent.setId(finalId);
                                                             DbRoomAccess.getInstance(HinhThucThanhToan.this).updateUserRentTask(HinhThucThanhToan.this, userrent);
-                                                            dialog.dismiss();
-                                                            Intent data = new Intent();
-                                                            String text = "Result to be returned....";
-                                                            data.setData(Uri.parse(text));
-                                                            setResult(RESULT_OK, data);
-                                                            finish();
-                                                            loadingDialog.dismiss();
+                                                            //thêm lịch sử giao dịch
+                                                            LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                                            lichSuGiaoDich.setFrom_budget("budget");
+                                                            lichSuGiaoDich.setMoney(RENT_PRICE);
+                                                            lichSuGiaoDich.setTransaction_category("t");
+                                                            lichSuGiaoDich.setUser_id(user.getUser_id());
+                                                            lichSuGiaoDich.setRent_time(RENT_NAME);
+                                                            lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                            Date now = new Date();
+                                                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                                            String time = simpleDateFormat.format(now);
+                                                            Log.d("Timehientai", time);
+                                                            lichSuGiaoDich.setTime(time);
+                                                            firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                @Override
+                                                                public void onSuccess(DocumentReference documentReference) {
+                                                                    dialog.dismiss();
+                                                                    Intent data = new Intent();
+                                                                    String text = "Result to be returned....";
+                                                                    data.setData(Uri.parse(text));
+                                                                    setResult(RESULT_OK, data);
+                                                                    finish();
+                                                                    loadingDialog.dismiss();
+                                                                }
+                                                            });
+                                                            //kết thúc thêm lịch sử giao dịch
                                                         }
                                                     });
                                                 } else {
@@ -388,13 +505,32 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                         public void onSuccess(DocumentReference documentReference1) {
                                                             userrent.setId(documentReference1.getId());
                                                             DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
-                                                            dialog.dismiss();
-                                                            Intent data = new Intent();
-                                                            String text = "Result to be returned....";
-                                                            data.setData(Uri.parse(text));
-                                                            setResult(RESULT_OK, data);
-                                                            finish();
-                                                            loadingDialog.dismiss();
+                                                            //thêm lịch sử giao dịch
+                                                            LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                                            lichSuGiaoDich.setFrom_budget("budget");
+                                                            lichSuGiaoDich.setMoney(RENT_PRICE);
+                                                            lichSuGiaoDich.setTransaction_category("t");
+                                                            lichSuGiaoDich.setUser_id(user.getUser_id());
+                                                            lichSuGiaoDich.setRent_time(RENT_NAME);
+                                                            lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                            Date now = new Date();
+                                                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                                            String time = simpleDateFormat.format(now);
+                                                            Log.d("Timehientai", time);
+                                                            lichSuGiaoDich.setTime(time);
+                                                            firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                                @Override
+                                                                public void onSuccess(DocumentReference documentReference) {
+                                                                    dialog.dismiss();
+                                                                    Intent data = new Intent();
+                                                                    String text = "Result to be returned....";
+                                                                    data.setData(Uri.parse(text));
+                                                                    setResult(RESULT_OK, data);
+                                                                    finish();
+                                                                    loadingDialog.dismiss();
+                                                                }
+                                                            });
+                                                            //kết thúc thêm lịch sử giao dịch
                                                         }
                                                     });
                                                 }
@@ -458,12 +594,31 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                 public void onSuccess(Void documentReference) {
                                     bookCase.setId(finalBookCasegetfromDB.getId());
                                     DbRoomAccess.getInstance(HinhThucThanhToan.this).updateBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                    Intent data = new Intent();
-                                    String text = "Result to be returned....";
-                                    data.setData(Uri.parse(text));
-                                    setResult(RESULT_OK, data);
-                                    finish();
-                                    loadingDialog.dismiss();
+                                    //thêm lịch sử giao dịch
+                                    LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                    lichSuGiaoDich.setFrom_budget("paypal");
+                                    lichSuGiaoDich.setMoney(RENT_PRICE);
+                                    lichSuGiaoDich.setTransaction_category("v");
+                                    lichSuGiaoDich.setUser_id(user.getUser_id());
+                                    lichSuGiaoDich.setRent_time("Vĩnh viễn");
+                                    lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                    Date now = new Date();
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                    String time = simpleDateFormat.format(now);
+                                    Log.d("Timehientai", time);
+                                    lichSuGiaoDich.setTime(time);
+                                    firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            Intent data = new Intent();
+                                            String text = "Result to be returned....";
+                                            data.setData(Uri.parse(text));
+                                            setResult(RESULT_OK, data);
+                                            finish();
+                                            loadingDialog.dismiss();
+                                        }
+                                    });
+                                    //kết thúc thêm lịch sử giao dịch
                                 }
                             });
 
@@ -473,12 +628,31 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                 public void onSuccess(DocumentReference documentReference) {
                                     bookCase.setId(documentReference.getId());
                                     DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                    Intent data = new Intent();
-                                    String text = "Result to be returned....";
-                                    data.setData(Uri.parse(text));
-                                    setResult(RESULT_OK, data);
-                                    finish();
-                                    loadingDialog.dismiss();
+                                    //thêm lịch sử giao dịch
+                                    LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                    lichSuGiaoDich.setFrom_budget("paypal");
+                                    lichSuGiaoDich.setMoney(RENT_PRICE);
+                                    lichSuGiaoDich.setTransaction_category("v");
+                                    lichSuGiaoDich.setUser_id(user.getUser_id());
+                                    lichSuGiaoDich.setRent_time("Vĩnh viễn");
+                                    lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                    Date now = new Date();
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                    String time = simpleDateFormat.format(now);
+                                    Log.d("Timehientai", time);
+                                    lichSuGiaoDich.setTime(time);
+                                    firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            Intent data = new Intent();
+                                            String text = "Result to be returned....";
+                                            data.setData(Uri.parse(text));
+                                            setResult(RESULT_OK, data);
+                                            finish();
+                                            loadingDialog.dismiss();
+                                        }
+                                    });
+                                    //kết thúc thêm lịch sử giao dịch
                                 }
                             });
                         }
@@ -520,12 +694,31 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                         userrent.setId(finalId);
                                                         DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
                                                         DbRoomAccess.getInstance(HinhThucThanhToan.this).updateUserRentTask(HinhThucThanhToan.this, userrent);
-                                                        Intent data = new Intent();
-                                                        String text = "Result to be returned....";
-                                                        data.setData(Uri.parse(text));
-                                                        setResult(RESULT_OK, data);
-                                                        finish();
-                                                        loadingDialog.dismiss();
+                                                        //thêm lịch sử giao dịch
+                                                        LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                                        lichSuGiaoDich.setFrom_budget("paypal");
+                                                        lichSuGiaoDich.setMoney(RENT_PRICE);
+                                                        lichSuGiaoDich.setTransaction_category("t");
+                                                        lichSuGiaoDich.setUser_id(user.getUser_id());
+                                                        lichSuGiaoDich.setRent_time(RENT_NAME);
+                                                        lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                        Date now = new Date();
+                                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                                        String time = simpleDateFormat.format(now);
+                                                        Log.d("Timehientai", time);
+                                                        lichSuGiaoDich.setTime(time);
+                                                        firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                            @Override
+                                                            public void onSuccess(DocumentReference documentReference) {
+                                                                Intent data = new Intent();
+                                                                String text = "Result to be returned....";
+                                                                data.setData(Uri.parse(text));
+                                                                setResult(RESULT_OK, data);
+                                                                finish();
+                                                                loadingDialog.dismiss();
+                                                            }
+                                                        });
+                                                        //kết thúc thêm lịch sử giao dịch
                                                     }
                                                 });
                                             } else {
@@ -535,12 +728,31 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                         userrent.setId(documentReference1.getId());
                                                         DbRoomAccess.getInstance(HinhThucThanhToan.this).insertBookCaseTask(HinhThucThanhToan.this, bookCase);
                                                         DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
-                                                        Intent data = new Intent();
-                                                        String text = "Result to be returned....";
-                                                        data.setData(Uri.parse(text));
-                                                        setResult(RESULT_OK, data);
-                                                        finish();
-                                                        loadingDialog.dismiss();
+                                                        //thêm lịch sử giao dịch
+                                                        LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                                        lichSuGiaoDich.setFrom_budget("paypal");
+                                                        lichSuGiaoDich.setMoney(RENT_PRICE);
+                                                        lichSuGiaoDich.setTransaction_category("t");
+                                                        lichSuGiaoDich.setUser_id(user.getUser_id());
+                                                        lichSuGiaoDich.setRent_time(RENT_NAME);
+                                                        lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                        Date now = new Date();
+                                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                                        String time = simpleDateFormat.format(now);
+                                                        Log.d("Timehientai", time);
+                                                        lichSuGiaoDich.setTime(time);
+                                                        firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                            @Override
+                                                            public void onSuccess(DocumentReference documentReference) {
+                                                                Intent data = new Intent();
+                                                                String text = "Result to be returned....";
+                                                                data.setData(Uri.parse(text));
+                                                                setResult(RESULT_OK, data);
+                                                                finish();
+                                                                loadingDialog.dismiss();
+                                                            }
+                                                        });
+                                                        //kết thúc thêm lịch sử giao dịch
                                                     }
                                                 });
                                             }
@@ -556,13 +768,31 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                 public void onSuccess(Void documentReference) {
                                     bookCase.setId(finalBookCasegetfromDB.getId());
                                     DbRoomAccess.getInstance(HinhThucThanhToan.this).updateBookCaseTask(HinhThucThanhToan.this, bookCase);
-                                    dialog.dismiss();
-                                    Intent data = new Intent();
-                                    String text = "Result to be returned....";
-                                    data.setData(Uri.parse(text));
-                                    setResult(RESULT_OK, data);
-                                    finish();
-                                    loadingDialog.dismiss();
+                                    //thêm lịch sử giao dịch
+                                    LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                    lichSuGiaoDich.setFrom_budget("paypal");
+                                    lichSuGiaoDich.setMoney(RENT_PRICE);
+                                    lichSuGiaoDich.setTransaction_category("t");
+                                    lichSuGiaoDich.setUser_id(user.getUser_id());
+                                    lichSuGiaoDich.setRent_time(RENT_NAME);
+                                    lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                    Date now = new Date();
+                                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                    String time = simpleDateFormat.format(now);
+                                    Log.d("Timehientai", time);
+                                    lichSuGiaoDich.setTime(time);
+                                    firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                        @Override
+                                        public void onSuccess(DocumentReference documentReference) {
+                                            Intent data = new Intent();
+                                            String text = "Result to be returned....";
+                                            data.setData(Uri.parse(text));
+                                            setResult(RESULT_OK, data);
+                                            finish();
+                                            loadingDialog.dismiss();
+                                        }
+                                    });
+                                    //kết thúc thêm lịch sử giao dịch
                                 }
                             });
 
@@ -591,13 +821,31 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                             public void onSuccess(Void aVoid) {
                                                 userrent.setId(finalId);
                                                 DbRoomAccess.getInstance(HinhThucThanhToan.this).updateUserRentTask(HinhThucThanhToan.this, userrent);
-                                                dialog.dismiss();
-                                                Intent data = new Intent();
-                                                String text = "Result to be returned....";
-                                                data.setData(Uri.parse(text));
-                                                setResult(RESULT_OK, data);
-                                                finish();
-                                                loadingDialog.dismiss();
+                                                //thêm lịch sử giao dịch
+                                                LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                                lichSuGiaoDich.setFrom_budget("paypal");
+                                                lichSuGiaoDich.setMoney(RENT_PRICE);
+                                                lichSuGiaoDich.setTransaction_category("t");
+                                                lichSuGiaoDich.setUser_id(user.getUser_id());
+                                                lichSuGiaoDich.setRent_time(RENT_NAME);
+                                                lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                Date now = new Date();
+                                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                                String time = simpleDateFormat.format(now);
+                                                Log.d("Timehientai", time);
+                                                lichSuGiaoDich.setTime(time);
+                                                firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentReference documentReference) {
+                                                        Intent data = new Intent();
+                                                        String text = "Result to be returned....";
+                                                        data.setData(Uri.parse(text));
+                                                        setResult(RESULT_OK, data);
+                                                        finish();
+                                                        loadingDialog.dismiss();
+                                                    }
+                                                });
+                                                //kết thúc thêm lịch sử giao dịch
                                             }
                                         });
                                     } else {
@@ -606,13 +854,31 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                             public void onSuccess(DocumentReference documentReference1) {
                                                 userrent.setId(documentReference1.getId());
                                                 DbRoomAccess.getInstance(HinhThucThanhToan.this).insertUserRentTask(HinhThucThanhToan.this, userrent);
-                                                dialog.dismiss();
-                                                Intent data = new Intent();
-                                                String text = "Result to be returned....";
-                                                data.setData(Uri.parse(text));
-                                                setResult(RESULT_OK, data);
-                                                finish();
-                                                loadingDialog.dismiss();
+                                                //thêm lịch sử giao dịch
+                                                LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
+                                                lichSuGiaoDich.setFrom_budget("paypal");
+                                                lichSuGiaoDich.setMoney(RENT_PRICE);
+                                                lichSuGiaoDich.setTransaction_category("t");
+                                                lichSuGiaoDich.setUser_id(user.getUser_id());
+                                                lichSuGiaoDich.setRent_time(RENT_NAME);
+                                                lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                Date now = new Date();
+                                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+                                                String time = simpleDateFormat.format(now);
+                                                Log.d("Timehientai", time);
+                                                lichSuGiaoDich.setTime(time);
+                                                firebaseFirestore.collection("transaction_history").add(lichSuGiaoDich).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                                    @Override
+                                                    public void onSuccess(DocumentReference documentReference) {
+                                                        Intent data = new Intent();
+                                                        String text = "Result to be returned....";
+                                                        data.setData(Uri.parse(text));
+                                                        setResult(RESULT_OK, data);
+                                                        finish();
+                                                        loadingDialog.dismiss();
+                                                    }
+                                                });
+                                                //kết thúc thêm lịch sử giao dịch
                                             }
                                         });
                                     }

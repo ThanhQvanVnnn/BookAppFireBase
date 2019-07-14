@@ -109,6 +109,7 @@
     <string name="vuilongnhapsosao">Vui lòng đánh giá số sao !</string>
     <string name="binhluanthanhcong">Bình luận thành công</string>
     <string name="damua">Đã mua</string>
+    <string name="dadoc">Đã đọc:</string>
     <string name="dathue">Đọc theo gói thuê</string>
     <string name="khongdutaikhoan">Không thể thanh toán</string>
     <string name="cothethanhtoan">Có thể thanh toán</string>
@@ -120,4 +121,15 @@
     <string name="id_paypal">Mã thanh toán: </string>
     <string name="trang_thai">Trạng thái thanh toán: </string>
     <string name="so_tien_da_nap">Số tiền thanh toán: </string>
+    <string name="mua_sach_thanh_cong">Mua sách thành công!</string>
+    <string name="content_mua_thanh_cong_vi_1">Bạn đã mua thành công sách </string>
+    <string name="content_mua_thanh_cong_vi_2">Số tiền đã thanh toán: </string>
+    <string name="content_mua_thanh_cong_vi_3">Mã giao dịch: </string>
+    <string name="content_thue_thanh_cong_vi_1">Mua gói thuê thành công! </string>
+    <string name="content_thue_thanh_cong_vi_2">Bạn đã mua gói đọc sách:</string>
+    <string name="content_thue_thanh_cong_vi_3">Số tiền đã thanh toán: </string>
+    <string name="nap_tien_thanh_cong">Nạp tiền thành công!</string>
+    <string name="content_nap_thanh_cong_vi_1">Bạn đã nạp vào tài khoản thành công với số tiền:</string>
+    <string name="content_nap_thanh_cong_vi_2">Mã giao dịch:</string>
+
 </resources>

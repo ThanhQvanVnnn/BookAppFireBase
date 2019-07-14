@@ -35,8 +35,10 @@ import com.phungthanhquan.bookapp.Object.BookCase;
 import com.phungthanhquan.bookapp.Object.User;
 import com.phungthanhquan.bookapp.Presenter.Fragment.PresenterLogicCaNhan;
 import com.phungthanhquan.bookapp.R;
+import com.phungthanhquan.bookapp.View.Activity.LichSuGiaoDich;
 import com.phungthanhquan.bookapp.View.Activity.Login;
 import com.phungthanhquan.bookapp.View.Activity.NapTaiKhoan;
+import com.phungthanhquan.bookapp.View.Activity.TuSach_CaNhanClick;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewFragmentCaNhan;
 import com.squareup.picasso.Picasso;
 
@@ -63,7 +65,7 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
     private LinearLayout nguoidangtheodoi;
     private LinearLayout sachdadoc;
     private LinearLayout naptaikhoan;
-    private LinearLayout caidat;
+    private LinearLayout lichsugiaodich;
     private LinearLayout dangxuat;
     private TextView songuoitheodoi;
     private TextView songuoidangtheodoi;
@@ -98,7 +100,7 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
         nguoidangtheodoi.setOnClickListener(this);
         sachdadoc.setOnClickListener(this);
         naptaikhoan.setOnClickListener(this);
-        caidat.setOnClickListener(this);
+        lichsugiaodich.setOnClickListener(this);
         dangxuat.setOnClickListener(this);
     }
 
@@ -113,7 +115,7 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
         nguoidangtheodoi = view.findViewById(R.id.nguoidangtheodoi);
         sachdadoc = view.findViewById(R.id.sachdadoc);
         naptaikhoan = view.findViewById(R.id.naptaikhoan);
-        caidat = view.findViewById(R.id.caidat);
+        lichsugiaodich = view.findViewById(R.id.lichsugiaodich);
         dangxuat = view.findViewById(R.id.dangxuat);
         songuoitheodoi = view.findViewById(R.id.soluong_nguoitheodoi);
         songuoidangtheodoi = view.findViewById(R.id.soluong_nguoidangtheodoi);
@@ -163,14 +165,16 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
 
                 break;
             case R.id.sachdadoc:
-
+                intent = new Intent(getContext(), TuSach_CaNhanClick.class);
+                startActivity(intent);
                 break;
             case R.id.naptaikhoan:
                 intent = new Intent(getContext(), NapTaiKhoan.class);
                 startActivity(intent);
                 break;
-            case R.id.caidat:
-
+            case R.id.lichsugiaodich:
+                intent = new Intent(getContext(), LichSuGiaoDich.class);
+                startActivity(intent);
                 break;
             case R.id.dangxuat:
                 intent = new Intent(getContext(), Login.class);
