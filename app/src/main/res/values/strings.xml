@@ -131,5 +131,21 @@
     <string name="nap_tien_thanh_cong">Nạp tiền thành công!</string>
     <string name="content_nap_thanh_cong_vi_1">Bạn đã nạp vào tài khoản thành công với số tiền:</string>
     <string name="content_nap_thanh_cong_vi_2">Mã giao dịch:</string>
+    <string name="ten">Tên:</string>
+    <string name="sdt">SĐT:</string>
+    <string name="email">Email: </string>
+    <string name="nhap_ten">Nhập tên</string>
+    <string name="nhap_sdt">Nhập số điện thoại</string>
+    <string name="nhap_email">Nhập email</string>
+    <string name="cap_nhat">Cập nhật</string>
+    <string name="cap_nhat_thong_tin_user">Cập nhật thông tin người dùng</string>
+    <string name="nam">Nam</string>
+    <string name="nu">Nữ</string>
+    <string name="chon_ngay">Chọn ngày sinh</string>
+    <string name="cap_nhat_thanh_cong">Cập nhật thành công!</string>
+    <string name="khong_bo_trong_ho_ten">Vui lòng không bỏ trống họ tên!</string>
+    <string name="anh_dai_dien">Ảnh đại diện</string>
+    <string name="chon_tu_thu_vien">Chọn từ thư viện</string>
+    <string name="chup_tu_may_anh">Chụp từ máy ảnh</string>
 
 </resources>

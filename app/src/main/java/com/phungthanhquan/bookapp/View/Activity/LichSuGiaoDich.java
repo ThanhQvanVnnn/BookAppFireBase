@@ -13,7 +13,13 @@ import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLichSuGiaoDich;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityLichSuGiaoDich;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class LichSuGiaoDich extends AppCompatActivity implements InterfaceViewActivityLichSuGiaoDich {
@@ -53,6 +59,23 @@ public class LichSuGiaoDich extends AppCompatActivity implements InterfaceViewAc
     @Override
     public void hienThiDanhSachGiaoDich(List<com.phungthanhquan.bookapp.Object.LichSuGiaoDich> lichSuGiaoDiches) {
         lichSuGiaoDichList.addAll(lichSuGiaoDiches);
+        sortDates(lichSuGiaoDichList);
+        Collections.reverse(lichSuGiaoDichList);
         adapter.notifyDataSetChanged();
+    }
+
+    private static void sortDates(List<com.phungthanhquan.bookapp.Object.LichSuGiaoDich> lichSuGiaoDiches) {
+        Collections.sort(lichSuGiaoDiches, new Comparator<com.phungthanhquan.bookapp.Object.LichSuGiaoDich>() {
+            DateFormat dateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
+            @Override
+            public int compare(com.phungthanhquan.bookapp.Object.LichSuGiaoDich o1, com.phungthanhquan.bookapp.Object.LichSuGiaoDich o2) {
+                try {
+                    return dateFormat.parse(o1.getTime()).compareTo(dateFormat.parse(o2.getTime()));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return 1;
+            }
+        });
     }
 }

@@ -12,12 +12,16 @@
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
+            app:titleTextColor="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@drawable/bacground_toolbar_chitietsach"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
-
+            android:background="@color/white"
+           >
         </androidx.appcompat.widget.Toolbar>
+        <View android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/colorPrimary"
+            />
     </com.google.android.material.appbar.AppBarLayout>
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycle_hienthi"

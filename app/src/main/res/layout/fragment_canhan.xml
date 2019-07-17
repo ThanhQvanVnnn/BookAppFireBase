@@ -52,6 +52,7 @@
 
                     <de.hdodenhof.circleimageview.CircleImageView
                         android:id="@+id/image_anhdaidien"
+                        android:scaleType="centerCrop"
                         android:layout_width="150dp"
                         android:layout_height="150dp"
                         tools:srcCompat="@tools:sample/avatars[0]" />
@@ -151,22 +152,6 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
-            <LinearLayout
-                android:id="@+id/thaydoichandung"
-                android:background="@drawable/background_circle_imageview"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:gravity="center"
-                android:scaleType="centerInside"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="290dp"
-                android:layout_marginTop="152dp">
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                android:src="@drawable/chinhsua_whit_18" />
-        </LinearLayout>
         </RelativeLayout>
 
         <LinearLayout
@@ -355,6 +340,49 @@
                     android:gravity="left|center"
                     android:paddingLeft="10dp"
                     android:text="@string/nap_tai_khoan" />
+
+                <View
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6"
+                    android:src="@drawable/next_black_18" />
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/colorPrimary"></View>
+            <LinearLayout
+                android:id="@+id/capnhatthongtincanhan"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/capnhatthongtin_icon" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="left|center"
+                    android:paddingLeft="10dp"
+                    android:text="@string/cap_nhat_thong_tin_user" />
 
                 <View
                     android:layout_width="50dp"
