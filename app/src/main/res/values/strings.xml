@@ -147,5 +147,13 @@
     <string name="anh_dai_dien">Ảnh đại diện</string>
     <string name="chon_tu_thu_vien">Chọn từ thư viện</string>
     <string name="chup_tu_may_anh">Chụp từ máy ảnh</string>
+    <string name="moi_nguoi_doc_gi">Mọi người đang đọc gì</string>
+    <string name="ngay_tao">Ngày tạo:</string>
+    <string name="da_theo_doi">Đã theo dõi</string>
+    <string name="theo_doi">Theo dõi</string>
+    <string name="huy_theo_doi">Hũy theo dõi</string>
+    <string name="ket_thuc">Kết thúc</string>
+    <string name="khong_tim_thay_ban_be">Không tìm thấy kết quả!</string>
+    <string name="huy_theo_doi_ban_be">Đã hũy theo dõi</string>
 
 </resources>

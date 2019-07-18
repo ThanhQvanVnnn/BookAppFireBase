@@ -10,6 +10,7 @@ public class User {
     private Double budget;
     private Boolean gender;
     private String birth_day;
+    private String create_at;
 
     public User(String email, String name, String phone,Double budget, Boolean gender, String birth_day ) {
         this.email = email;
@@ -77,6 +78,15 @@ public class User {
 
     public void setBirth_day(String birth_day) {
         this.birth_day = birth_day;
+    }
+
+
+    public String getCreate_at() {
+        return create_at;
+    }
+
+    public void setCreate_at(String create_at) {
+        this.create_at = create_at;
     }
 
     @Override

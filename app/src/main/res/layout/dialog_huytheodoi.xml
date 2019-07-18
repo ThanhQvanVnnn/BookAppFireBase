@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    android:layout_gravity="center"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_marginLeft="50dp"
+    android:layout_marginRight="50dp"
+    android:layout_height="wrap_content">
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/anhdaidien"
+        android:layout_gravity="center"
+        android:layout_margin="10dp"
+        android:text="@string/anh_dai_dien"
+        android:textSize="25sp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginBottom="10dp"/>
+    <TextView
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:id="@+id/texview_tennguoidung"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="10dp"
+        android:layout_height="wrap_content" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorPrimary"></View>
+    <Button
+        android:id="@+id/botheodoi"
+        android:background="@drawable/border_layout_themnhanxet"
+        android:text="@string/huy_theo_doi"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <Button
+        android:id="@+id/ketthuc"
+        android:text="@string/ket_thuc"
+        android:background="@drawable/border_layout_themnhanxet"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+
+</LinearLayout>
