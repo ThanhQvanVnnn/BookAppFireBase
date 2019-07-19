@@ -151,9 +151,9 @@
     <string name="ngay_tao">Ngày tạo:</string>
     <string name="da_theo_doi">Đã theo dõi</string>
     <string name="theo_doi">Theo dõi</string>
-    <string name="huy_theo_doi">Hũy theo dõi</string>
+    <string name="huy_theo_doi">Hủy theo dõi</string>
     <string name="ket_thuc">Kết thúc</string>
     <string name="khong_tim_thay_ban_be">Không tìm thấy kết quả!</string>
-    <string name="huy_theo_doi_ban_be">Đã hũy theo dõi</string>
+    <string name="huy_theo_doi_ban_be">Đã hủy theo dõi</string>
 
 </resources>

@@ -119,6 +119,7 @@ public class TimKiemBanAdapter extends RecyclerView.Adapter<TimKiemBanAdapter.Vi
                     botheodoi.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            dialog.dismiss();
                             firebaseFirestore.collection("friend").document(friendList.get(checkFriendID(userList.get(position).getUser_id())).getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
@@ -126,8 +127,7 @@ public class TimKiemBanAdapter extends RecyclerView.Adapter<TimKiemBanAdapter.Vi
                                     holder.button_theodoi.setTextColor(context.getResources().getColor(R.color.white));
                                     holder.button_theodoi.setBackground(context.getResources().getDrawable(R.drawable.background_button_chuatheodoiban));
                                     friendList.remove(position);
-                                    showAToast(context.getString(R.string.huy_theo_doi_ban_be)+" "+ userList.get(position));
-                                    dialog.dismiss();
+                                    showAToast(context.getString(R.string.huy_theo_doi_ban_be)+" "+ userList.get(position).getName());
                                     loadingDialog.dismiss();
 
                                 }
@@ -151,6 +151,7 @@ public class TimKiemBanAdapter extends RecyclerView.Adapter<TimKiemBanAdapter.Vi
                             friendList.add(friend);
                             holder.button_theodoi.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
                             holder.button_theodoi.setText(context.getString(R.string.da_theo_doi));
+                            showAToast(context.getString(R.string.da_theo_doi)+" "+ userList.get(position).getName() );
                             holder.button_theodoi.setBackground(context.getResources().getDrawable(R.drawable.background_button_datheodoiban));
                     loadingDialog.dismiss();
                         }

@@ -42,7 +42,7 @@ import javax.annotation.Nullable;
 
 public class MainActivity extends AppCompatActivity {
 
-    private BottomNavigationView navigationView;
+    public static BottomNavigationView navigationView;
     private Fragment FrgTrangChu = new FrgTrangChu();
     private Fragment FrgDanhMuc = new FrgDanhMuc();
     private Fragment FrgTuSach = new FrgTuSach();
