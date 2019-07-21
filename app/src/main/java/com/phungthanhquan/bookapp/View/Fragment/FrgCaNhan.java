@@ -2,6 +2,7 @@ package com.phungthanhquan.bookapp.View.Fragment;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,8 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -44,6 +47,7 @@ import com.phungthanhquan.bookapp.Presenter.Fragment.PresenterLogicCaNhan;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.Activity.CapNhatThongTinUser;
 import com.phungthanhquan.bookapp.View.Activity.LichSuGiaoDich;
+import com.phungthanhquan.bookapp.View.Activity.ListUserTheoDoi;
 import com.phungthanhquan.bookapp.View.Activity.Login;
 import com.phungthanhquan.bookapp.View.Activity.NapTaiKhoan;
 import com.phungthanhquan.bookapp.View.Activity.TuSach_CaNhanClick;
@@ -59,6 +63,7 @@ import java.util.List;
 import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import dmax.dialog.SpotsDialog;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.Context.MODE_PRIVATE;
@@ -80,7 +85,7 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
     private TextView songuoidangtheodoi;
     private Dialog dialogChonAnhDaiDien;
     private TextView sosachdadoc;
-
+    public AlertDialog loadingDialog;
     private PresenterLogicCaNhan presenterLogicCaNhan;
     private final int SELECT_IMAGE = 100;
     private static final int CAMERA_REQUEST = 1888;
@@ -121,6 +126,39 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
                }
            }
        });
+       firebaseFirestore.collection("friend").whereEqualTo("sender_id",mAuth.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+           @Override
+           public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+               if(e != null){
+
+               }else {
+                   int soluongtheodoi = 0;
+                   for (QueryDocumentSnapshot queryDocumentSnapshot:queryDocumentSnapshots){
+                       if(queryDocumentSnapshot.exists()){
+                           soluongtheodoi++;
+                       }
+                   }
+                   songuoidangtheodoi.setText(soluongtheodoi+"");
+               }
+           }
+       });
+
+        firebaseFirestore.collection("friend").whereEqualTo("receiver_id",mAuth.getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@javax.annotation.Nullable QuerySnapshot queryDocumentSnapshots, @javax.annotation.Nullable FirebaseFirestoreException e) {
+                if(e != null){
+
+                }else {
+                    int soluongtheodoi = 0;
+                    for (QueryDocumentSnapshot queryDocumentSnapshot:queryDocumentSnapshots){
+                        if(queryDocumentSnapshot.exists()){
+                            soluongtheodoi++;
+                        }
+                    }
+                    songuoitheodoi.setText(soluongtheodoi+"");
+                }
+            }
+        });
 
        firebaseFirestore.collection("user_bookcase").whereEqualTo("user_id",FirebaseAuth.getInstance().getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
            @Override
@@ -177,6 +215,8 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
         df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ITALY));
         presenterLogicCaNhan = new PresenterLogicCaNhan(this);
         presenterLogicCaNhan.LayTuSach(getContext());
+        loadingDialog = new SpotsDialog.Builder().setContext(getContext()).build();
+        loadingDialog.setMessage(getResources().getString(R.string.vuilongcho));
     }
     @Override
     public void hienThiThongTinCaNhan(User user) {
@@ -238,10 +278,14 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
                 startActivity(intent);
                 break;
             case R.id.nguoitheodoi:
-
+                intent = new Intent(getContext(), ListUserTheoDoi.class);
+                intent.putExtra("title",getString(R.string.nguoi_theo_doi));
+                startActivity(intent);
                 break;
             case R.id.nguoidangtheodoi:
-
+                intent = new Intent(getContext(), ListUserTheoDoi.class);
+                intent.putExtra("title",getString(R.string.nguoi_dang_theo_doi));
+                startActivity(intent);
                 break;
             case R.id.sachdadoc:
                 intent = new Intent(getContext(), TuSach_CaNhanClick.class);
@@ -256,23 +300,49 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
                 startActivity(intent);
                 break;
             case R.id.dangxuat:
-                intent = new Intent(getContext(), Login.class);
-                startActivity(intent);
-                String packetName = getActivity().getPackageName();
-                DbRoomAccess.getInstance(getContext()).deleteAllBookcaseTask(getContext());
-                DbRoomAccess.getInstance(getContext()).deleteAllUserRentTask(getContext());
-                File f = new File(
-                        "/data/data/" + packetName + "/shared_prefs/User_Info.xml");
-                f.delete();
-                if(Login.mGoogleSignInClient!=null) {
-                    Login.mGoogleSignInClient.signOut();
-                }  LoginManager.getInstance().logOut();
-                if(LoginManager.getInstance()!=null){
-                    LoginManager.getInstance().logOut();
-                }
-                mAuth.signOut();
+                loadingDialog.show();
+                final Dialog dialogDangXuat = new Dialog(getContext());
+                dialogDangXuat.setContentView(R.layout.dialog_dangxuat);
+                Button button_kethuc = dialogDangXuat.findViewById(R.id.ket_thuc);
+                Button button_dangxuat = dialogDangXuat.findViewById(R.id.dang_xuat);
+                button_kethuc.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialogDangXuat.dismiss();
+                        loadingDialog.dismiss();
+                    }
+                });
 
-                getActivity().finish();
+                button_dangxuat.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mAuth.signOut();
+                        String packetName = getActivity().getPackageName();
+                        DbRoomAccess.getInstance(getContext()).deleteAllBookcaseTask(getContext());
+                        DbRoomAccess.getInstance(getContext()).deleteAllUserRentTask(getContext());
+                        File f = new File(
+                                "/data/data/" + packetName + "/shared_prefs/User_Info.xml");
+                        f.delete();
+                        if(Login.mGoogleSignInClient!=null) {
+                            Login.mGoogleSignInClient.signOut().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    Intent intent = new Intent(getContext(), Login.class);
+                                    startActivity(intent);
+                                    loadingDialog.dismiss();
+                                    dialogDangXuat.dismiss();
+                                }
+                            });
+                        }
+                        if(LoginManager.getInstance()!=null){
+                            LoginManager.getInstance().logOut();
+                            loadingDialog.dismiss();
+                            dialogDangXuat.dismiss();
+                        }
+                        getActivity().finish();
+                    }
+                });
+                dialogDangXuat.show();
                 break;
         }
     }

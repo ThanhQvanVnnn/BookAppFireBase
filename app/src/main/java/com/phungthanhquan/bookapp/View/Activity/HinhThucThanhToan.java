@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -20,9 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -35,28 +32,32 @@ import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.phungthanhquan.bookapp.Model.ConfigPaypal;
+import com.phungthanhquan.bookapp.Model.ConnectAPI.BuildAPI;
+import com.phungthanhquan.bookapp.Model.ConnectAPI.DownloadAPI;
+import com.phungthanhquan.bookapp.Model.ConnectAPI.DownloadMethodAPI;
 import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
 import com.phungthanhquan.bookapp.Object.BookCase;
 import com.phungthanhquan.bookapp.Object.LichSuGiaoDich;
-import com.phungthanhquan.bookapp.Object.Rent;
 import com.phungthanhquan.bookapp.Object.User;
 import com.phungthanhquan.bookapp.Object.UserRent;
 import com.phungthanhquan.bookapp.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.IOException;
 import java.math.BigDecimal;
-import java.text.DateFormat;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import dmax.dialog.SpotsDialog;
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HinhThucThanhToan extends AppCompatActivity implements View.OnClickListener {
     private LinearLayout taiKhoanChinh, taikhoanpaypal;
@@ -73,6 +74,9 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
     public AlertDialog loadingDialog;
     Calendar cal;
     Toast toast;
+    private Call<ResponseBody> call;
+    private Callback<ResponseBody> callback;
+    private DownloadMethodAPI downloadMethodAPI;
 
     public static final int PAYPAL_REQUEST_CODE = 7171;
     private static PayPalConfiguration config = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
@@ -164,6 +168,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
         cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, RENT_TIME);
         firebaseFirestore = FirebaseFirestore.getInstance();
+        downloadMethodAPI = DownloadAPI.getApiDownload();
     }
 
     @Override
@@ -245,7 +250,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                 lichSuGiaoDich.setTransaction_category("v");
                                                 lichSuGiaoDich.setUser_id(user.getUser_id());
                                                 lichSuGiaoDich.setRent_time("Vĩnh viễn");
-                                                lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                lichSuGiaoDich.setEntity(BOOK_NAME);
                                                 Date now = new Date();
                                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                                 String time = simpleDateFormat.format(now);
@@ -281,7 +286,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                 lichSuGiaoDich.setTransaction_category("v");
                                                 lichSuGiaoDich.setUser_id(user.getUser_id());
                                                 lichSuGiaoDich.setRent_time("Vĩnh viễn");
-                                                lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                lichSuGiaoDich.setEntity(BOOK_NAME);
                                                 Date now = new Date();
                                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                                 String time = simpleDateFormat.format(now);
@@ -348,7 +353,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                                     lichSuGiaoDich.setTransaction_category("t");
                                                                     lichSuGiaoDich.setUser_id(user.getUser_id());
                                                                     lichSuGiaoDich.setRent_time(RENT_NAME);
-                                                                    lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                                    lichSuGiaoDich.setEntity(BOOK_NAME);
                                                                     Date now = new Date();
                                                                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                                                     String time = simpleDateFormat.format(now);
@@ -383,7 +388,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                                     lichSuGiaoDich.setTransaction_category("t");
                                                                     lichSuGiaoDich.setUser_id(user.getUser_id());
                                                                     lichSuGiaoDich.setRent_time(RENT_NAME);
-                                                                    lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                                    lichSuGiaoDich.setEntity(BOOK_NAME);
                                                                     Date now = new Date();
                                                                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                                                     String time = simpleDateFormat.format(now);
@@ -424,7 +429,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                 lichSuGiaoDich.setTransaction_category("t");
                                                 lichSuGiaoDich.setUser_id(user.getUser_id());
                                                 lichSuGiaoDich.setRent_time(RENT_NAME);
-                                                lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                lichSuGiaoDich.setEntity(BOOK_NAME);
                                                 Date now = new Date();
                                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                                 String time = simpleDateFormat.format(now);
@@ -478,7 +483,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                             lichSuGiaoDich.setTransaction_category("t");
                                                             lichSuGiaoDich.setUser_id(user.getUser_id());
                                                             lichSuGiaoDich.setRent_time(RENT_NAME);
-                                                            lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                            lichSuGiaoDich.setEntity(BOOK_NAME);
                                                             Date now = new Date();
                                                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                                             String time = simpleDateFormat.format(now);
@@ -512,7 +517,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                             lichSuGiaoDich.setTransaction_category("t");
                                                             lichSuGiaoDich.setUser_id(user.getUser_id());
                                                             lichSuGiaoDich.setRent_time(RENT_NAME);
-                                                            lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                            lichSuGiaoDich.setEntity(BOOK_NAME);
                                                             Date now = new Date();
                                                             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                                             String time = simpleDateFormat.format(now);
@@ -556,14 +561,27 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
         }
     }
 
-    private void processPayPall() {
-        Double price_usd = RENT_PRICE/23140;
-        payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(price_usd))
-                ,"USD","Thanh toán Cho STUBO", PayPalPayment.PAYMENT_INTENT_SALE);
-        Intent intent = new Intent(this, PaymentActivity.class);
-        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
-        intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payPalPayment);
-        startActivityForResult(intent,PAYPAL_REQUEST_CODE);
+    private void processPayPall()  {
+
+        callback = new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                Log.d("ti_gia", response.body().toString());
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+
+            }
+        };
+        call.enqueue(callback);
+//        Double price_usd = RENT_PRICE/23140;
+//        payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(price_usd))
+//                ,"USD","Thanh toán Cho STUBO", PayPalPayment.PAYMENT_INTENT_SALE);
+//        Intent intent = new Intent(this, PaymentActivity.class);
+//        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
+//        intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payPalPayment);
+//        startActivityForResult(intent,PAYPAL_REQUEST_CODE);
     }
 
     @Override
@@ -601,7 +619,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                     lichSuGiaoDich.setTransaction_category("v");
                                     lichSuGiaoDich.setUser_id(user.getUser_id());
                                     lichSuGiaoDich.setRent_time("Vĩnh viễn");
-                                    lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                    lichSuGiaoDich.setEntity(BOOK_NAME);
                                     Date now = new Date();
                                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                     String time = simpleDateFormat.format(now);
@@ -635,7 +653,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                     lichSuGiaoDich.setTransaction_category("v");
                                     lichSuGiaoDich.setUser_id(user.getUser_id());
                                     lichSuGiaoDich.setRent_time("Vĩnh viễn");
-                                    lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                    lichSuGiaoDich.setEntity(BOOK_NAME);
                                     Date now = new Date();
                                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                     String time = simpleDateFormat.format(now);
@@ -701,7 +719,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                         lichSuGiaoDich.setTransaction_category("t");
                                                         lichSuGiaoDich.setUser_id(user.getUser_id());
                                                         lichSuGiaoDich.setRent_time(RENT_NAME);
-                                                        lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                        lichSuGiaoDich.setEntity(BOOK_NAME);
                                                         Date now = new Date();
                                                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                                         String time = simpleDateFormat.format(now);
@@ -735,7 +753,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                         lichSuGiaoDich.setTransaction_category("t");
                                                         lichSuGiaoDich.setUser_id(user.getUser_id());
                                                         lichSuGiaoDich.setRent_time(RENT_NAME);
-                                                        lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                        lichSuGiaoDich.setEntity(BOOK_NAME);
                                                         Date now = new Date();
                                                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                                         String time = simpleDateFormat.format(now);
@@ -775,7 +793,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                     lichSuGiaoDich.setTransaction_category("t");
                                     lichSuGiaoDich.setUser_id(user.getUser_id());
                                     lichSuGiaoDich.setRent_time(RENT_NAME);
-                                    lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                    lichSuGiaoDich.setEntity(BOOK_NAME);
                                     Date now = new Date();
                                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                     String time = simpleDateFormat.format(now);
@@ -828,7 +846,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                 lichSuGiaoDich.setTransaction_category("t");
                                                 lichSuGiaoDich.setUser_id(user.getUser_id());
                                                 lichSuGiaoDich.setRent_time(RENT_NAME);
-                                                lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                lichSuGiaoDich.setEntity(BOOK_NAME);
                                                 Date now = new Date();
                                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                                 String time = simpleDateFormat.format(now);
@@ -861,7 +879,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                                                 lichSuGiaoDich.setTransaction_category("t");
                                                 lichSuGiaoDich.setUser_id(user.getUser_id());
                                                 lichSuGiaoDich.setRent_time(RENT_NAME);
-                                                lichSuGiaoDich.setEntity_id(BOOK_NAME);
+                                                lichSuGiaoDich.setEntity(BOOK_NAME);
                                                 Date now = new Date();
                                                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                                                 String time = simpleDateFormat.format(now);

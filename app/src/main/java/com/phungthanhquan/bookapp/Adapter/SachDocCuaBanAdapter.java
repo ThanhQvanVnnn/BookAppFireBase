@@ -61,7 +61,7 @@ public class SachDocCuaBanAdapter extends RecyclerView.Adapter<SachDocCuaBanAdap
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        if (bookList.size()!=0 && dsbook.get(position).getAuthor_name().equals("a") ) {
+        if (bookList.size()!=0 && dsbook.get(position).getAuthor_name().equals("a") && dsbook.size()==bookList.size() ) {
             firebaseFirestore.collection("book").document(bookList.get(position).getBook_id()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
                 public void onSuccess(final DocumentSnapshot book) {
@@ -164,4 +164,5 @@ public class SachDocCuaBanAdapter extends RecyclerView.Adapter<SachDocCuaBanAdap
         itemSachBanDangDoc.setAuthor_name("a");
         dsbook.add(itemSachBanDangDoc);
     }
+
 }

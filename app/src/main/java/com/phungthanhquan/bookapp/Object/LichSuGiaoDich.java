@@ -11,12 +11,12 @@ public class LichSuGiaoDich {
     private String rent_time;
     private String from_budget;
     private String time;
-    private String entity_id;
+    private String entity;
 
     public LichSuGiaoDich() {
     }
 
-    public LichSuGiaoDich(String id, String user_id, String transaction_category, Double money, String rent_time, String from_budget, String time, String entity_id) {
+    public LichSuGiaoDich(String id, String user_id, String transaction_category, Double money, String rent_time, String from_budget, String time, String entity) {
         this.id = id;
         this.user_id = user_id;
         this.transaction_category = transaction_category;
@@ -24,15 +24,15 @@ public class LichSuGiaoDich {
         this.rent_time = rent_time;
         this.from_budget = from_budget;
         this.time = time;
-        this.entity_id = entity_id;
+        this.entity = entity;
     }
 
-    public String getEntity_id() {
-        return entity_id;
+    public String getEntity() {
+        return entity;
     }
 
-    public void setEntity_id(String entity_id) {
-        this.entity_id = entity_id;
+    public void setEntity(String entity) {
+        this.entity = entity;
     }
 
     @Exclude

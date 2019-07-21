@@ -2,12 +2,9 @@ package com.phungthanhquan.bookapp.View.Activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,7 +22,6 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.JsonObject;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
@@ -177,7 +173,7 @@ public class NapTaiKhoan extends AppCompatActivity implements View.OnClickListen
                         lichSuGiaoDich.setMoney(money);
                         lichSuGiaoDich.setTransaction_category("n");
                         lichSuGiaoDich.setUser_id(user.getUser_id());
-                        lichSuGiaoDich.setEntity_id(id);
+                        lichSuGiaoDich.setEntity(id);
                         Date now = new Date();
                         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm - dd/MM/yyyy");
                         String time = simpleDateFormat.format(now);

@@ -12,13 +12,14 @@ public class User {
     private String birth_day;
     private String create_at;
 
-    public User(String email, String name, String phone,Double budget, Boolean gender, String birth_day ) {
+    public User(String email, String name, String phone,Double budget, Boolean gender, String birth_day,String create_at ) {
         this.email = email;
         this.name = name;
         this.phone = phone;
         this.budget = budget;
         this.gender = gender;
         this.birth_day = birth_day;
+        this.create_at = create_at;
     }
 
     public User() {

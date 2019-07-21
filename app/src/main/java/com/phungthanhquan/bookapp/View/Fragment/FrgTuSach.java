@@ -62,8 +62,6 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach {
         rentList = new ArrayList<>();
         presenterLogicTuSach = new PresenterLogicTuSach(getContext(),this);
         presenterLogicTuSach.layDsUserRent();
-//        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,9);
-//        recyclerView.addOnScrollListener(loadMoreScroll);
 
     }
 
@@ -109,7 +107,6 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach {
                 (new Handler()).postDelayed(new Runnable() {
                     @Override
                     public void run() {
-//                    itemBookCaseList.clear();
                     presenterLogicTuSach.xulihienthiDSCuaTuSach();
                     swipeRefreshLayout.setRefreshing(false);
                     }
@@ -118,14 +115,6 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach {
         });
     }
 
-//    @Override
-//    public void hienThiLoadMore(final int tongItem) {
-//        recyclerView.setNestedScrollingEnabled(false);
-//        progressBarLoadMore.setVisibility(View.VISIBLE);
-////        List<ItemBookCase> dsSachLayVe = presenterLogicTuSach.xuliLoadMore(tongItem,progressBarLoadMore,recyclerView);
-////        itemBookCaseList.addAll(dsSachLayVe);
-//        tusach_adapter.notifyDataSetChanged();
-//    }
 
     @Override
     public void onResume() {

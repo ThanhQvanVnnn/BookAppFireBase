@@ -22,7 +22,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".View.Activity.TimKiemBan"></activity>
+        <activity android:name=".View.Activity.ListUserTheoDoi"></activity>
+        <activity android:name=".View.Activity.TimKiemBan" />
         <activity android:name=".View.Activity.CapNhatThongTinUser" />
         <activity android:name=".View.Activity.LichSuGiaoDich" />
         <activity android:name=".View.Activity.TuSach_CaNhanClick" />

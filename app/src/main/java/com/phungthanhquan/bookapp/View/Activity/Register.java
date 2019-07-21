@@ -35,6 +35,8 @@ import com.phungthanhquan.bookapp.Object.User;
 import com.phungthanhquan.bookapp.R;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 import dmax.dialog.SpotsDialog;
@@ -108,7 +110,10 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                                     if(task.isSuccessful()){
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         final String uid = mAuth.getUid();
-                                        User userInfo = new User(user.getEmail(),user.getEmail(),user.getPhoneNumber(), (double) 0,null,"01/01/1975");
+                                        Date now = new Date();
+                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                        String time = simpleDateFormat.format(now);
+                                        User userInfo = new User(user.getEmail(),user.getEmail(),user.getPhoneNumber(), (double) 0,null,"01/01/1975",time);
                                         userInfo.setUser_id(uid);
                                         firebaseFirestore.collection("user").document(userInfo.getUser_id()).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override

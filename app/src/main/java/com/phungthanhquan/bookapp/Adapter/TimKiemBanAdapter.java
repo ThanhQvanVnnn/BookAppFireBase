@@ -126,7 +126,13 @@ public class TimKiemBanAdapter extends RecyclerView.Adapter<TimKiemBanAdapter.Vi
                                     holder.button_theodoi.setText(context.getString(R.string.theo_doi));
                                     holder.button_theodoi.setTextColor(context.getResources().getColor(R.color.white));
                                     holder.button_theodoi.setBackground(context.getResources().getDrawable(R.drawable.background_button_chuatheodoiban));
-                                    friendList.remove(position);
+                                    int remove = -1;
+                                   for(int i = 0; i<friendList.size();i++){
+                                       friendList.get(i).getReceiver_id().equals(checkFriendID(userList.get(position).getUser_id()));
+                                       remove = i;
+                                       break;
+                                   }
+                                    friendList.remove(remove);
                                     showAToast(context.getString(R.string.huy_theo_doi_ban_be)+" "+ userList.get(position).getName());
                                     loadingDialog.dismiss();
 

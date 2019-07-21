@@ -42,7 +42,7 @@ public class LichSuGiaoDich_Adapter extends RecyclerView.Adapter<LichSuGiaoDich_
                 holder.imageView.setImageDrawable(context.getResources().getDrawable(R.drawable.paypal_icon));
             }
             String content = context.getString(R.string.content_mua_thanh_cong_vi_1)
-                    +" "+ lichSuGiaoDich.getEntity_id() +"\n"+ context.getString(R.string.content_mua_thanh_cong_vi_2)
+                    +" "+ lichSuGiaoDich.getEntity() +"\n"+ context.getString(R.string.content_mua_thanh_cong_vi_2)
                     + " " +lichSuGiaoDich.getMoney().toString()+ " VND";
             holder.textView_content.setText(content);
 
@@ -66,7 +66,7 @@ public class LichSuGiaoDich_Adapter extends RecyclerView.Adapter<LichSuGiaoDich_
                 String content = context.getString(R.string.content_nap_thanh_cong_vi_1)+" "+ lichSuGiaoDich.getMoney().toString()+ " VND"
                         +"\n"
                         +context.getString(R.string.content_nap_thanh_cong_vi_2) +" "
-                        +lichSuGiaoDich.getEntity_id();
+                        +lichSuGiaoDich.getEntity();
                 holder.textView_content.setText(content);
             }
         }

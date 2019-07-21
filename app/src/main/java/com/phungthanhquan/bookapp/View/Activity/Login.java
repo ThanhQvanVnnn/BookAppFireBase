@@ -65,8 +65,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import dmax.dialog.SpotsDialog;
@@ -258,7 +260,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                             //
                                             final FirebaseUser user = mAuth.getCurrentUser();
                                             final String uid = mAuth.getUid();
-                                            User userInfo = new User(user.getEmail(), user.getDisplayName(), user.getPhoneNumber(), (double) 0,null,"01/01/1975");
+                                            Date now = new Date();
+                                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                            String time = simpleDateFormat.format(now);
+                                            User userInfo = new User(user.getEmail(), user.getDisplayName(), user.getPhoneNumber(), (double) 0,null,"01/01/1975",time);
                                             userInfo.setUser_id(uid);
                                             firebaseFirestore.collection("user").document(userInfo.getUser_id()).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override
@@ -339,7 +344,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
                                             //
                                             final FirebaseUser user = mAuth.getCurrentUser();
                                             final String uid = mAuth.getUid();
-                                            User userInfo = new User(user.getEmail(), user.getDisplayName(), user.getPhoneNumber(), (double) 0,null,"01/01/1975");
+                                            Date now = new Date();
+                                            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                                            String time = simpleDateFormat.format(now);
+                                            User userInfo = new User(user.getEmail(), user.getDisplayName(), user.getPhoneNumber(), (double) 0,null,"01/01/1975",time);
                                             userInfo.setUser_id(uid);
                                             firebaseFirestore.collection("user").document(userInfo.getUser_id()).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                 @Override

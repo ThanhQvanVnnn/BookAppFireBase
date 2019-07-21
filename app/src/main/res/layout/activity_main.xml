@@ -6,23 +6,31 @@
     android:layout_height="match_parent"
     android:theme="@style/AppTheme"
     tools:context=".View.Activity.MainActivity">
-
-    <FrameLayout
-        android:id="@+id/frame_container"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/navigation"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        app:itemIconTint="@color/white"
-        app:itemTextColor="@color/white"
-        android:background="@drawable/bacground_toolbar_chitietsach"
-        app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
-        app:itemTextAppearanceInactive="@style/BottomNavigationView"
-        app:menu="@menu/menu_bottom_navigation"
-        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"/>
+        <FrameLayout
+            android:id="@+id/frame_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/navigation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:itemIconTint="@color/white"
+            app:itemTextColor="@color/white"
+            android:background="@drawable/bacground_toolbar_chitietsach"
+            app:itemTextAppearanceActive="@style/BottomNavigationView.Active"
+            app:itemTextAppearanceInactive="@style/BottomNavigationView"
+            app:menu="@menu/menu_bottom_navigation" />
+
+    </LinearLayout>
+
+
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

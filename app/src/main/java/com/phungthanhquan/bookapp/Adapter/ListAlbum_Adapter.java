@@ -79,7 +79,6 @@ public class ListAlbum_Adapter extends PagerAdapter {
                     @Override
                     public void onSuccess(Uri uri) {
                         hinhanhAlbum.set(position,uri.toString());
-                        Log.d("hinhanhalbum", hinhanhAlbum.size()+"");
                         Picasso.get().load(uri).into(imageView, new Callback() {
                             @Override
                             public void onSuccess() {

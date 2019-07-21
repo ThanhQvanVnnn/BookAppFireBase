@@ -32,7 +32,7 @@ public class LichSuGiaoDichModel {
                         if(queryDocumentSnapshot.exists()){
                             LichSuGiaoDich lichSuGiaoDich = new LichSuGiaoDich();
                             lichSuGiaoDich.setId(queryDocumentSnapshot.getId());
-                            lichSuGiaoDich.setEntity_id(queryDocumentSnapshot.getString("entity_id"));
+                            lichSuGiaoDich.setEntity(queryDocumentSnapshot.getString("entity_id"));
                             lichSuGiaoDich.setMoney(queryDocumentSnapshot.getDouble("money"));
                             lichSuGiaoDich.setTime(queryDocumentSnapshot.getString("time"));
                             lichSuGiaoDich.setFrom_budget(queryDocumentSnapshot.getString("from_budget"));
