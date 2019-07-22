@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,10 +24,14 @@ import android.widget.TextView;
 
 import com.github.barteksc.pdfviewer.PDFView;
 import com.github.barteksc.pdfviewer.listener.OnLoadCompleteListener;
+import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
+import com.phungthanhquan.bookapp.Object.BookCase;
 import com.phungthanhquan.bookapp.Object.BookRead;
 import com.phungthanhquan.bookapp.Object.ChuongSach;
 import com.phungthanhquan.bookapp.Object.DauTrang;
+import com.phungthanhquan.bookapp.Presenter.Activity.PresenterLogicRead;
 import com.phungthanhquan.bookapp.R;
+import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewActivityRead;
 
 import java.io.File;
 import java.io.Serializable;
@@ -34,11 +39,13 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-public class Read extends AppCompatActivity implements View.OnClickListener {
+public class Read extends AppCompatActivity implements View.OnClickListener, InterfaceViewActivityRead {
 
     private PDFView pdfView;
     private Boolean isUp;
@@ -51,20 +58,32 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
     private TextView trangHienTai;
     private TextView tenChuong;
     private ImageView next, previous;
-    private BookRead bookRead;
     private List<ChuongSach> chuongSachList;
     Boolean isNightMode, IsVertical, IsDauTrang;
     int numberPage, currentPage;
     private String chuongHienTai;
     private List<DauTrang> dauTrangList;
     private final String FILENAME_BOOKSTORED = "book_dowload";
-    private String BOOK_ID;
+    private String BOOK_ID,BOOK_NAME;
+    private BookCase BOOK_CASE;
+    private PresenterLogicRead presenterLogicRead;
+    private long startTime;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_read);
         initControls();
+    }
+    @Override
+    public void layChuongSach(List<ChuongSach> chuongSachListReturn) {
+        Collections.sort(chuongSachListReturn, new Comparator<ChuongSach>() {
+            @Override
+            public int compare(ChuongSach o1, ChuongSach o2) {
+                return o1.getPage_number() - o2.getPage_number();
+            }
+        });
+        chuongSachList.addAll(chuongSachListReturn);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         File directory;
@@ -127,6 +146,7 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
                 trangHienTai.setText(getString(R.string.page) + " " + (currentPage + 1) + "/" + numberPage + " - ");
                 CheckExit(chuongSachList, currentPage);
                 kiemTraDauTrang();
+                startTime = System.currentTimeMillis();
             }
 
             @Override
@@ -139,10 +159,22 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
 
             }
         });
-        tenSach.setText(bookRead.getTenSach());
+        tenSach.setText(BOOK_NAME);
         currentPage = pdfView.getCurrentPage();
         trangHienTai.setText(getString(R.string.page) + " " + (currentPage + 1) + "/" + numberPage + " - ");
-        CheckExit(chuongSachList, currentPage);
+        CheckExit(chuongSachList, currentPage+1);
+    }
+
+    @Override
+    public void layDauTrang(List<DauTrang> dauTrangListReturn) {
+        dauTrangList.addAll(dauTrangListReturn);
+        presenterLogicRead.LayChuongSach(BOOK_ID);
+    }
+
+    @Override
+    public void layBookCase(BookCase bookCase) {
+        BOOK_CASE = bookCase;
+        presenterLogicRead.LayDauTrang(BOOK_ID);
     }
 
     private void initControls() {
@@ -165,30 +197,12 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
         IsDauTrang = false;
         chuongSachList = new ArrayList<>();
         dauTrangList = new ArrayList<>();
-        AddDAta();
+        startTime = System.currentTimeMillis();
+        BOOK_NAME = getIntent().getStringExtra("book_name");
+        presenterLogicRead = new PresenterLogicRead(this,this);
+        presenterLogicRead.LayBookCase(BOOK_ID);
     }
 
-    void AddDAta() {
-        ChuongSach chuongSach = new ChuongSach(15, 0, "Lời Mở Đầu");
-        ChuongSach chuongSach1 = new ChuongSach(15, 10, "Chương 1: Giới Thiệu");
-        ChuongSach chuongSach2 = new ChuongSach(15, 100, "Chương 2:pattern");
-        ChuongSach chuongSach3 = new ChuongSach(15, 150, "Chương 3:nội dung");
-        ChuongSach chuongSach4 = new ChuongSach(15, 200, "Chương 4: ádsadsad");
-        ChuongSach chuongSach5 = new ChuongSach(15, 213, "Chương 5: tiếp theo");
-        ChuongSach chuongSach6 = new ChuongSach(15, 300, "Chương 6:gần cuối");
-        ChuongSach chuongSach7 = new ChuongSach(15, 350, "Chương 7:sadsdsadas");
-        ChuongSach chuongSach8 = new ChuongSach(15, 400, "Chương Cuối");
-        chuongSachList.add(chuongSach);
-        chuongSachList.add(chuongSach1);
-        chuongSachList.add(chuongSach2);
-        chuongSachList.add(chuongSach3);
-        chuongSachList.add(chuongSach4);
-        chuongSachList.add(chuongSach5);
-        chuongSachList.add(chuongSach6);
-        chuongSachList.add(chuongSach7);
-        chuongSachList.add(chuongSach8);
-        bookRead = new BookRead(0, "Tôi Thấy Hoa Vàng Trên Cỏ Xanh", 1, chuongSachList);
-    }
 
     public void slideHideHeader(View view) {
         TranslateAnimation animate = new TranslateAnimation(
@@ -242,12 +256,12 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
         int size = chuongSaches.size();
         for (int i = 0; i <= size - 1; i++) {
             if (i < size - 1) {
-                if (currentPages >= chuongSaches.get(i).getTrang() && currentPages < chuongSaches.get(i + 1).getTrang()) {
-                    chuongHienTai = chuongSaches.get(i).getTenChuongSach();
+                if (currentPages >= chuongSaches.get(i).getPage_number() && currentPages < chuongSaches.get(i + 1).getPage_number()) {
+                    chuongHienTai = chuongSaches.get(i).getContent();
                     tenChuong.setText(chuongHienTai);
                 }
-            } else if (currentPages >= chuongSaches.get(i).getTrang()) {
-                chuongHienTai = chuongSaches.get(i).getTenChuongSach();
+            } else if (currentPages >= chuongSaches.get(i).getPage_number()) {
+                chuongHienTai = chuongSaches.get(i).getContent();
                 tenChuong.setText(chuongHienTai);
             }
         }
@@ -286,11 +300,13 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
                     getSupportActionBar().setDisplayHomeAsUpEnabled(true);
                     getSupportActionBar().setDisplayShowHomeEnabled(true);
                     dautrang.setEnabled(true);
+                    seekBar.setEnabled(true);
                     slideShowHeader(header);
                     slideUpBottom(bottom);
                     slideShowStart(dautrang);
                 } else {
                     dautrang.setEnabled(false);
+                    seekBar.setEnabled(false);
                     slideDownBottom(bottom);
                     slideHideHeader(header);
                     slideHideStart(dautrang);
@@ -316,6 +332,7 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
                     CheckExit(chuongSachList, currentPage);
                     kiemTraDauTrang();
                 }
+                startTime = System.currentTimeMillis();
 
                 break;
             case R.id.imagePreVious:
@@ -335,6 +352,7 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
                     CheckExit(chuongSachList, currentPage);
                     kiemTraDauTrang();
                 }
+                startTime = System.currentTimeMillis();
 
                 break;
             case R.id.dautrang:
@@ -375,7 +393,8 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
         String thu = ft.format(dNow);
         Calendar calendar = Calendar.getInstance();
         String currentDay = thu +", "+getString(R.string.ngay)+" "+ DateFormat.getDateInstance().format(calendar.getTime());
-        DauTrang dauTrang = new DauTrang(chuongHienTai, currentPage + 1, currentDay);
+        DauTrang dauTrang = new DauTrang(BOOK_ID,chuongHienTai, currentPage + 1, currentDay);
+        DbRoomAccess.getInstance(this).insertDauTrangTask(this,dauTrang);
         dauTrangList.add(dauTrang);
     }
 
@@ -384,6 +403,7 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
             DauTrang value = iterator.next();
             if (value.getTrang() == (currentPage + 1)) {
                 iterator.remove();
+                DbRoomAccess.getInstance(this).deleteDauTrangTask(this,currentPage+1);
             }
         }
     }
@@ -430,9 +450,8 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
                     break;
                 case R.id.chuongsach:
                     Intent intent = new Intent(this, ChuongSachRead.class);
-                    intent.putExtra("listChuongSach", (Serializable) chuongSachList);
-                    intent.putExtra("listdautrang", (Serializable) dauTrangList);
-                    intent.putExtra("tensach", bookRead.getTenSach());
+                    intent.putExtra("tensach",BOOK_NAME);
+                    intent.putExtra("book_id",BOOK_ID);
                     startActivityForResult(intent, 100);
                     break;
             }
@@ -454,10 +473,27 @@ public class Read extends AppCompatActivity implements View.OnClickListener {
                 trangHienTai.setText(getString(R.string.page) + " " + (currentPage + 1) + "/" + numberPage + " - ");
                 int progresss = currentPage * 100 / (numberPage - 1);
                 phanTramDoc.setText(progresss + "%");
+                CheckExit(chuongSachList, currentPage+1);
+                startTime = System.currentTimeMillis();
             }
             if (resultCode == Activity.RESULT_CANCELED) {
                 //Write your code if there's no result
             }
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        long time = System.currentTimeMillis() - startTime;
+        long seconds = time /1000;
+        if(seconds>10){
+            int progresss = currentPage * 100 / (numberPage - 1);
+            if(progresss>BOOK_CASE.getLast_time()){
+                BOOK_CASE.setLast_time(progresss);
+                DbRoomAccess.getInstance(this).updateBookCaseTask(this,BOOK_CASE);
+            }
+        }
+    }
+
 }

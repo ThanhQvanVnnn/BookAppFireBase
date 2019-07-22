@@ -48,6 +48,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.storage.FirebaseStorage;
@@ -61,6 +62,7 @@ import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
 import com.phungthanhquan.bookapp.Object.BinhLuan;
 import com.phungthanhquan.bookapp.Object.Book;
 import com.phungthanhquan.bookapp.Object.BookCase;
+import com.phungthanhquan.bookapp.Object.ChuongSach;
 import com.phungthanhquan.bookapp.Object.Marketing;
 import com.phungthanhquan.bookapp.Object.UserRent;
 import com.phungthanhquan.bookapp.Presenter.Activity.PresenterBookDetail;
@@ -751,6 +753,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         call = null;
         String urlBook = book_link;
         call = downloadMethodAPI.downLoadBook(urlBook);
+        getChuongSach();
         callback = new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
@@ -846,6 +849,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                         if (file.exists() && (file_size == lenghtFile)) {
                             intent = new Intent(BookDetail.this, Read.class);
                             intent.putExtra("book_id", BOOK_ID);
+                            intent.putExtra("book_name",book.getName());
                             startActivity(intent);
                         } else if (file.exists() && file_size != lenghtFile) {
                             file.delete();
@@ -859,6 +863,27 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                         }
                     }
                 }.execute(book_link);
+            }
+        });
+    }
+
+    public void getChuongSach(){
+        firebaseFirestore.collection("chapter").whereEqualTo("book_id",BOOK_ID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                List<ChuongSach> chuongSachList = new ArrayList<>();
+                if(task.isSuccessful()){
+                    for(QueryDocumentSnapshot queryDocumentSnapshot:task.getResult()){
+                        if(queryDocumentSnapshot.exists()){
+                            ChuongSach chuongSach = queryDocumentSnapshot.toObject(ChuongSach.class);
+                            chuongSach.setId(queryDocumentSnapshot.getId());
+                            chuongSachList.add(chuongSach);
+                        }
+                    }
+                    for(ChuongSach chuongSach:chuongSachList){
+                        DbRoomAccess.getInstance(BookDetail.this).insertChapterTask(BookDetail.this,chuongSach);
+                    }
+                }
             }
         });
     }

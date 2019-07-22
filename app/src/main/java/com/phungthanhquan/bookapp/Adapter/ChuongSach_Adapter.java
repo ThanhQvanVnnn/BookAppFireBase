@@ -36,12 +36,12 @@ public class ChuongSach_Adapter extends RecyclerView.Adapter<ChuongSach_Adapter.
     @Override
     public void onBindViewHolder(@NonNull ChuongSach_Adapter.ViewHolder viewHolder, int i) {
         final ChuongSach chuongSach = chuongSachList.get(i);
-        viewHolder.textView.setText(chuongSach.getTenChuongSach());
+        viewHolder.textView.setText(chuongSach.getContent());
         viewHolder.textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent returnIntent = new Intent();
-                returnIntent.putExtra("trang",chuongSach.getTrang());
+                returnIntent.putExtra("trang",chuongSach.getPage_number());
                 activity.setResult(Activity.RESULT_OK,returnIntent);
                 activity.finish();
             }

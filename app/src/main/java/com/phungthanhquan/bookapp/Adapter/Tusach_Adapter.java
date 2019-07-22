@@ -114,7 +114,6 @@ public class Tusach_Adapter extends RecyclerView.Adapter<Tusach_Adapter.ViewHold
                                 directory = cw.getDir(FILENAME_BOOKSTORED, Context.MODE_PRIVATE);
                                 File files = new File(directory, itemBookCaseList.get(position).getBook_id() + ".pdf");
                                 if (files.exists()) {
-
                                     Intent intent;
                                     intent = new Intent(context, Read.class);
                                     intent.putExtra("book_id", itemBookCaseList.get(position).getBook_id());

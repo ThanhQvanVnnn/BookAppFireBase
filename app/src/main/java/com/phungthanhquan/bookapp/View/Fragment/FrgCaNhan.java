@@ -331,6 +331,7 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
                                     startActivity(intent);
                                     loadingDialog.dismiss();
                                     dialogDangXuat.dismiss();
+                                    getActivity().finish();
                                 }
                             });
                         }
@@ -338,8 +339,8 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
                             LoginManager.getInstance().logOut();
                             loadingDialog.dismiss();
                             dialogDangXuat.dismiss();
+                            getActivity().finish();
                         }
-                        getActivity().finish();
                     }
                 });
                 dialogDangXuat.show();

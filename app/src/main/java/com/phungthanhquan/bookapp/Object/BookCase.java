@@ -28,6 +28,7 @@ public class BookCase {
 
 
     public BookCase() {
+        this.last_time = 0;
     }
 
 
@@ -35,6 +36,7 @@ public class BookCase {
         this.book_id = book_id;
         this.user_id = user_id;
         this.isBought = isBought;
+        this.last_time = 0;
     }
 
     @Exclude

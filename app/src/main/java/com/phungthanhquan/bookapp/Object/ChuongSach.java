@@ -1,39 +1,76 @@
 package com.phungthanhquan.bookapp.Object;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+import com.google.firebase.firestore.Exclude;
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
 import java.io.Serializable;
 
+@Entity
+@IgnoreExtraProperties
 public class ChuongSach implements Serializable {
-    private int id_sach;
-    private int trang;
-    private String tenChuongSach;
+    @Exclude
+    @PrimaryKey
+    @NonNull
+    private String id;
+    private String book_id;
+    private int page_number;
+    private String content;
 
-    public ChuongSach(int id_sach, int trang, String tenChuongSach) {
-        this.id_sach = id_sach;
-        this.trang = trang;
-        this.tenChuongSach = tenChuongSach;
+    public ChuongSach(String id, String book_id, int page_number, String content) {
+        this.id = id;
+        this.book_id = book_id;
+        this.page_number = page_number;
+        this.content = content;
     }
 
-    public int getTrang() {
-        return trang;
+    public ChuongSach() {
     }
 
-    public void setTrang(int trang) {
-        this.trang = trang;
+    @Exclude
+    public String getId() {
+        return id;
     }
 
-    public String getTenChuongSach() {
-        return tenChuongSach;
+    @Exclude
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public void setTenChuongSach(String tenChuongSach) {
-        this.tenChuongSach = tenChuongSach;
+    public String getBook_id() {
+        return book_id;
     }
 
-    public int getId_sach() {
-        return id_sach;
+    public void setBook_id(String book_id) {
+        this.book_id = book_id;
     }
 
-    public void setId_sach(int id_sach) {
-        this.id_sach = id_sach;
+    public int getPage_number() {
+        return page_number;
+    }
+
+    public void setPage_number(int page_number) {
+        this.page_number = page_number;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
+    @Override
+    public boolean equals(@Nullable Object obj) {
+        if (obj == null) return false;
+        if (!(obj instanceof ChuongSach)) return false;
+        ChuongSach chuongSach = (ChuongSach) obj;
+        if (this.getPage_number() == chuongSach.getPage_number()) return true;
+        return false;
     }
 }

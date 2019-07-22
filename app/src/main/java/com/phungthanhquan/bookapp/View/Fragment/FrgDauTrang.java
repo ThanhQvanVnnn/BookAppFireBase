@@ -14,14 +14,19 @@ import android.view.ViewGroup;
 
 import com.phungthanhquan.bookapp.Adapter.DauTrang_Adapter;
 import com.phungthanhquan.bookapp.Object.DauTrang;
+import com.phungthanhquan.bookapp.Presenter.Fragment.PresenterLogicDauTrang;
 import com.phungthanhquan.bookapp.R;
+import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewFragmentDauTrang;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class FrgDauTrang extends Fragment {
+public class FrgDauTrang extends Fragment implements InterfaceViewFragmentDauTrang {
     private RecyclerView recyclerView;
     private DauTrang_Adapter dauTrang_adapter;
     private List<DauTrang> dauTrangList;
+    private String BOOK_ID;
+    private PresenterLogicDauTrang presenterLogicDauTrang;
 
     @Nullable
     @Override
@@ -29,11 +34,20 @@ public class FrgDauTrang extends Fragment {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.fragment_dautrang, container, false);
         recyclerView = view.findViewById(R.id.recycler);
         Intent intent = getActivity().getIntent();
-        dauTrangList = (List<DauTrang>) intent.getSerializableExtra("listdautrang");
+        BOOK_ID = intent.getStringExtra("book_id");
+        dauTrangList = new ArrayList<>();
         dauTrang_adapter = new DauTrang_Adapter(getContext(),getActivity(),dauTrangList);
         recyclerView.setAdapter(dauTrang_adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext(),RecyclerView.VERTICAL,false));
         dauTrang_adapter.notifyDataSetChanged();
+        presenterLogicDauTrang = new PresenterLogicDauTrang(getContext(),this);
+        presenterLogicDauTrang.LayDauTrang(BOOK_ID);
         return view;
+    }
+
+    @Override
+    public void hienThiDauTrang(List<DauTrang> dauTrangListReturn) {
+        dauTrangList.addAll(dauTrangListReturn);
+        dauTrang_adapter.notifyDataSetChanged();
     }
 }

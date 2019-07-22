@@ -33,7 +33,6 @@ public class ChuongSachRead extends AppCompatActivity {
         setContentView(R.layout.activity_chuong_sach);
         initControls();
         Intent intent = getIntent();
-
         tenSach = intent.getStringExtra("tensach");
         toolbar.setTitle(tenSach);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
