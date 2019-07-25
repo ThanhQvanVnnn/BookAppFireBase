@@ -431,6 +431,10 @@ public class Login extends AppCompatActivity implements View.OnClickListener, Fi
     @Override
     public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
         final FirebaseUser user = firebaseAuth.getCurrentUser();
+        getUserInfo(user);
+    }
+
+    private void getUserInfo(final FirebaseUser user) {
         if (user != null) {
             final SharedPreferences.Editor editor = getSharedPreferences("User_Info", MODE_PRIVATE).edit();
 

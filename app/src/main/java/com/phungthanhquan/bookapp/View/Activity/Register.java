@@ -87,80 +87,95 @@ public class Register extends AppCompatActivity implements View.OnClickListener 
                 finish();
                 break;
             case R.id.button_register:
-                String emailsdt = userName.getText().toString();
-                String pass = passWord.getText().toString();
-                String repass = rePassWord.getText().toString();
-                if(emailsdt.isEmpty() || pass.isEmpty()
-                    || repass.isEmpty()){
-                    showAToast(getString(R.string.notempty));
-                }else {
-                    if(!Patterns.EMAIL_ADDRESS.matcher(emailsdt).matches() ){
-                        showAToast(getString(R.string.matcheremailsdt));
-                    }else {
-                        if(pass.length()<5 || repass.length()<5){
-                            showAToast(getString(R.string.matkhaulonhon5));
-                        }else if(!pass.equals(repass)){
-                            showAToast(getString(R.string.matkhaunhaplai));
-                        }else {
-                            loadingDialog.show();
-                            if(Patterns.EMAIL_ADDRESS.matcher(emailsdt).matches())
-                            mAuth.createUserWithEmailAndPassword(userName.getText().toString(),passWord.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                @Override
-                                public void onComplete(@NonNull Task<AuthResult> task) {
-                                    if(task.isSuccessful()){
-                                        FirebaseUser user = mAuth.getCurrentUser();
-                                        final String uid = mAuth.getUid();
-                                        Date now = new Date();
-                                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
-                                        String time = simpleDateFormat.format(now);
-                                        User userInfo = new User(user.getEmail(),user.getEmail(),user.getPhoneNumber(), (double) 0,null,"01/01/1975",time);
-                                        userInfo.setUser_id(uid);
-                                        firebaseFirestore.collection("user").document(userInfo.getUser_id()).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void aVoid) {
-                                                StorageReference imageUser = root.child("images").child("users").child(uid+".png");
-                                                Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.user_icon_default);
-                                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                                icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
-                                                byte[] data = baos.toByteArray();
-                                                UploadTask uploadTask = imageUser.putBytes(data);
-                                                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                                    @Override
-                                                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                                                        finish();
-                                                        loadingDialog.dismiss();
-                                                        showAToast(getString(R.string.dangkithanhcong));
-                                                    }
-                                                }).addOnFailureListener(new OnFailureListener() {
-                                                    @Override
-                                                    public void onFailure(@NonNull Exception e) {
-                                                        Log.d("upload", e.toString());
-                                                    }
-                                                });
-
-
-
-                                            }
-
-                                        }).addOnFailureListener(new OnFailureListener() {
-                                            @Override
-                                            public void onFailure(@NonNull Exception e) {
-                                                Log.d("register", e.toString());
-                                            }
-                                        });
-
-                                    }else {
-                                        loadingDialog.dismiss();
-                                        showAToast(getString(R.string.dangkithatbai));
-                                    }
-                                }
-                            });
-
-                        }
-                    }
-                }
+                registerAccount();
                 break;
         }
+    }
+
+    private void registerAccount() {
+        String emailsdt = userName.getText().toString();
+        String pass = passWord.getText().toString();
+        String repass = rePassWord.getText().toString();
+        if(emailsdt.isEmpty() || pass.isEmpty()
+                || repass.isEmpty()){
+            showAToast(getString(R.string.notempty));
+        }else {
+            if(!Patterns.EMAIL_ADDRESS.matcher(emailsdt).matches() ){
+                showAToast(getString(R.string.matcheremailsdt));
+            }else {
+                if(pass.length()<5 || repass.length()<5){
+                    showAToast(getString(R.string.matkhaulonhon5));
+                }else if(!pass.equals(repass)){
+                    showAToast(getString(R.string.matkhaunhaplai));
+                }else {
+                    loadingDialog.show();
+                    if(Patterns.EMAIL_ADDRESS.matcher(emailsdt).matches())
+                        mAuth.createUserWithEmailAndPassword(userName.getText().toString(),passWord.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                if(task.isSuccessful()){
+                                   registerSuccessfull(task);
+                                }else {
+                                    registerFail();
+                                }
+                            }
+                        });
+
+                }
+            }
+        }
+    }
+
+    private void registerFail() {
+        loadingDialog.dismiss();
+        showAToast(getString(R.string.dangkithatbai));
+    }
+
+    private void registerSuccessfull(Task<AuthResult> task) {
+        FirebaseUser user = mAuth.getCurrentUser();
+        final String uid = mAuth.getUid();
+        Date now = new Date();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String time = simpleDateFormat.format(now);
+        User userInfo = new User(user.getEmail(),user.getEmail(),user.getPhoneNumber(), (double) 0,null,"01/01/1975",time);
+        userInfo.setUser_id(uid);
+        addUserInfo(userInfo);
+    }
+
+    private void addUserInfo(final User userInfo) {
+        firebaseFirestore.collection("user").document(userInfo.getUser_id()).set(userInfo).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                StorageReference imageUser = root.child("images").child("users").child(userInfo.getUser_id()+".png");
+                Bitmap icon = BitmapFactory.decodeResource(getResources(),R.drawable.user_icon_default);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                icon.compress(Bitmap.CompressFormat.PNG, 100, baos);
+                byte[] data = baos.toByteArray();
+                UploadTask uploadTask = imageUser.putBytes(data);
+                uploadTask.addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        finish();
+                        loadingDialog.dismiss();
+                        showAToast(getString(R.string.dangkithanhcong));
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d("upload", e.toString());
+                    }
+                });
+
+
+
+            }
+
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d("register", e.toString());
+            }
+        });
     }
 
     public void showAToast (String st){ //"Toast toast" is declared in the class
