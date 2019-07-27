@@ -40,7 +40,7 @@
                             android:layout_weight="4"
                             android:background="@android:color/transparent"
                             android:gravity="right"
-                            android:text="App đọc sách"
+                            android:text="@string/trang_chu"
                             android:textAllCaps="true"
                             android:textColor="@color/white"
                             android:textSize="20sp" />

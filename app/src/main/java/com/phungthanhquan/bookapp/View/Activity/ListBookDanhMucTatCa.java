@@ -65,15 +65,8 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        itemBookList = new ArrayList<>();
-        adapter = new Album_NXB_Adapter(this,itemBookList);
-        recyclerView.setAdapter(adapter);
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
-        recyclerView.setLayoutManager(gridLayoutManager);
         presenterLogicListDanhMucTatCa = new PresenterLogicListDanhMucTatCa(this);
         presenterLogicListDanhMucTatCa.xuliHienThiChiTietDanhMuc(ID, swipeRefreshLayout);
-        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,15,lastDocument);
-        recyclerView.addOnScrollListener(loadMoreScroll);
     }
 
 
@@ -90,7 +83,7 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
             @Override
             public void onRefresh() {
                 swipeRefreshLayout.setRefreshing(true);
-                itemBookList.clear();
+
                 presenterLogicListDanhMucTatCa.xuliHienThiChiTietDanhMuc(ID,swipeRefreshLayout);
             }
         });
@@ -105,10 +98,16 @@ public class ListBookDanhMucTatCa extends AppCompatActivity implements Interface
 
     @Override
     public void hienthiDanhSachSach(List<Marketing> itemBooks, DocumentSnapshot documentSnapshot) {
+        itemBookList = new ArrayList<>();
         itemBookList.addAll(itemBooks);
-        adapter.addMoreImage();
-        adapter.notifyDataSetChanged();
+        adapter = new Album_NXB_Adapter(this,itemBookList);
+        recyclerView.setAdapter(adapter);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this,3);
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setHasFixedSize(false);
         lastDocument = documentSnapshot;
+//        loadMoreScroll = new LoadMoreScroll(gridLayoutManager,this,15,lastDocument);
+//        recyclerView.addOnScrollListener(loadMoreScroll);
     }
 
     @Override

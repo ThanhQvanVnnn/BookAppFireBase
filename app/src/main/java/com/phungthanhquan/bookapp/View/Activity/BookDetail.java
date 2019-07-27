@@ -654,6 +654,8 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
                 showAToast(getResources().getString(R.string.taisachthanhcong));
                 Intent intent = new Intent(BookDetail.this, Read.class);
                 intent.putExtra("book_id", BOOK_ID);
+                intent.putExtra("book_name", book.getName());
+                intent.putExtra("book_image", IMAGE);
                 startActivity(intent);
             }
 

@@ -49,6 +49,7 @@ import com.phungthanhquan.bookapp.View.Activity.CapNhatThongTinUser;
 import com.phungthanhquan.bookapp.View.Activity.LichSuGiaoDich;
 import com.phungthanhquan.bookapp.View.Activity.ListUserTheoDoi;
 import com.phungthanhquan.bookapp.View.Activity.Login;
+import com.phungthanhquan.bookapp.View.Activity.MainActivity;
 import com.phungthanhquan.bookapp.View.Activity.NapTaiKhoan;
 import com.phungthanhquan.bookapp.View.Activity.TuSach_CaNhanClick;
 import com.phungthanhquan.bookapp.View.InterfaceView.InterfaceViewFragmentCaNhan;
@@ -241,111 +242,125 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
     @Override
     public void onClick(View v) {
         Intent intent;
-        switch (v.getId()){
-            case R.id.image_anhdaidien:
-                dialogChonAnhDaiDien = new Dialog(getContext());
-                dialogChonAnhDaiDien.setContentView(R.layout.dialog_chonanhdaidien);
-                Button button_thuvien = dialogChonAnhDaiDien.findViewById(R.id.chonanhtuthuvien);
-                Button button_mayanh = dialogChonAnhDaiDien.findViewById(R.id.chuptumayanh);
-                button_thuvien.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent();
-                        intent.setType("image/*");
-                        intent.setAction(Intent.ACTION_GET_CONTENT);
-                        startActivityForResult(Intent.createChooser(intent, "Select Picture"),SELECT_IMAGE);
-                    }
-                });
-                button_mayanh.setOnClickListener(new View.OnClickListener() {
-                    @RequiresApi(api = Build.VERSION_CODES.M)
-                    @Override
-                    public void onClick(View v) {
-                        if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
-                        {
-                            requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+        if (MainActivity.isNetworkConnected(getActivity())) {
+            switch (v.getId()){
+                case R.id.image_anhdaidien:
+                    dialogChonAnhDaiDien = new Dialog(getContext());
+                    dialogChonAnhDaiDien.setContentView(R.layout.dialog_chonanhdaidien);
+                    Button button_thuvien = dialogChonAnhDaiDien.findViewById(R.id.chonanhtuthuvien);
+                    Button button_mayanh = dialogChonAnhDaiDien.findViewById(R.id.chuptumayanh);
+                    button_thuvien.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            Intent intent = new Intent();
+                            intent.setType("image/*");
+                            intent.setAction(Intent.ACTION_GET_CONTENT);
+                            startActivityForResult(Intent.createChooser(intent, "Select Picture"),SELECT_IMAGE);
                         }
-                        else
-                        {
-                            Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
-                            startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                    });
+                    button_mayanh.setOnClickListener(new View.OnClickListener() {
+                        @RequiresApi(api = Build.VERSION_CODES.M)
+                        @Override
+                        public void onClick(View v) {
+                            if (getActivity().checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED)
+                            {
+                                requestPermissions(new String[]{Manifest.permission.CAMERA}, MY_CAMERA_PERMISSION_CODE);
+                            }
+                            else
+                            {
+                                Intent cameraIntent = new Intent(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
+                                startActivityForResult(cameraIntent, CAMERA_REQUEST);
+                            }
                         }
-                    }
-                });
-                dialogChonAnhDaiDien.show();
-                break;
-            case R.id.capnhatthongtincanhan:
-                intent = new Intent(getContext(), CapNhatThongTinUser.class);
-                startActivity(intent);
-                break;
-            case R.id.nguoitheodoi:
-                intent = new Intent(getContext(), ListUserTheoDoi.class);
-                intent.putExtra("title",getString(R.string.nguoi_theo_doi));
-                startActivity(intent);
-                break;
-            case R.id.nguoidangtheodoi:
-                intent = new Intent(getContext(), ListUserTheoDoi.class);
-                intent.putExtra("title",getString(R.string.nguoi_dang_theo_doi));
-                startActivity(intent);
-                break;
-            case R.id.sachdadoc:
-                intent = new Intent(getContext(), TuSach_CaNhanClick.class);
-                startActivity(intent);
-                break;
-            case R.id.naptaikhoan:
-                intent = new Intent(getContext(), NapTaiKhoan.class);
-                startActivity(intent);
-                break;
-            case R.id.lichsugiaodich:
-                intent = new Intent(getContext(), LichSuGiaoDich.class);
-                startActivity(intent);
-                break;
-            case R.id.dangxuat:
-                loadingDialog.show();
-                final Dialog dialogDangXuat = new Dialog(getContext());
-                dialogDangXuat.setContentView(R.layout.dialog_dangxuat);
-                Button button_kethuc = dialogDangXuat.findViewById(R.id.ket_thuc);
-                Button button_dangxuat = dialogDangXuat.findViewById(R.id.dang_xuat);
-                button_kethuc.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialogDangXuat.dismiss();
-                        loadingDialog.dismiss();
-                    }
-                });
-
-                button_dangxuat.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mAuth.signOut();
-                        String packetName = getActivity().getPackageName();
-                        DbRoomAccess.getInstance(getContext()).deleteAllBookcaseTask(getContext());
-                        DbRoomAccess.getInstance(getContext()).deleteAllUserRentTask(getContext());
-                        File f = new File(
-                                "/data/data/" + packetName + "/shared_prefs/User_Info.xml");
-                        f.delete();
-                        if(Login.mGoogleSignInClient!=null) {
-                            Login.mGoogleSignInClient.signOut().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
-                                @Override
-                                public void onComplete(@NonNull Task<Void> task) {
-                                    Intent intent = new Intent(getContext(), Login.class);
-                                    startActivity(intent);
-                                    loadingDialog.dismiss();
-                                    dialogDangXuat.dismiss();
-                                    getActivity().finish();
-                                }
-                            });
-                        }
-                        if(LoginManager.getInstance()!=null){
-                            LoginManager.getInstance().logOut();
-                            loadingDialog.dismiss();
+                    });
+                    dialogChonAnhDaiDien.show();
+                    break;
+                case R.id.capnhatthongtincanhan:
+                    intent = new Intent(getContext(), CapNhatThongTinUser.class);
+                    startActivity(intent);
+                    break;
+                case R.id.nguoitheodoi:
+                    intent = new Intent(getContext(), ListUserTheoDoi.class);
+                    intent.putExtra("title",getString(R.string.nguoi_theo_doi));
+                    startActivity(intent);
+                    break;
+                case R.id.nguoidangtheodoi:
+                    intent = new Intent(getContext(), ListUserTheoDoi.class);
+                    intent.putExtra("title",getString(R.string.nguoi_dang_theo_doi));
+                    startActivity(intent);
+                    break;
+                case R.id.sachdadoc:
+                    intent = new Intent(getContext(), TuSach_CaNhanClick.class);
+                    startActivity(intent);
+                    break;
+                case R.id.naptaikhoan:
+                    intent = new Intent(getContext(), NapTaiKhoan.class);
+                    startActivity(intent);
+                    break;
+                case R.id.lichsugiaodich:
+                    intent = new Intent(getContext(), LichSuGiaoDich.class);
+                    startActivity(intent);
+                    break;
+                case R.id.dangxuat:
+                    loadingDialog.show();
+                    final Dialog dialogDangXuat = new Dialog(getContext());
+                    dialogDangXuat.setContentView(R.layout.dialog_dangxuat);
+                    Button button_kethuc = dialogDangXuat.findViewById(R.id.ket_thuc);
+                    Button button_dangxuat = dialogDangXuat.findViewById(R.id.dang_xuat);
+                    button_kethuc.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
                             dialogDangXuat.dismiss();
-                            getActivity().finish();
+                            loadingDialog.dismiss();
                         }
-                    }
-                });
-                dialogDangXuat.show();
-                break;
+                    });
+
+                    button_dangxuat.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mAuth.signOut();
+                            String packetName = getActivity().getPackageName();
+                            DbRoomAccess.getInstance(getContext()).deleteAllBookcaseTask(getContext());
+                            DbRoomAccess.getInstance(getContext()).deleteAllUserRentTask(getContext());
+                            File f = new File(
+                                    "/data/data/" + packetName + "/shared_prefs/User_Info.xml");
+                            f.delete();
+                            if(Login.mGoogleSignInClient!=null) {
+                                Login.mGoogleSignInClient.signOut().addOnCompleteListener(getActivity(), new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Intent intent = new Intent(getContext(), Login.class);
+                                        startActivity(intent);
+                                        loadingDialog.dismiss();
+                                        dialogDangXuat.dismiss();
+                                        getActivity().finish();
+                                    }
+                                });
+                            }else
+                            if(LoginManager.getInstance()!=null){
+                                Intent intent = new Intent(getContext(), Login.class);
+                                startActivity(intent);
+                                LoginManager.getInstance().logOut();
+                                loadingDialog.dismiss();
+                                dialogDangXuat.dismiss();
+                                getActivity().finish();
+                            }else {
+                                Intent intent = new Intent(getContext(), Login.class);
+                                startActivity(intent);
+                                LoginManager.getInstance().logOut();
+                                loadingDialog.dismiss();
+                                dialogDangXuat.dismiss();
+                                getActivity().finish();
+                            }
+                        }
+                    });
+                    dialogDangXuat.show();
+                    break;
+            }
+        }else {
+            showAToast(getString(R.string.openinternet));
         }
+
     }
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);

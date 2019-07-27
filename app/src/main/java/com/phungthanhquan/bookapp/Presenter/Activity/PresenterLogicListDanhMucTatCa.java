@@ -29,10 +29,8 @@ public class PresenterLogicListDanhMucTatCa implements InPresenterListDanhMucTat
         modelActivityListDanhMucTatCa.getDanhSach(id, new ModelActivityListDanhMucTatCa.CallBackss() {
             @Override
             public void myCallBack(List<Marketing> marketingList, DocumentSnapshot documentSnapshot) {
-                if(marketingList.size()>0){
                     interfaceViewActivityListBookDanhMucTatCa.hienthiDanhSachSach(marketingList,documentSnapshot);
                     swipeRefreshLayout.setRefreshing(false);
-                }
             }
         });
     }

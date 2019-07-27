@@ -19,6 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             <TextView
+                android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="20sp"
                 android:text="@string/danh_muc"

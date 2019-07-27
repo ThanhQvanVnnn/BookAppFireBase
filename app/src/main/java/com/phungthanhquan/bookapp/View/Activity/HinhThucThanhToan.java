@@ -553,6 +553,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                 dialog.show();
                 break;
             case R.id.thanhtoanquapaypal:
+                loadingDialog.show();
                 processPayPall();
                 break;
             case R.id.exit_thanhtoan:
@@ -563,25 +564,25 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
 
     private void processPayPall()  {
 
-        callback = new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-                Log.d("ti_gia", response.body().toString());
-            }
-
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-
-            }
-        };
-        call.enqueue(callback);
-//        Double price_usd = RENT_PRICE/23140;
-//        payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(price_usd))
-//                ,"USD","Thanh toán Cho STUBO", PayPalPayment.PAYMENT_INTENT_SALE);
-//        Intent intent = new Intent(this, PaymentActivity.class);
-//        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
-//        intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payPalPayment);
-//        startActivityForResult(intent,PAYPAL_REQUEST_CODE);
+//        callback = new Callback<ResponseBody>() {
+//            @Override
+//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+//                Log.d("ti_gia", response.body().toString());
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ResponseBody> call, Throwable t) {
+//
+//            }
+//        };
+//        call.enqueue(callback);
+        Double price_usd = RENT_PRICE/23140;
+        payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(price_usd))
+                ,"USD","Thanh toán Cho STUBO", PayPalPayment.PAYMENT_INTENT_SALE);
+        Intent intent = new Intent(this, PaymentActivity.class);
+        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
+        intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payPalPayment);
+        startActivityForResult(intent,PAYPAL_REQUEST_CODE);
     }
 
     @Override

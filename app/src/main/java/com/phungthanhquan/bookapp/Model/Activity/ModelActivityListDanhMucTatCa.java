@@ -25,7 +25,7 @@ public class ModelActivityListDanhMucTatCa {
         void myCallBack(List<Marketing> marketingList, DocumentSnapshot documentSnapshot);
     }
     public void getDanhSach(String id, final CallBackss callBackss){
-        firebaseFirestore.collection("book").whereEqualTo("category_id",id).limit(15).get()
+        firebaseFirestore.collection("category_bookcase").whereEqualTo("category_id",id).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     List<Marketing> marketingList = new ArrayList<>();
                     @Override
@@ -33,7 +33,7 @@ public class ModelActivityListDanhMucTatCa {
                         if(task.isSuccessful()){
                             for(QueryDocumentSnapshot queryDocumentSnapshot:task.getResult()){
                                 Marketing marketing = new Marketing();
-                                marketing.setBook_id(queryDocumentSnapshot.getId());
+                                marketing.setBook_id(queryDocumentSnapshot.getString("book_id"));
                                 marketing.setMarketing_id((String) queryDocumentSnapshot.get("category_id"));
                                 marketingList.add(marketing);
                             }
@@ -46,7 +46,7 @@ public class ModelActivityListDanhMucTatCa {
                 });
     }
     public void getDanhSachLoadMore(String id,DocumentSnapshot documentSnapshot, final CallBackss callBackss){
-        firebaseFirestore.collection("book").whereEqualTo("category_id",id).limit(15).startAfter(documentSnapshot).get()
+        firebaseFirestore.collection("category_bookcase").whereEqualTo("category_id",id).limit(6).startAfter(documentSnapshot).get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     List<Marketing> marketingList = new ArrayList<>();
                     @Override
@@ -54,7 +54,7 @@ public class ModelActivityListDanhMucTatCa {
                         if(task.isSuccessful()){
                             for(QueryDocumentSnapshot queryDocumentSnapshot:task.getResult()){
                                 Marketing marketing = new Marketing();
-                                marketing.setBook_id(queryDocumentSnapshot.getId());
+                                marketing.setBook_id(queryDocumentSnapshot.getString("book_id"));
                                 marketing.setMarketing_id((String) queryDocumentSnapshot.get("category_id"));
                                 marketingList.add(marketing);
                             }
