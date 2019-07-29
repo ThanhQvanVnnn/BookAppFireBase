@@ -41,8 +41,6 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach {
     private Tusach_Adapter tusach_adapter;
     private List<BookCase> itemBookCaseList;
     private PresenterLogicTuSach presenterLogicTuSach;
-    private LoadMoreScroll loadMoreScroll;
-    private ProgressBar progressBarLoadMore;
     private List<UserRent> rentList;
     SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
     Toast toast;
@@ -57,7 +55,6 @@ public class FrgTuSach extends Fragment implements InterfaceViewFragmentTuSach {
     private void initControls(View view) {
         recyclerView = view.findViewById(R.id.recycle_tusach);
         swipeRefreshLayout = view.findViewById(R.id.refresh_tusach);
-        progressBarLoadMore = view.findViewById(R.id.loadmoreProgress);
         itemBookCaseList = new ArrayList<>();
         rentList = new ArrayList<>();
         presenterLogicTuSach = new PresenterLogicTuSach(getContext(),this);

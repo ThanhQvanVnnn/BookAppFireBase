@@ -24,6 +24,8 @@ public class BookCase {
     @Exclude
     private int last_time;
     @Exclude
+    private int last_read;
+    @Exclude
     private String book_image;
 
 
@@ -37,6 +39,15 @@ public class BookCase {
         this.user_id = user_id;
         this.isBought = isBought;
         this.last_time = 0;
+        this.last_read = 0;
+    }
+
+    public int getLast_read() {
+        return last_read;
+    }
+
+    public void setLast_read(int last_read) {
+        this.last_read = last_read;
     }
 
     @Exclude

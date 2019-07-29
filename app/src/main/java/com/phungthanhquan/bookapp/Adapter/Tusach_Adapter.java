@@ -70,14 +70,12 @@ public class Tusach_Adapter extends RecyclerView.Adapter<Tusach_Adapter.ViewHold
                 @Override
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     if (documentSnapshot.exists()) {
-                        Log.d("okokokok", documentSnapshot.toString());
                         viewHolder.tentacgia.setText(documentSnapshot.getString("author_name"));
                     }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Log.d("okokokok", e.toString());
                 }
             });
             viewHolder.phantram.setText(itemBookCaseList.get(position).getLast_time() + "%");

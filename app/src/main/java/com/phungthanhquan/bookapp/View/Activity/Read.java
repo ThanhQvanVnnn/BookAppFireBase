@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import com.github.barteksc.pdfviewer.PDFView;
@@ -68,6 +69,7 @@ public class Read extends AppCompatActivity implements View.OnClickListener, Int
     private BookCase BOOK_CASE;
     private PresenterLogicRead presenterLogicRead;
     private long startTime;
+    Boolean first = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,13 +96,87 @@ public class Read extends AppCompatActivity implements View.OnClickListener, Int
                 .enableSwipe(false) // allows to block changing pages using swipe
                 .swipeHorizontal(true)
                 .enableDoubletap(false)
-                .defaultPage(0)
                 .onLoad(new OnLoadCompleteListener() {
                     @Override
                     public void loadComplete(int nbPages) {
+                        currentPage = BOOK_CASE.getLast_read()-1;
+                        pdfView.jumpTo(currentPage,true);
                         numberPage = pdfView.getPageCount();
                         int num = numberPage - 1;
+                        tenSach.setText(BOOK_NAME);
+                        currentPage = pdfView.getCurrentPage();
+                        int progresss = currentPage * 100 / (numberPage - 1);
+                        phanTramDoc.setText(progresss + "%");
+                        trangHienTai.setText(getString(R.string.page) + " " + (currentPage + 1) + "/" + numberPage + " - ");
+                        CheckExit(chuongSachList, currentPage);
+                        kiemTraDauTrang();
                         seekBar.setMax(num);
+                        seekBar.setProgress(currentPage);
+                        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                            int progresss;
+
+                            @Override
+                            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                                if(!first){
+                                    progresss = currentPage * 100 / (numberPage - 1);
+                                    if (currentPage == 0) {
+                                        previous.setVisibility(View.INVISIBLE);
+                                        previous.setEnabled(false);
+                                    } else {
+                                        previous.setVisibility(View.VISIBLE);
+                                        previous.setEnabled(true);
+                                    }
+                                    if (currentPage == (seekBar.getMax())) {
+                                        next.setVisibility(View.INVISIBLE);
+                                        next.setEnabled(false);
+                                    } else {
+                                        next.setVisibility(View.VISIBLE);
+                                        next.setEnabled(true);
+                                    }
+                                    phanTramDoc.setText(progresss + "%");
+                                    pdfView.jumpTo(progress, true);
+                                    trangHienTai.setText(getString(R.string.page) + " " + (currentPage + 1) + "/" + numberPage + " - ");
+                                    CheckExit(chuongSachList, currentPage);
+                                    kiemTraDauTrang();
+                                    seekBar.setProgress(currentPage);
+                                    startTime = System.currentTimeMillis();
+                                    first = true;
+                                }else {
+                                    progresss = progress * 100 / (numberPage - 1);
+                                    currentPage = progress;
+                                    if (currentPage == 0) {
+                                        previous.setVisibility(View.INVISIBLE);
+                                        previous.setEnabled(false);
+                                    } else {
+                                        previous.setVisibility(View.VISIBLE);
+                                        previous.setEnabled(true);
+                                    }
+                                    if (currentPage == (seekBar.getMax())) {
+                                        next.setVisibility(View.INVISIBLE);
+                                        next.setEnabled(false);
+                                    } else {
+                                        next.setVisibility(View.VISIBLE);
+                                        next.setEnabled(true);
+                                    }
+                                    phanTramDoc.setText(progresss + "%");
+                                    pdfView.jumpTo(progress, true);
+                                    trangHienTai.setText(getString(R.string.page) + " " + (currentPage + 1) + "/" + numberPage + " - ");
+                                    CheckExit(chuongSachList, currentPage);
+                                    kiemTraDauTrang();
+                                    startTime = System.currentTimeMillis();
+                                }
+                            }
+
+                            @Override
+                            public void onStartTrackingTouch(SeekBar seekBar) {
+
+                            }
+
+                            @Override
+                            public void onStopTrackingTouch(SeekBar seekBar) {
+
+                            }
+                        });
                     }
                 })
                 .enableAnnotationRendering(false) // render annotations (such as comments, colors or forms)
@@ -112,6 +188,7 @@ public class Read extends AppCompatActivity implements View.OnClickListener, Int
                 .pageFling(true) // make a fling change only a single page like ViewPager
                 .nightMode(false) // toggle night mode
                 .load();
+
         bottom.setVisibility(View.INVISIBLE);
         header.setVisibility(View.INVISIBLE);
         dautrang.setVisibility(View.INVISIBLE);
@@ -119,50 +196,6 @@ public class Read extends AppCompatActivity implements View.OnClickListener, Int
         next.setOnClickListener(this);
         previous.setOnClickListener(this);
         dautrang.setOnClickListener(this);
-        phanTramDoc.setText(seekBar.getProgress() + "%");
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            int progresss;
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                progresss = progress * 100 / (numberPage - 1);
-                currentPage = progress;
-                if (currentPage == 0) {
-                    previous.setVisibility(View.INVISIBLE);
-                    previous.setEnabled(false);
-                } else {
-                    previous.setVisibility(View.VISIBLE);
-                    previous.setEnabled(true);
-                }
-                if (currentPage == (seekBar.getMax())) {
-                    next.setVisibility(View.INVISIBLE);
-                    next.setEnabled(false);
-                } else {
-                    next.setVisibility(View.VISIBLE);
-                    next.setEnabled(true);
-                }
-                phanTramDoc.setText(progresss + "%");
-                pdfView.jumpTo(progress, true);
-                trangHienTai.setText(getString(R.string.page) + " " + (currentPage + 1) + "/" + numberPage + " - ");
-                CheckExit(chuongSachList, currentPage);
-                kiemTraDauTrang();
-                startTime = System.currentTimeMillis();
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
-        tenSach.setText(BOOK_NAME);
-        currentPage = pdfView.getCurrentPage();
-        trangHienTai.setText(getString(R.string.page) + " " + (currentPage + 1) + "/" + numberPage + " - ");
-        CheckExit(chuongSachList, currentPage+1);
     }
 
     @Override
@@ -491,6 +524,7 @@ public class Read extends AppCompatActivity implements View.OnClickListener, Int
             int progresss = currentPage * 100 / (numberPage - 1);
             if(progresss>BOOK_CASE.getLast_time()){
                 BOOK_CASE.setLast_time(progresss);
+                BOOK_CASE.setLast_read(currentPage+1);
                 DbRoomAccess.getInstance(this).updateBookCaseTask(this,BOOK_CASE);
             }
         }
