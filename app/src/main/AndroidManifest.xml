@@ -22,7 +22,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".View.Activity.ListUserTheoDoi"></activity>
+        <activity android:name=".View.Activity.ThanhToanMuaThemGoiThue"></activity>
+        <activity android:name=".View.Activity.KiemTraGoiThue" />
+        <activity android:name=".View.Activity.ListUserTheoDoi" />
         <activity android:name=".View.Activity.TimKiemBan" />
         <activity android:name=".View.Activity.CapNhatThongTinUser" />
         <activity android:name=".View.Activity.LichSuGiaoDich" />

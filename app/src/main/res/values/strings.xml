@@ -156,4 +156,10 @@
     <string name="khong_tim_thay_ban_be">Không tìm thấy kết quả!</string>
     <string name="huy_theo_doi_ban_be">Đã hủy theo dõi</string>
     <string name="ban_co_muon_dang_xuat">Bạn có muốn đăng xuất?</string>
+    <string name="goithuecanhan">Gói Thuê</string>
+    <string name="thoihanthue">Thời hạn còn lại:</string>
+    <string name="banchuamuagoithue">Bạn chưa mua gói thuê</string>
+    <string name="hethanthue">Hết hạn thuê</string>
+    <string name="muagoithue">Mua Gói Thuê</string>
+    <string name="thongtingoithue">Thông tin gói thuê</string>
 </resources>

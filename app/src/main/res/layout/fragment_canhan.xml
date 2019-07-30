@@ -360,6 +360,49 @@
                 android:layout_marginRight="10dp"
                 android:background="@color/colorPrimary"></View>
             <LinearLayout
+                android:id="@+id/kiemtragoithue"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="5dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:layout_width="30dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/thue_icon_lichsu" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:gravity="left|center"
+                    android:paddingLeft="10dp"
+                    android:text="@string/goithuecanhan" />
+
+                <View
+                    android:layout_width="50dp"
+                    android:layout_height="match_parent"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="6"
+                    android:src="@drawable/next_black_18" />
+
+            </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/colorPrimary"></View>
+            <LinearLayout
                 android:id="@+id/capnhatthongtincanhan"
                 android:layout_width="match_parent"
                 android:layout_height="40dp"

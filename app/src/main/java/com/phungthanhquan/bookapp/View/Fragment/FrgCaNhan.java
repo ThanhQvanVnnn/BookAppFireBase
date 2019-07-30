@@ -46,6 +46,7 @@ import com.phungthanhquan.bookapp.Object.User;
 import com.phungthanhquan.bookapp.Presenter.Fragment.PresenterLogicCaNhan;
 import com.phungthanhquan.bookapp.R;
 import com.phungthanhquan.bookapp.View.Activity.CapNhatThongTinUser;
+import com.phungthanhquan.bookapp.View.Activity.KiemTraGoiThue;
 import com.phungthanhquan.bookapp.View.Activity.LichSuGiaoDich;
 import com.phungthanhquan.bookapp.View.Activity.ListUserTheoDoi;
 import com.phungthanhquan.bookapp.View.Activity.Login;
@@ -82,6 +83,7 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
     private LinearLayout lichsugiaodich;
     private LinearLayout dangxuat;
     private LinearLayout capnhatthongtin;
+    private LinearLayout kiemtragoithue;
     private TextView songuoitheodoi;
     private TextView songuoidangtheodoi;
     private Dialog dialogChonAnhDaiDien;
@@ -193,6 +195,7 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
         capnhatthongtin.setOnClickListener(this);
         dangxuat.setOnClickListener(this);
         anhdaidien.setOnClickListener(this);
+        kiemtragoithue.setOnClickListener(this);
     }
 
     private void initControls(View view) {
@@ -211,6 +214,7 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
         songuoitheodoi = view.findViewById(R.id.soluong_nguoitheodoi);
         songuoidangtheodoi = view.findViewById(R.id.soluong_nguoidangtheodoi);
         sosachdadoc = view.findViewById(R.id.soluong_sachdadoc);
+        kiemtragoithue = view.findViewById(R.id.kiemtragoithue);
         firebaseFirestore =  FirebaseFirestore.getInstance();
          df = new DecimalFormat("###,###.###");
         df.setDecimalFormatSymbols(new DecimalFormatSymbols(Locale.ITALY));
@@ -355,6 +359,10 @@ public class FrgCaNhan extends Fragment implements View.OnClickListener, Interfa
                         }
                     });
                     dialogDangXuat.show();
+                    break;
+                case R.id.kiemtragoithue:
+                    intent = new Intent(getContext(), KiemTraGoiThue.class);
+                    startActivity(intent);
                     break;
             }
         }else {
