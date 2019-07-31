@@ -243,7 +243,7 @@ public class BookDetail extends AppCompatActivity implements InterfaceViewActivi
         userRent = DbRoomAccess.getInstance(this).getUserRentByIDTask(this, USER_ID);
         presenterBookDetail.xuliHienThiSach(BOOK_ID);
         presenterBookDetail.xuliHienThiDsDanhGia(BOOK_ID);
-        downloadMethodAPI = DownloadAPI.getApiDownload();
+        downloadMethodAPI = DownloadAPI.getApiDownload(this);
     }
 
     @Override

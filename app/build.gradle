@@ -62,4 +62,6 @@ dependencies {
     apply plugin: 'com.google.gms.google-services'
     implementation project(':PDF')
     implementation 'com.paypal.sdk:paypal-android-sdk:2.15.3'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.1.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:3.6.0'
 }

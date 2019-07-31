@@ -89,6 +89,7 @@ public class SearchBook extends AppCompatActivity implements InterfaceViewActivi
         recyclerViewTimKiem.setAdapter(recycleViewItemBookAdapter);
         recyclerViewTimKiem.setLayoutManager(layoutManager);
         loadingDialog.dismiss();
+        showAToast(getString(R.string.khong_tim_thay_ban_be));
     }
 
     @Override

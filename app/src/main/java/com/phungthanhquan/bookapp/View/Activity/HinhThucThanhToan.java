@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -43,8 +44,15 @@ import com.phungthanhquan.bookapp.Object.UserRent;
 import com.phungthanhquan.bookapp.R;
 import com.squareup.picasso.Picasso;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLConnection;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -168,7 +176,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
         cal = Calendar.getInstance();
         cal.add(Calendar.MONTH, RENT_TIME);
         firebaseFirestore = FirebaseFirestore.getInstance();
-        downloadMethodAPI = DownloadAPI.getApiDownload();
+        downloadMethodAPI = DownloadAPI.getApiDownload(this);
     }
 
     @Override
@@ -553,7 +561,7 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                 dialog.show();
                 break;
             case R.id.thanhtoanquapaypal:
-                loadingDialog.show();
+//                loadingDialog.show();
                 processPayPall();
                 break;
             case R.id.exit_thanhtoan:
@@ -563,26 +571,59 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
     }
 
     private void processPayPall()  {
+//        String string= callURL("http://dongabank.com.vn/exchange/export");
+//
+//        downloadMethodAPI.ConvertToDollar();
+        Call<String> call = downloadMethodAPI.ConvertToDollar();
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
 
-//        callback = new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                Log.d("ti_gia", response.body().toString());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//
-//            }
-//        };
-//        call.enqueue(callback);
-        Double price_usd = RENT_PRICE/23140;
-        payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(price_usd))
-                ,"USD","Thanh toán Cho STUBO", PayPalPayment.PAYMENT_INTENT_SALE);
-        Intent intent = new Intent(this, PaymentActivity.class);
-        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
-        intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payPalPayment);
-        startActivityForResult(intent,PAYPAL_REQUEST_CODE);
+               Log.d("jsonconvert", response.body()+"");
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("jsonconvert", t.getMessage());
+            }
+        });
+//        Double price_usd = RENT_PRICE/23140;
+//        payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(price_usd))
+//                ,"USD","Thanh toán Cho STUBO", PayPalPayment.PAYMENT_INTENT_SALE);
+//        Intent intent = new Intent(this, PaymentActivity.class);
+//        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
+//        intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payPalPayment);
+//        startActivityForResult(intent,PAYPAL_REQUEST_CODE);
+    }
+    public static String callURL(String myURL) {
+        System.out.println("Requeted URL:" + myURL);
+        StringBuilder sb = new StringBuilder();
+        URLConnection urlConn = null;
+        InputStreamReader in = null;
+        try {
+            URL url = new URL(myURL);
+            urlConn = url.openConnection();
+            if (urlConn != null)
+                urlConn.setReadTimeout(60 * 1000);
+            if (urlConn != null && urlConn.getInputStream() != null) {
+                in = new InputStreamReader(urlConn.getInputStream(),
+                        Charset.defaultCharset());
+                BufferedReader bufferedReader = new BufferedReader(in);
+                if (bufferedReader != null) {
+                    int cp;
+                    while ((cp = bufferedReader.read()) != -1) {
+                        sb.append((char) cp);
+                    }
+                    bufferedReader.close();
+                }
+            }
+            in.close();
+        } catch (Exception e) {
+            throw new RuntimeException("Exception while calling URL:"+ myURL, e);
+        }
+
+        return sb.toString();
     }
 
     @Override

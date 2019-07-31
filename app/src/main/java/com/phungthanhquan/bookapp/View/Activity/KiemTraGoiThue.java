@@ -8,6 +8,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.phungthanhquan.bookapp.Adapter.GoiThueMuaThem_Adapter;
 import com.phungthanhquan.bookapp.Adapter.GoiThue_Adapter;
 import com.phungthanhquan.bookapp.Object.Rent;
@@ -25,6 +30,8 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Nullable;
+
 public class KiemTraGoiThue extends AppCompatActivity implements InterfaceViewActivityKiemTraGoiThue {
     private Toolbar toolbar;
     private RecyclerView recyclerView_goithue;
@@ -40,6 +47,17 @@ public class KiemTraGoiThue extends AppCompatActivity implements InterfaceViewAc
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_kiem_tra_goi_thue);
         initControls();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseFirestore.getInstance().collection("user_rent").whereEqualTo("user_id", FirebaseAuth.getInstance().getUid()).addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots, @Nullable FirebaseFirestoreException e) {
+                presenterKiemTraGoiThue.layGoiThue();
+            }
+        });
     }
 
     private void initControls() {
