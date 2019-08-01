@@ -24,15 +24,15 @@ public class BuildAPI {
             Gson gson = new GsonBuilder()
                     .setLenient()
                     .create();
-            HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(
-                    new HeaderInterceptor())
-                    .connectTimeout(60,TimeUnit.SECONDS).readTimeout(60, TimeUnit.SECONDS).build();
+            OkHttpClient client = new OkHttpClient();
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+
+            builder.addInterceptor(new AddCookiesInterceptor(context)); // VERY VERY IMPORTANT
+            builder.addInterceptor(new RecievedCookiesInterceptor(context)); // VERY VERY IMPORTANT
+            client = builder.build();
             retrofit = new Retrofit.Builder()
                     .baseUrl(baseUrl)
                     .client(client)
-                    .addConverterFactory(GsonConverterFactory.create(gson))
                     .addConverterFactory(ScalarsConverterFactory.create())
                     .build();
 

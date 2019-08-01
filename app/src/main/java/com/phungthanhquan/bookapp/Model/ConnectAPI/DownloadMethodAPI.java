@@ -4,6 +4,7 @@ import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.Header;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Streaming;
@@ -15,7 +16,7 @@ public interface DownloadMethodAPI {
     @GET
     Call<ResponseBody> downLoadBook(@Url String fileUrl);
 
-    @GET("http://dongabank.com.vn/exchange/export")
+    @POST("ExrateXML.aspx")
     @Headers({"Content-Type: application/json;charset=UTF-8"})
     Call<String> ConvertToDollar();
 }

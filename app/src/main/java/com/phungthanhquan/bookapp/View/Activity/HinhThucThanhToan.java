@@ -9,7 +9,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -33,7 +32,6 @@ import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.phungthanhquan.bookapp.Model.ConfigPaypal;
-import com.phungthanhquan.bookapp.Model.ConnectAPI.BuildAPI;
 import com.phungthanhquan.bookapp.Model.ConnectAPI.DownloadAPI;
 import com.phungthanhquan.bookapp.Model.ConnectAPI.DownloadMethodAPI;
 import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
@@ -46,13 +44,13 @@ import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.math.BigDecimal;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
@@ -571,16 +569,39 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
     }
 
     private void processPayPall()  {
-//        String string= callURL("http://dongabank.com.vn/exchange/export");
-//
-//        downloadMethodAPI.ConvertToDollar();
+        //        String cookie = "";
         Call<String> call = downloadMethodAPI.ConvertToDollar();
         call.enqueue(new Callback<String>() {
             @Override
             public void onResponse(Call<String> call, Response<String> response) {
-
-               Log.d("jsonconvert", response.body()+"");
-
+                loadingDialog.show();
+               String chuoi = response.body();
+               int indexStart = chuoi.indexOf("US DOLLAR");
+                Log.d("jsonconvert",chuoi);
+               int indexend = 0;
+               for(int j = indexStart;j<chuoi.length();j++){
+                   if(chuoi.charAt(j) == '/' && chuoi.charAt(j+1)=='>'){
+                       indexend = j;
+                       break;
+                   }
+               }
+               String chuoilayduoclan1 = chuoi.substring(indexStart,indexend);
+                Log.d("jsonconvert","chuoi lay duoc lan 1: " +chuoilayduoclan1);
+               indexStart = chuoilayduoclan1.indexOf("Transfer");
+                String chuoilayduoclan2 = chuoilayduoclan1.substring(indexStart,chuoilayduoclan1.length()-1);
+                Log.d("jsonconvert","chuoi lay duoc lan 2: " +chuoilayduoclan2);
+                indexStart = chuoilayduoclan2.indexOf("=\"");
+                indexend = chuoilayduoclan2.indexOf("\" ");
+                String number = chuoilayduoclan2.substring(indexStart+2,indexend);
+                Log.d("jsonconvert", number);
+                int tigia = Integer.parseInt(number);
+                Double price_usd = RENT_PRICE/tigia;
+                payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(price_usd))
+                        ,"USD","Thanh toán Cho STUBO", PayPalPayment.PAYMENT_INTENT_SALE);
+                Intent intent = new Intent(HinhThucThanhToan.this, PaymentActivity.class);
+                intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
+                intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payPalPayment);
+                startActivityForResult(intent,PAYPAL_REQUEST_CODE);
             }
 
             @Override
@@ -588,47 +609,49 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
                 Log.e("jsonconvert", t.getMessage());
             }
         });
-//        Double price_usd = RENT_PRICE/23140;
-//        payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(price_usd))
-//                ,"USD","Thanh toán Cho STUBO", PayPalPayment.PAYMENT_INTENT_SALE);
-//        Intent intent = new Intent(this, PaymentActivity.class);
-//        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
-//        intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payPalPayment);
-//        startActivityForResult(intent,PAYPAL_REQUEST_CODE);
+
     }
-    public static String callURL(String myURL) {
-        System.out.println("Requeted URL:" + myURL);
-        StringBuilder sb = new StringBuilder();
-        URLConnection urlConn = null;
-        InputStreamReader in = null;
+    public static String getContents(String url) {
+        String contents ="";
+
         try {
-            URL url = new URL(myURL);
-            urlConn = url.openConnection();
-            if (urlConn != null)
-                urlConn.setReadTimeout(60 * 1000);
-            if (urlConn != null && urlConn.getInputStream() != null) {
-                in = new InputStreamReader(urlConn.getInputStream(),
-                        Charset.defaultCharset());
-                BufferedReader bufferedReader = new BufferedReader(in);
-                if (bufferedReader != null) {
-                    int cp;
-                    while ((cp = bufferedReader.read()) != -1) {
-                        sb.append((char) cp);
-                    }
-                    bufferedReader.close();
-                }
-            }
-            in.close();
-        } catch (Exception e) {
-            throw new RuntimeException("Exception while calling URL:"+ myURL, e);
+            URLConnection conn = new URL(url).openConnection();
+
+            InputStream in = conn.getInputStream();
+            contents = convertStreamToString(in);
+        } catch (MalformedURLException e) {
+
+        } catch (IOException e) {
+            Log.e(e.getMessage(), e.toString());
         }
 
+        return contents;
+    }
+    private static String convertStreamToString(InputStream is) throws UnsupportedEncodingException {
+
+        BufferedReader reader = new BufferedReader(new
+                InputStreamReader(is, "UTF-8"));
+        StringBuilder sb = new StringBuilder();
+        String line = null;
+        try {
+            while ((line = reader.readLine()) != null) {
+                sb.append(line + "n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
         return sb.toString();
     }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if(requestCode == PAYPAL_REQUEST_CODE){
+            loadingDialog.dismiss();
             if(resultCode == RESULT_OK){
                 PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
                 if(confirmation !=null){
