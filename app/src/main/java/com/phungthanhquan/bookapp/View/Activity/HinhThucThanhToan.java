@@ -650,8 +650,8 @@ public class HinhThucThanhToan extends AppCompatActivity implements View.OnClick
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        loadingDialog.dismiss();
         if(requestCode == PAYPAL_REQUEST_CODE){
-            loadingDialog.dismiss();
             if(resultCode == RESULT_OK){
                 PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
                 if(confirmation !=null){

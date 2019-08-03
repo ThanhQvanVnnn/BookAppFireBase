@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.phungthanhquan.bookapp.Adapter.TheoDoiAdapter;
 import com.phungthanhquan.bookapp.Adapter.TimKiemBanAdapter;
@@ -24,7 +25,6 @@ public class ListUserTheoDoi extends AppCompatActivity implements InterfaceViewA
     String TITLE;
     private TheoDoiAdapter adapter;
     List<Friend> friendList;
-    List<Friend> userCheckFriendList;
     private PresenterFriendCaNhan  presenterFriendCaNhan;
 
     @Override
@@ -45,7 +45,6 @@ public class ListUserTheoDoi extends AppCompatActivity implements InterfaceViewA
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         recyclerView = findViewById(R.id.recycle_FriendList);
         friendList = new ArrayList<>();
-        userCheckFriendList = new ArrayList<>();
         presenterFriendCaNhan = new PresenterFriendCaNhan(this);
         presenterFriendCaNhan.layListFriend();
     }
@@ -53,23 +52,17 @@ public class ListUserTheoDoi extends AppCompatActivity implements InterfaceViewA
     @Override
     public void hienthilist(List<Friend> friendListReturn) {
        if(TITLE.equals(getString(R.string.nguoi_theo_doi))){
-           adapter = new TheoDoiAdapter(this,friendList,userCheckFriendList,true);
-           friendList.addAll(friendListReturn);
-           adapter.addElement(friendList.size());
+           adapter = new TheoDoiAdapter(this,friendListReturn,friendList,true);
        }else {
-           adapter = new TheoDoiAdapter(this,friendList,userCheckFriendList,false);
-           friendList.addAll(userCheckFriendList);
-           adapter.addElement(friendList.size());
+           adapter = new TheoDoiAdapter(this,friendList,friendList,false);
        }
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this,RecyclerView.VERTICAL,false));
-        recyclerView.setHasFixedSize(false);
-
     }
 
     @Override
-    public void laydanhsachban(List<Friend> friendList) {
-        userCheckFriendList.addAll(friendList);
+    public void laydanhsachban(List<Friend> friendListReturn) {
+        friendList.addAll(friendListReturn);
         presenterFriendCaNhan.layListFriendTheoDoi();
     }
     @Override

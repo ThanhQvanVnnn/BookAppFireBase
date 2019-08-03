@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
@@ -23,7 +24,7 @@ public class LichSuGiaoDichModel {
         void mycallBack (List<LichSuGiaoDich> lichSuGiaoDiches);
     }
     public void layDsLichSuGiaoDich(final Callback callback){
-        firebaseFirestore.collection("transaction_history").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        firebaseFirestore.collection("transaction_history").whereEqualTo("user_id", FirebaseAuth.getInstance().getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 List<LichSuGiaoDich> lichSuGiaoDiches = new ArrayList<>();

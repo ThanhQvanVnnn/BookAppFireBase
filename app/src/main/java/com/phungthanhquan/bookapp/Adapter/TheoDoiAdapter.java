@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -49,14 +50,16 @@ public class TheoDoiAdapter extends RecyclerView.Adapter<TheoDoiAdapter.ViewHold
     public TheoDoiAdapter(Context context, List<Friend> friendList, List<Friend> friendOfUser,Boolean theodoi) {
         this.context = context;
         this.friendList = friendList;
+        this.friendOfUser = friendOfUser;
+        this.theodoi = theodoi;
         firebaseFirestore = FirebaseFirestore.getInstance();
         storageReference = FirebaseStorage.getInstance().getReference();
-        this.theodoi = theodoi;
         saveInfoList = new ArrayList<>();
-        UserFriendSearchInformation userFriendSearchInformation = new UserFriendSearchInformation();
-        userFriendSearchInformation.setUserName("a");
-        saveInfoList.add(userFriendSearchInformation);
-        this.friendOfUser = friendOfUser;
+        for (int i = 0; i < this.friendList.size(); i++) {
+            UserFriendSearchInformation userFriendSearchInformation = new UserFriendSearchInformation();
+            userFriendSearchInformation.setUserName("a");
+            saveInfoList.add(userFriendSearchInformation);
+        }
         loadingDialog = new SpotsDialog.Builder().setContext(context).build();
         loadingDialog.setMessage(context.getResources().getString(R.string.vuilongcho));
     }
@@ -70,7 +73,7 @@ public class TheoDoiAdapter extends RecyclerView.Adapter<TheoDoiAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
-        String user_id ;
+        final String user_id ;
         if(theodoi){
             user_id = friendList.get(position).getSender_id();
         }else {
@@ -137,7 +140,7 @@ public class TheoDoiAdapter extends RecyclerView.Adapter<TheoDoiAdapter.ViewHold
                             @Override
                             public void onClick(View v) {
                                 dialog.dismiss();
-                                firebaseFirestore.collection("friend").document(friendList.get(checkFriendID(finalUser_id1)).getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                firebaseFirestore.collection("friend").document(friendOfUser.get(checkFriendID(finalUser_id1)).getId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                                     @Override
                                     public void onSuccess(Void aVoid) {
                                         holder.button_theodoi.setText(context.getString(R.string.theo_doi));
@@ -167,12 +170,12 @@ public class TheoDoiAdapter extends RecyclerView.Adapter<TheoDoiAdapter.ViewHold
                     //kết thúc xử lí có
                     //không có trong danh sách theo dõi
                     else {
-                        final Friend friend = new Friend(FirebaseAuth.getInstance().getUid(), friendList.get(position).getReceiver_id());
+                        final Friend friend = new Friend(FirebaseAuth.getInstance().getUid(), user_id);
                         firebaseFirestore.collection("friend").add(friend).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                             @Override
                             public void onSuccess(DocumentReference documentReference) {
                                 friend.setId(documentReference.getId());
-                                friendList.add(friend);
+                                friendOfUser.add(friend);
                                 holder.button_theodoi.setTextColor(context.getResources().getColor(R.color.colorPrimaryDark));
                                 holder.button_theodoi.setText(context.getString(R.string.da_theo_doi));
                                 showAToast(context.getString(R.string.da_theo_doi) + " " + saveInfoList.get(position).getUserName());
@@ -186,14 +189,6 @@ public class TheoDoiAdapter extends RecyclerView.Adapter<TheoDoiAdapter.ViewHold
 
     }
 
-    public void addElement(int size) {
-        saveInfoList.clear();
-        for (int i = 0; i < size; i++) {
-            UserFriendSearchInformation userFriendSearchInformation = new UserFriendSearchInformation();
-            userFriendSearchInformation.setUserName("a");
-            saveInfoList.add(userFriendSearchInformation);
-        }
-    }
 
     @Override
     public int getItemCount() {

@@ -31,6 +31,8 @@ import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
 import com.paypal.android.sdk.payments.PaymentConfirmation;
 import com.phungthanhquan.bookapp.Model.ConfigPaypal;
+import com.phungthanhquan.bookapp.Model.ConnectAPI.DownloadAPI;
+import com.phungthanhquan.bookapp.Model.ConnectAPI.DownloadMethodAPI;
 import com.phungthanhquan.bookapp.Model.Room.DbRoomAccess;
 import com.phungthanhquan.bookapp.Object.BookCase;
 import com.phungthanhquan.bookapp.Object.LichSuGiaoDich;
@@ -50,6 +52,9 @@ import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 import dmax.dialog.SpotsDialog;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ThanhToanMuaThemGoiThue extends AppCompatActivity implements View.OnClickListener, InterfaceViewActivityMuaThemGoiThue {
 
@@ -72,6 +77,7 @@ public class ThanhToanMuaThemGoiThue extends AppCompatActivity implements View.O
     private static PayPalConfiguration config = new PayPalConfiguration().environment(PayPalConfiguration.ENVIRONMENT_SANDBOX)
             .clientId(ConfigPaypal.CLLENT_PAYPAL);
     private PayPalPayment payPalPayment;
+    private DownloadMethodAPI downloadMethodAPI;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,6 +117,7 @@ public class ThanhToanMuaThemGoiThue extends AppCompatActivity implements View.O
         firebaseFirestore = FirebaseFirestore.getInstance();
         loadingDialog = new SpotsDialog.Builder().setContext(this).build();
         loadingDialog.setMessage(getResources().getString(R.string.vuilongcho));
+        downloadMethodAPI = DownloadAPI.getApiDownload(this);
     }
 
     @Override
@@ -273,26 +280,48 @@ public class ThanhToanMuaThemGoiThue extends AppCompatActivity implements View.O
 
     }
 
-    private void processPayPall() {
-        //        callback = new Callback<ResponseBody>() {
-//            @Override
-//            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
-//                Log.d("ti_gia", response.body().toString());
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ResponseBody> call, Throwable t) {
-//
-//            }
-//        };
-//        call.enqueue(callback);
-        Double price_usd = RENT_PRICE/23140;
-        payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(price_usd))
-                ,"USD","Thanh toán Cho STUBO", PayPalPayment.PAYMENT_INTENT_SALE);
-        Intent intent = new Intent(this, PaymentActivity.class);
-        intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
-        intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payPalPayment);
-        startActivityForResult(intent,PAYPAL_REQUEST_CODE);
+    private void processPayPall()  {
+        //        String cookie = "";
+        Call<String> call = downloadMethodAPI.ConvertToDollar();
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                loadingDialog.show();
+                String chuoi = response.body();
+                int indexStart = chuoi.indexOf("US DOLLAR");
+                Log.d("jsonconvert",chuoi);
+                int indexend = 0;
+                for(int j = indexStart;j<chuoi.length();j++){
+                    if(chuoi.charAt(j) == '/' && chuoi.charAt(j+1)=='>'){
+                        indexend = j;
+                        break;
+                    }
+                }
+                String chuoilayduoclan1 = chuoi.substring(indexStart,indexend);
+                Log.d("jsonconvert","chuoi lay duoc lan 1: " +chuoilayduoclan1);
+                indexStart = chuoilayduoclan1.indexOf("Transfer");
+                String chuoilayduoclan2 = chuoilayduoclan1.substring(indexStart,chuoilayduoclan1.length()-1);
+                Log.d("jsonconvert","chuoi lay duoc lan 2: " +chuoilayduoclan2);
+                indexStart = chuoilayduoclan2.indexOf("=\"");
+                indexend = chuoilayduoclan2.indexOf("\" ");
+                String number = chuoilayduoclan2.substring(indexStart+2,indexend);
+                Log.d("jsonconvert", number);
+                int tigia = Integer.parseInt(number);
+                Double price_usd = RENT_PRICE/tigia;
+                payPalPayment = new PayPalPayment(new BigDecimal(String.valueOf(price_usd))
+                        ,"USD","Thanh toán Cho STUBO", PayPalPayment.PAYMENT_INTENT_SALE);
+                Intent intent = new Intent(ThanhToanMuaThemGoiThue.this, PaymentActivity.class);
+                intent.putExtra(PayPalService.EXTRA_PAYPAL_CONFIGURATION,config);
+                intent.putExtra(PaymentActivity.EXTRA_PAYMENT,payPalPayment);
+                startActivityForResult(intent,PAYPAL_REQUEST_CODE);
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+                Log.e("jsonconvert", t.getMessage());
+            }
+        });
+
     }
     Toast toast;
     public void showAToast(String st) { //"Toast toast" is declared in the class
@@ -367,6 +396,7 @@ public class ThanhToanMuaThemGoiThue extends AppCompatActivity implements View.O
         }else if(resultCode == PaymentActivity.RESULT_EXTRAS_INVALID){
             showAToast(getString(R.string.thanh_toan_that_bai));
         }
+        loadingDialog.dismiss();
     }
 
 }

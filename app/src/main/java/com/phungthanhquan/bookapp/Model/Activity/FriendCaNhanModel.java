@@ -51,7 +51,7 @@ public class FriendCaNhanModel {
                         Friend friend = new Friend();
                         friend.setId(queryDocumentSnapshot.getId());
                         friend.setReceiver_id(mAuth.getUid());
-                        friend.setSender_id(queryDocumentSnapshot.getString("receiver_id"));
+                        friend.setSender_id(queryDocumentSnapshot.getString("sender_id"));
                         friends.add(friend);
                     }
                 }

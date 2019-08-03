@@ -59,8 +59,8 @@
     <string name="vinh_vien">Vĩnh viễn</string>
     <string name="so_du_taikhoan">Số Dư</string>
     <string name="sach">Sách đã mua</string>
-    <string name="nguoi_theo_doi">Người theo dõi</string>
-    <string name="nguoi_dang_theo_doi">Người đang theo dõi</string>
+    <string name="nguoi_theo_doi">Người theo dõi bạn</string>
+    <string name="nguoi_dang_theo_doi">Người bạn đang theo dõi</string>
     <string name="nap_tai_khoan">Nạp tài khoản</string>
     <string name="sach_da_doc">Sách đã đọc</string>
     <string name="sach_yeu_thich">Sách yêu thích</string>

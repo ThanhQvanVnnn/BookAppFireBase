@@ -30,6 +30,7 @@ public class CapNhatThongTinUserModel {
                     user.setBudget(documentSnapshot.getDouble("budget"));
                     user.setBirth_day(documentSnapshot.getString("birth_day"));
                     user.setGender(documentSnapshot.getBoolean("gender"));
+                    user.setCreate_at(documentSnapshot.getString("create_at"));
                     callBackCapNhat.myCallBack(user);
                 }
             }
